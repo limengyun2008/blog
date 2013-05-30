@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 AUTHOR = u'limengyun'
 SITENAME = u"limengyun's blog"
-SITEURL = ''
+SITEURL = 'http://limengyun.com'
 
 TIMEZONE = 'Asia/Shanghai'
 
@@ -34,3 +34,9 @@ THEME = "themes/notmyidea"
 
 GOOGLE_ANALYTICS = "xx"
 
+PLUGIN_PATH = './pelican-plugins'
+PLUGINS = ['sitemap',]
+
+SITEMAP = {
+    'format': 'xml',
+}

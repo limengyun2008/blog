@@ -1,6 +1,6 @@
 Title: 用pelican搭建自己的博客
-Date: 2013-05-29 11:20
-Category: backend
+Date: 2013-05-29 09:20
+Category: misc
 Tags: pelican
 Slug: backend/blogging-with-pelican
 Summary: 使用pelican搭建一个纯静态博客
