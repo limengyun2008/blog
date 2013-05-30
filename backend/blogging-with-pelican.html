@@ -39,7 +39,55 @@
         <p>In <a href="http://limengyun.com/category/misc.html">misc</a>. </p>
 <p>tags: <a href="http://limengyun.com/tag/pelican.html">pelican</a></p>
 </footer><!-- /.post-info -->      <h2>什么是pelican</h2>
-<p>pelican是一个用python写的开源的博客系统，类似ruby的jekyll/otcpress。这一类博客都属于static site generator，工作原理就是直接使用markdown等结构化文本语言撰写博客内容之后再使用脚本配合定制的CSS/JS及templates文件生成一个静态站点,很对我的胃口。最早接触的static site generator就是otcpress，但个人用python习惯之后实在是不习惯ruby的语法，在一番折腾之后终于找到了一个python版的otcpress——这就是pelican。</p>
+<p>pelican是一个用python写的开源的博客系统，类似ruby的jekyll/otcopress。这一类博客都属于static site generator，工作原理就是直接使用markdown等结构化文本语言撰写博客内容之后再使用脚本配合定制的CSS/JS及templates文件生成一个静态站点,很对我的胃口。最早接触的static site generator就是otcpress，但个人用python习惯之后实在是不习惯ruby的语法，在一番折腾之后终于找到了一个python版的otcopress——pelican。</p>
+<p><b>这个博客就是使用的pelican</b></p>
+<h2>requirements</h2>
+<ul>
+<li>linux</li>
+<li>python 2.7.3</li>
+<li>python pip</li>
+<li>git</li>
+</ul>
+<h2>安装</h2>
+<div class="highlight"><pre><span class="n">pip</span> <span class="n">install</span> <span class="n">pelican</span> <span class="err">#</span> <span class="mf">3.2.1</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="n">ghp</span><span class="o">-</span><span class="n">import</span> <span class="err">#</span> <span class="err">为了使用</span><span class="n">github</span> <span class="n">pages</span>
+</pre></div>
+
+
+<h2>写博客</h2>
+<div class="highlight"><pre><span class="n">pelican</span><span class="o">-</span><span class="n">quickstart</span>
+</pre></div>
+
+
+<p>会生成一个文件夹，在contents 目录下创建后缀名为.md的文件，就可以使用markdown写博客了，当然,文件里面还是需要有一些必要的metadata的。给一个示例的文件</p>
+<div class="highlight"><pre><span class="n">Title</span><span class="o">:</span> <span class="n">Hello</span><span class="o">,</span> <span class="n">World</span><span class="o">!</span>
+<span class="n">Date</span><span class="o">:</span> <span class="mi">2013</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">01</span> <span class="mi">00</span><span class="o">:</span><span class="mi">00</span>
+<span class="n">Category</span><span class="o">:</span> <span class="n">misc</span>
+<span class="n">Tags</span><span class="o">:</span> <span class="n">pelican</span>
+<span class="n">Slug</span><span class="o">:</span> <span class="n">helloworld</span>
+<span class="n">Summary</span><span class="o">:</span> <span class="n">Hello</span><span class="o">,</span> <span class="n">World</span><span class="o">!</span>
+
+<span class="err">##</span> <span class="n">Hello</span><span class="o">,</span> <span class="n">World</span><span class="o">!</span>
+
+<span class="k">this</span> <span class="k">is</span> <span class="n">a</span> <span class="n">template</span> <span class="k">for</span> <span class="n">article</span><span class="o">.</span>
+</pre></div>
+
+
+<h2>部署</h2>
+<p>文件保存之后执行</p>
+<div class="highlight"><pre><span class="n">make</span> <span class="n">html</span>
+</pre></div>
+
+
+<p>会生成一个output 文件夹，里面是一个完整的静态页面站点，你可以用讲output上传到自己的服务器即可提供服务了。</p>
+<p>如果想要使用github pages服务，则需要将使用站点的源代码创建一个github代码库。
+在pelicanconf.py所在目录执行以下命令</p>
+<div class="highlight"><pre><span class="n">make</span> <span class="n">github</span>
+</pre></div>
+
+
+<p>比otcopress方便不少。</p>
+<h3>还有很多高级用法请参见<a href="http://getpelican.com/">Pelican官方文档</a></h3>
     </div><!-- /.entry-content -->
     
   </article>
