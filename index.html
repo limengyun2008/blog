@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+        <meta charset="utf-8">
+        <title>limengyun's blog</title>
+        <link rel="stylesheet" href="./theme/css/main.css">
+                <link href="http://limengyun.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="limengyun's blog Atom Feed" />
+                
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="./">limengyun's blog </a></h1>
+                <nav><ul>
+                                                                                    <li ><a href="./category/backend.html">backend</a></li>
+                                    <li ><a href="./category/misc.html">misc</a></li>
+                                                </ul></nav>
+        </header><!-- /#banner -->
+                
+            
+
+                            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="./backend/ssh-broken-pipe.html">解决ssh broken pipe的问题</a></h1> 
+                    <footer class="post-info">
+        <abbr class="published" title="2013-05-30T10:20:00">
+                Thu 30 May 2013
+        </abbr>
+
+                <address class="vcard author">
+                By <a class="url fn" href="./author/limengyun.html">limengyun</a>
+        </address>
+        <p>In <a href="./category/backend.html">backend</a>. </p>
+<p>tags: <a href="./tag/linux.html">linux</a></p>
+</footer><!-- /.post-info --><p>ssh连接在长时间不输入命令之后会出现连接中断的情况，即broken pipe的错误。</p>
+<p>解决办法有两个</p>
+<h2>在服务器端修改ssh server的配置</h2>
+<div class="highlight"><pre><span class="n">vi</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">ssh</span><span class="o">/</span><span class="n">sshd_config</span>
+</pre></div>
+
+
+<p>增加一行</p>
+<div class="highlight"><pre><span class="n">ClientAliveInterval</span> <span class="mi">60</span>
+</pre></div>
+
+
+<p>表示每60s发送一次心跳包。如果还想要在100次心跳包之后断开（即6000秒之后断开），可以再增加一行</p>
+<div class="highlight"><pre><span class="n">ClientAliveInterval</span> <span class="mi">100</span>
+</pre></div>
+
+
+<p>这两个配置的详细含义，摘抄自<b>man sshd_config</b></p>
+<div class="highlight"><pre><span class="n">ClientAliveCountMax</span>
+         <span class="n">Sets</span> <span class="n">the</span> <span class="n">number</span> <span class="n">of</span> <span class="n">client</span> <span class="n">alive</span> <span class="n">messages</span> <span class="p">(</span><span class="n">see</span> <span class="n">below</span><span class="p">)</span> <span class="n">which</span> <span class="n">may</span> <span class="n">be</span> <span class="n">sent</span> <span class="n">without</span>
+         <span class="n">sshd</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span> <span class="n">receiving</span> <span class="n">any</span> <span class="n">messages</span> <span class="n">back</span> <span class="n">from</span> <span class="n">the</span> <span class="n">client</span><span class="p">.</span>  <span class="n">If</span> <span class="n">this</span> <span class="n">threshold</span> <span class="n">is</span> <span class="n">reached</span>
+         <span class="k">while</span> <span class="n">client</span> <span class="n">alive</span> <span class="n">messages</span> <span class="n">are</span> <span class="n">being</span> <span class="n">sent</span><span class="p">,</span> <span class="n">sshd</span> <span class="n">will</span> <span class="n">disconnect</span> <span class="n">the</span> <span class="n">client</span><span class="p">,</span> <span class="n">termi</span><span class="err">‐</span>
+         <span class="n">nating</span> <span class="n">the</span> <span class="n">session</span><span class="p">.</span>  <span class="n">It</span> <span class="n">is</span> <span class="n">important</span> <span class="n">to</span> <span class="n">note</span> <span class="n">that</span> <span class="n">the</span> <span class="n">use</span> <span class="n">of</span> <span class="n">client</span> <span class="n">alive</span> <span class="n">messages</span>
+         <span class="n">is</span> <span class="n">very</span> <span class="n">different</span> <span class="n">from</span> <span class="n">TCPKeepAlive</span> <span class="p">(</span><span class="n">below</span><span class="p">).</span>  <span class="n">The</span> <span class="n">client</span> <span class="n">alive</span> <span class="n">messages</span> <span class="n">are</span> <span class="n">sent</span>
+         <span class="n">through</span> <span class="n">the</span> <span class="n">encrypted</span> <span class="n">channel</span> <span class="n">and</span> <span class="n">therefore</span> <span class="n">will</span> <span class="n">not</span> <span class="n">be</span> <span class="n">spoofable</span><span class="p">.</span>  <span class="n">The</span> <span class="n">TCP</span>
+         <span class="n">keepalive</span> <span class="n">option</span> <span class="n">enabled</span> <span class="n">by</span> <span class="n">TCPKeepAlive</span> <span class="n">is</span> <span class="n">spoofable</span><span class="p">.</span>  <span class="n">The</span> <span class="n">client</span> <span class="n">alive</span> <span class="n">mechanism</span>
+         <span class="n">is</span> <span class="n">valuable</span> <span class="n">when</span> <span class="n">the</span> <span class="n">client</span> <span class="n">or</span> <span class="n">server</span> <span class="n">depend</span> <span class="n">on</span> <span class="n">knowing</span> <span class="n">when</span> <span class="n">a</span> <span class="n">connection</span> <span class="n">has</span> <span class="n">become</span>
+         <span class="n">inactive</span><span class="p">.</span>
+
+         <span class="n">The</span> <span class="k">default</span> <span class="n">value</span> <span class="n">is</span> <span class="mf">3.</span>  <span class="n">If</span> <span class="n">ClientAliveInterval</span> <span class="p">(</span><span class="n">see</span> <span class="n">below</span><span class="p">)</span> <span class="n">is</span> <span class="n">set</span> <span class="n">to</span> <span class="mi">15</span><span class="p">,</span> <span class="n">and</span>
+         <span class="n">ClientAliveCountMax</span> <span class="n">is</span> <span class="n">left</span> <span class="n">at</span> <span class="n">the</span> <span class="k">default</span><span class="p">,</span> <span class="n">unresponsive</span> <span class="n">SSH</span> <span class="n">clients</span> <span class="n">will</span> <span class="n">be</span> <span class="n">discon</span><span class="err">‐</span>
+         <span class="n">nected</span> <span class="n">after</span> <span class="n">approximately</span> <span class="mi">45</span> <span class="n">seconds</span><span class="p">.</span>  <span class="n">This</span> <span class="n">option</span> <span class="n">applies</span> <span class="n">to</span> <span class="n">protocol</span> <span class="n">version</span> <span class="mi">2</span>
+         <span class="n">only</span><span class="p">.</span>
+
+<span class="n">ClientAliveInterval</span>
+         <span class="n">Sets</span> <span class="n">a</span> <span class="n">timeout</span> <span class="n">interval</span> <span class="n">in</span> <span class="n">seconds</span> <span class="n">after</span> <span class="n">which</span> <span class="k">if</span> <span class="n">no</span> <span class="n">data</span> <span class="n">has</span> <span class="n">been</span> <span class="n">received</span> <span class="n">from</span> <span class="n">the</span>
+         <span class="n">client</span><span class="p">,</span> <span class="n">sshd</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span> <span class="n">will</span> <span class="n">send</span> <span class="n">a</span> <span class="n">message</span> <span class="n">through</span> <span class="n">the</span> <span class="n">encrypted</span> <span class="n">channel</span> <span class="n">to</span> <span class="n">request</span> <span class="n">a</span>
+         <span class="n">response</span> <span class="n">from</span> <span class="n">the</span> <span class="n">client</span><span class="p">.</span>  <span class="n">The</span> <span class="k">default</span> <span class="n">is</span> <span class="mi">0</span><span class="p">,</span> <span class="n">indicating</span> <span class="n">that</span> <span class="n">these</span> <span class="n">messages</span> <span class="n">will</span> <span class="n">not</span>
+         <span class="n">be</span> <span class="n">sent</span> <span class="n">to</span> <span class="n">the</span> <span class="n">client</span><span class="p">.</span>  <span class="n">This</span> <span class="n">option</span> <span class="n">applies</span> <span class="n">to</span> <span class="n">protocol</span> <span class="n">version</span> <span class="mi">2</span> <span class="n">only</span><span class="p">.</span>
+</pre></div>
+
+
+<h2>如果没有服务器端的权限，可以修改ssh client的配置</h2>
+<div class="highlight"><pre><span class="n">vi</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">ssh</span><span class="o">/</span><span class="n">ssh_config</span>  <span class="err">#</span>  <span class="err">对全部用户生效</span>
+</pre></div>
+
+
+<p>或者</p>
+<div class="highlight"><pre><span class="n">vi</span> <span class="o">~/</span><span class="p">.</span><span class="n">ssh</span><span class="o">/</span><span class="n">config</span> <span class="err">#</span>  <span class="err">对当前用户生效</span>
+</pre></div>
+
+
+<p>增加一行</p>
+<div class="highlight"><pre><span class="n">ServerAliveInterval</span> <span class="mi">60</span>
+</pre></div>
+
+
+<p>同样也可以增加ServerAliveCountMax来实现多少秒之后断开连接</p>
+<div class="highlight"><pre><span class="n">ServerAliveCountMax</span> <span class="mi">10</span>
+</pre></div>
+
+
+<p>表示600秒之后断开</p>
+<p>这两个配置的详细含义，摘抄自<b>man ssh_config</b></p>
+<div class="highlight"><pre><span class="n">ServerAliveCountMax</span>
+         <span class="n">Sets</span> <span class="n">the</span> <span class="n">number</span> <span class="n">of</span> <span class="n">server</span> <span class="n">alive</span> <span class="n">messages</span> <span class="p">(</span><span class="n">see</span> <span class="n">below</span><span class="p">)</span> <span class="n">which</span> <span class="n">may</span> <span class="n">be</span> <span class="n">sent</span> <span class="n">without</span>
+         <span class="n">ssh</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="n">receiving</span> <span class="n">any</span> <span class="n">messages</span> <span class="n">back</span> <span class="n">from</span> <span class="n">the</span> <span class="n">server</span><span class="p">.</span>  <span class="n">If</span> <span class="n">this</span> <span class="n">threshold</span> <span class="n">is</span> <span class="n">reached</span>
+         <span class="k">while</span> <span class="n">server</span> <span class="n">alive</span> <span class="n">messages</span> <span class="n">are</span> <span class="n">being</span> <span class="n">sent</span><span class="p">,</span> <span class="n">ssh</span> <span class="n">will</span> <span class="n">disconnect</span> <span class="n">from</span> <span class="n">the</span> <span class="n">server</span><span class="p">,</span>
+         <span class="n">terminating</span> <span class="n">the</span> <span class="n">session</span><span class="p">.</span>  <span class="n">It</span> <span class="n">is</span> <span class="n">important</span> <span class="n">to</span> <span class="n">note</span> <span class="n">that</span> <span class="n">the</span> <span class="n">use</span> <span class="n">of</span> <span class="n">server</span> <span class="n">alive</span> <span class="n">mes</span><span class="err">‐</span>
+         <span class="n">sages</span> <span class="n">is</span> <span class="n">very</span> <span class="n">different</span> <span class="n">from</span> <span class="n">TCPKeepAlive</span> <span class="p">(</span><span class="n">below</span><span class="p">).</span>  <span class="n">The</span> <span class="n">server</span> <span class="n">alive</span> <span class="n">messages</span> <span class="n">are</span>
+         <span class="n">sent</span> <span class="n">through</span> <span class="n">the</span> <span class="n">encrypted</span> <span class="n">channel</span> <span class="n">and</span> <span class="n">therefore</span> <span class="n">will</span> <span class="n">not</span> <span class="n">be</span> <span class="n">spoofable</span><span class="p">.</span>  <span class="n">The</span> <span class="n">TCP</span>
+         <span class="n">keepalive</span> <span class="n">option</span> <span class="n">enabled</span> <span class="n">by</span> <span class="n">TCPKeepAlive</span> <span class="n">is</span> <span class="n">spoofable</span><span class="p">.</span>  <span class="n">The</span> <span class="n">server</span> <span class="n">alive</span> <span class="n">mechanism</span>
+         <span class="n">is</span> <span class="n">valuable</span> <span class="n">when</span> <span class="n">the</span> <span class="n">client</span> <span class="n">or</span> <span class="n">server</span> <span class="n">depend</span> <span class="n">on</span> <span class="n">knowing</span> <span class="n">when</span> <span class="n">a</span> <span class="n">connection</span> <span class="n">has</span> <span class="n">become</span>
+         <span class="n">inactive</span><span class="p">.</span>
+
+         <span class="n">The</span> <span class="k">default</span> <span class="n">value</span> <span class="n">is</span> <span class="mf">3.</span>  <span class="n">If</span><span class="p">,</span> <span class="k">for</span> <span class="n">example</span><span class="p">,</span> <span class="n">ServerAliveInterval</span> <span class="p">(</span><span class="n">see</span> <span class="n">below</span><span class="p">)</span> <span class="n">is</span> <span class="n">set</span> <span class="n">to</span>
+         <span class="mi">15</span> <span class="n">and</span> <span class="n">ServerAliveCountMax</span> <span class="n">is</span> <span class="n">left</span> <span class="n">at</span> <span class="n">the</span> <span class="k">default</span><span class="p">,</span> <span class="k">if</span> <span class="n">the</span> <span class="n">server</span> <span class="n">becomes</span> <span class="n">unrespon</span><span class="err">‐</span>
+         <span class="n">sive</span><span class="p">,</span> <span class="n">ssh</span> <span class="n">will</span> <span class="n">disconnect</span> <span class="n">after</span> <span class="n">approximately</span> <span class="mi">45</span> <span class="n">seconds</span><span class="p">.</span>  <span class="n">This</span> <span class="n">option</span> <span class="n">applies</span> <span class="n">to</span>
+         <span class="n">protocol</span> <span class="n">version</span> <span class="mi">2</span> <span class="n">only</span><span class="p">;</span> <span class="n">in</span> <span class="n">protocol</span> <span class="n">version</span> <span class="mi">1</span> <span class="n">there</span> <span class="n">is</span> <span class="n">no</span> <span class="n">mechanism</span> <span class="n">to</span> <span class="n">request</span> <span class="n">a</span>
+         <span class="n">response</span> <span class="n">from</span> <span class="n">the</span> <span class="n">server</span> <span class="n">to</span> <span class="n">the</span> <span class="n">server</span> <span class="n">alive</span> <span class="n">messages</span><span class="p">,</span> <span class="n">so</span> <span class="n">disconnection</span> <span class="n">is</span> <span class="n">the</span>
+         <span class="n">responsibility</span> <span class="n">of</span> <span class="n">the</span> <span class="n">TCP</span> <span class="n">stack</span><span class="p">.</span>
+
+<span class="n">ServerAliveInterval</span>
+         <span class="n">Sets</span> <span class="n">a</span> <span class="n">timeout</span> <span class="n">interval</span> <span class="n">in</span> <span class="n">seconds</span> <span class="n">after</span> <span class="n">which</span> <span class="k">if</span> <span class="n">no</span> <span class="n">data</span> <span class="n">has</span> <span class="n">been</span> <span class="n">received</span> <span class="n">from</span> <span class="n">the</span>
+         <span class="n">server</span><span class="p">,</span> <span class="n">ssh</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="n">will</span> <span class="n">send</span> <span class="n">a</span> <span class="n">message</span> <span class="n">through</span> <span class="n">the</span> <span class="n">encrypted</span> <span class="n">channel</span> <span class="n">to</span> <span class="n">request</span> <span class="n">a</span>
+         <span class="n">response</span> <span class="n">from</span> <span class="n">the</span> <span class="n">server</span><span class="p">.</span>  <span class="n">The</span> <span class="k">default</span> <span class="n">is</span> <span class="mi">0</span><span class="p">,</span> <span class="n">indicating</span> <span class="n">that</span> <span class="n">these</span> <span class="n">messages</span> <span class="n">will</span> <span class="n">not</span>
+         <span class="n">be</span> <span class="n">sent</span> <span class="n">to</span> <span class="n">the</span> <span class="n">server</span><span class="p">,</span> <span class="n">or</span> <span class="mi">300</span> <span class="k">if</span> <span class="n">the</span> <span class="n">BatchMode</span> <span class="n">option</span> <span class="n">is</span> <span class="n">set</span><span class="p">.</span>  <span class="n">This</span> <span class="n">option</span> <span class="n">applies</span>
+         <span class="n">to</span> <span class="n">protocol</span> <span class="n">version</span> <span class="mi">2</span> <span class="n">only</span><span class="p">.</span>  <span class="n">ProtocolKeepAlives</span> <span class="n">and</span> <span class="n">SetupTimeOut</span> <span class="n">are</span> <span class="n">Debian</span><span class="o">-</span><span class="n">specific</span>
+         <span class="n">compatibility</span> <span class="n">aliases</span> <span class="k">for</span> <span class="n">this</span> <span class="n">option</span><span class="p">.</span>
+</pre></div>                </article>
+                            </aside><!-- /#featured -->
+                            <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+                                                
+
+                 
+                        <li><article class="hentry">    
+                <header>
+                    <h1><a href="./backend/cloudfoundry-architecture.html" rel="bookmark"
+                           title="Permalink to cloudfoundry 架构剖析">cloudfoundry 架构剖析</a></h1>
+                </header>
+                
+                <div class="entry-content">
+                <footer class="post-info">
+        <abbr class="published" title="2013-05-29T10:20:00">
+                Wed 29 May 2013
+        </abbr>
+
+                <address class="vcard author">
+                By <a class="url fn" href="./author/limengyun.html">limengyun</a>
+        </address>
+        <p>In <a href="./category/backend.html">backend</a>. </p>
+<p>tags: <a href="./tag/cloudfoundry.html">cloudfoundry</a></p>
+</footer><!-- /.post-info -->                <p>an article for cloudfoundry architecture</p>
+                <a class="readmore" href="./backend/cloudfoundry-architecture.html">read more</a>
+                                </div><!-- /.entry-content -->
+            </article></li>
+                            
+
+                 
+                        <li><article class="hentry">    
+                <header>
+                    <h1><a href="./backend/blogging-with-pelican.html" rel="bookmark"
+                           title="Permalink to 用pelican搭建自己的博客">用pelican搭建自己的博客</a></h1>
+                </header>
+                
+                <div class="entry-content">
+                <footer class="post-info">
+        <abbr class="published" title="2013-05-29T09:20:00">
+                Wed 29 May 2013
+        </abbr>
+
+                <address class="vcard author">
+                By <a class="url fn" href="./author/limengyun.html">limengyun</a>
+        </address>
+        <p>In <a href="./category/misc.html">misc</a>. </p>
+<p>tags: <a href="./tag/pelican.html">pelican</a></p>
+</footer><!-- /.post-info -->                <p>使用pelican搭建一个纯静态博客</p>
+                <a class="readmore" href="./backend/blogging-with-pelican.html">read more</a>
+                                </div><!-- /.entry-content -->
+            </article></li>
+                            
+
+                 
+                        <li><article class="hentry">    
+                <header>
+                    <h1><a href="./helloworld.html" rel="bookmark"
+                           title="Permalink to Hello, World!">Hello, World!</a></h1>
+                </header>
+                
+                <div class="entry-content">
+                <footer class="post-info">
+        <abbr class="published" title="2013-01-01T00:00:00">
+                Tue 01 January 2013
+        </abbr>
+
+                <address class="vcard author">
+                By <a class="url fn" href="./author/limengyun.html">limengyun</a>
+        </address>
+        <p>In <a href="./category/misc.html">misc</a>. </p>
+<p>tags: <a href="./tag/pelican.html">pelican</a></p>
+</footer><!-- /.post-info -->                <p>Hello, World!</p>
+                <a class="readmore" href="./helloworld.html">read more</a>
+                                </div><!-- /.entry-content -->
+            </article></li>
+                            </ol><!-- /#posts-list -->
+                            <p class="paginator">
+        Page 1 / 1
+    </p>
+                        </section><!-- /#content -->
+                    <section id="extras" class="body">
+                        <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                                                    <li><a href="http://getpelican.com/">Pelican</a></li>
+                                                    <li><a href="http://python.org/">Python.org</a></li>
+                                                    <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                                                    <li><a href="/pages/markdown-syntax.html">Markdown Syntax</a></li>
+                                                </ul>
+                </div><!-- /.blogroll -->
+                                <div class="social">
+                        <h2>友情链接</h2>
+                        <ul>
+                            <li><a href="http://limengyun.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            
+                                                    <li><a href="http://huihui.cn/?keyfrom=limengyun.com">网易惠惠</a></li>
+                                                    <li><a href="http://www.xiaoshuov.com">xiaoshuov</a></li>
+                                                </ul>
+                </div><!-- /.social -->
+                </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>&copy; copyright 2013. <a href="http://limengyun.com">limengyun.com</a>, thanks for visiting!</p>
+        </footer><!-- /#contentinfo -->
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'xx']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+</body>
+</html>
