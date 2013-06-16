@@ -2,8 +2,8 @@
 <html lang="cn">
 <head>
         <meta charset="utf-8">
-        <title>cloudfoundry 架构剖析</title>
-        <link rel="stylesheet" href="http://limengyun.com/theme/css/main.css">
+        <title>NATS</title>
+        <link rel="stylesheet" href="../theme/css/main.css">
                 <link href="http://limengyun.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="limengyun's blog Atom Feed" />
                 
         <!--[if IE]>
@@ -13,18 +13,18 @@
 
 <body id="index" class="home">
         <header id="banner" class="body">
-                <h1><a href="http://limengyun.com/">limengyun's blog </a></h1>
+                <h1><a href="../">limengyun's blog </a></h1>
                 <nav><ul>
-                                                                                    <li class="active"><a href="http://limengyun.com/category/backend.html">backend</a></li>
-                                    <li ><a href="http://limengyun.com/category/misc.html">misc</a></li>
+                                                                                    <li class="active"><a href="../category/backend.html">backend</a></li>
+                                    <li ><a href="../category/misc.html">misc</a></li>
                                                 </ul></nav>
         </header><!-- /#banner -->
         <section id="content" class="body">
   <article>
     <header>
       <h1 class="entry-title">
-        <a href="http://limengyun.com/backend/cloudfoundry-architecture.html" rel="bookmark"
-           title="Permalink to cloudfoundry 架构剖析">cloudfoundry 架构剖析</a></h1>
+        <a href="../cloudfoundry/nats.html" rel="bookmark"
+           title="Permalink to NATS">NATS</a></h1>
           </header>
 
     <div class="entry-content">
@@ -34,11 +34,31 @@
         </abbr>
 
                 <address class="vcard author">
-                By <a class="url fn" href="http://limengyun.com/author/limengyun.html">limengyun</a>
+                By <a class="url fn" href="../author/limengyun.html">limengyun</a>
         </address>
-        <p>In <a href="http://limengyun.com/category/backend.html">backend</a>. </p>
-<p>tags: <a href="http://limengyun.com/tag/cloudfoundry.html">cloudfoundry</a></p>
-</footer><!-- /.post-info -->      <p>this is a placeholder</p>
+        <p>In <a href="../category/backend.html">backend</a>. </p>
+<p>tags: <a href="../tag/cloudfoundry.html">cloudfoundry</a></p>
+</footer><!-- /.post-info -->      <p>NATS是一个轻量级的基于pub-sub机制的分布式消息队列系统，它负责衔接各组件。官方文档在这里：(http://docs.cloudfoundry.com/docs/running/architecture/messaging-nats.html)。</p>
+<p>但看完官方文档仍然有点不太直观，举几个典型的例子来说明：</p>
+<h2>向router注册</h2>
+<p>不管是外部用户对平台上的应用发起的请求，还是内部组件提供对外的api（uaa和cloud controller），都是通过router转发的request，要能让router转发则首先需要向router注册。
+以下是实现逻辑：</p>
+<ul>
+<li>router启动时，会订阅 <strong>router.register</strong> 这个channel，同时也会定时的向 <strong>router.start</strong> 这个channel发送消息，</li>
+<li>其他需要向router注册的组件，启动时会订阅<strong>router.start</strong>这个channel。一旦接收到消息，会立刻收集需要注册的信息（如ip，port等）然后向router.register频道发送消息。</li>
+<li>router接收到<strong>router.register</strong>消息后立即更新路由信息。</li>
+<li>以上过程不停循环，使router的状态时刻保持最新。</li>
+</ul>
+<h2>cloud controller指挥dea进行打包和运行。</h2>
+<ul>
+<li>所有组件，包括dea启动时，会生成一个唯一的UUID，来标识组件。dea会定时的将自身情况和ID发送到<strong>stager.advertise</strong> 和 <strong>dea.advertise</strong>这两个channel，同时会订阅
+<strong>staging.&lt;uuid>.start</strong> 和<strong>dea.&lt;uuid>.start</strong>这两个channel</li>
+<li>cloud controller 订阅这两个channel 并根据channel的信息构造并时刻更新dea_pool和stager_pool,</li>
+<li>当有打包或者运行应用的请求时，cloud controller会去查询这两个pool，如果有合适的dea，就会向对应的<strong>[dea|stager].&lt;uuid>.start</strong>发送消息</li>
+<li>对应uuid的dea收到消息，根据消息执行打包或运行任务。</li>
+</ul>
+<p>还有很多类似的衔接各组件的逻辑，都可以在源码中发现。</p>
+<p>这里有一个非官方且不完整的cloudfoundry 1.0的消息说明文档，http://apidocs.cloudfoundry.com/ ，仅供参考。</p>
     </div><!-- /.entry-content -->
     
   </article>

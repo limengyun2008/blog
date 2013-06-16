@@ -2,7 +2,7 @@
 <html lang="cn">
 <head>
         <meta charset="utf-8">
-        <title>limengyun's blog - cloudfoundry</title>
+        <title>cloudfoundry的一些想法</title>
         <link rel="stylesheet" href="../theme/css/main.css">
                 <link href="http://limengyun.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="limengyun's blog Atom Feed" />
                 
@@ -15,17 +15,20 @@
         <header id="banner" class="body">
                 <h1><a href="../">limengyun's blog </a></h1>
                 <nav><ul>
-                                                                                    <li ><a href="../category/backend.html">backend</a></li>
+                                                                                    <li class="active"><a href="../category/backend.html">backend</a></li>
                                     <li ><a href="../category/misc.html">misc</a></li>
                                                 </ul></nav>
         </header><!-- /#banner -->
-                
-            
+        <section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="../cloudfoundry/review.html" rel="bookmark"
+           title="Permalink to cloudfoundry的一些想法">cloudfoundry的一些想法</a></h1>
+          </header>
 
-                            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="../cloudfoundry/review.html">cloudfoundry的一些想法</a></h1> 
-                    <footer class="post-info">
+    <div class="entry-content">
+      <footer class="post-info">
         <abbr class="published" title="2013-06-13T11:00:00">
                 Thu 13 June 2013
         </abbr>
@@ -35,7 +38,7 @@
         </address>
         <p>In <a href="../category/backend.html">backend</a>. </p>
 <p>tags: <a href="../tag/cloudfoundry.html">cloudfoundry</a></p>
-</footer><!-- /.post-info --><h2>PAAS 拯救世界？</h2>
+</footer><!-- /.post-info -->      <h2>PAAS 拯救世界？</h2>
 <p>就在前几天，云计算大会上代表cloudfoundry官方做展示的是VMware和EMC两家将云计算业务分拆出来组成的新公司Pivotal（<a href="http://www.csdn.net/article/2013-04-25/2815037-GE_invest_CloudFoundry_and_Greenplum">文章链接</a>），说明官方非常重视这个东西，他们已经开始着手cloudfoundry的商业进程了。</p>
 <p>同时还有京东和Pivotal进行协作研发cloudfoundry的消息（<a href="http://tech.sina.com.cn/it/2013-06-07/09078422241.shtml">文章链接</a>），京东这似乎是要借外部力量学amazon卖云资源了么？</p>
 <p>但关于PAAS这个东西，有人说是未来，我个人持保留态度。 PaaS的确能够非常迅速的扩容，应对快速的流量增长；合理使用也能很大程度上节省硬件的之处<br />
@@ -77,162 +80,12 @@
 <p>得到了一个教训：对于一个不成熟的开源软件，要先琢磨透了之后还得掂量掂量能不能hold住才敢用。</p>
 <p>到现在半年过去了有了一个雏形，总归有了一个版本，如果没有被cloudfoundry改版坑那一次应该会提前不少。
 但现在机器紧张，原来YAE只占用一台机器，基于cloudfoundry的新YAE一台机器肯定是搞不定的，所以估计都不一定能应用的起来，先看看反馈再说。
-没用起来就只能权当技术储备，锻炼个人能力了。</p>                </article>
-                            </aside><!-- /#featured -->
-                            <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
-                                                
-
-                 
-                        <li><article class="hentry">    
-                <header>
-                    <h1><a href="../cloudfoundry/dea.html" rel="bookmark"
-                           title="Permalink to DEA 和 buildpack">DEA 和 buildpack</a></h1>
-                </header>
-                
-                <div class="entry-content">
-                <footer class="post-info">
-        <abbr class="published" title="2013-06-13T10:00:00">
-                Thu 13 June 2013
-        </abbr>
-
-                <address class="vcard author">
-                By <a class="url fn" href="../author/limengyun.html">limengyun</a>
-        </address>
-        <p>In <a href="../category/backend.html">backend</a>. </p>
-<p>tags: <a href="../tag/cloudfoundry.html">cloudfoundry</a></p>
-</footer><!-- /.post-info -->                
-                <a class="readmore" href="../cloudfoundry/dea.html">read more</a>
-                                </div><!-- /.entry-content -->
-            </article></li>
-                            
-
-                 
-                        <li><article class="hentry">    
-                <header>
-                    <h1><a href="../cloudfoundry/warden.html" rel="bookmark"
-                           title="Permalink to warden及平台安全">warden及平台安全</a></h1>
-                </header>
-                
-                <div class="entry-content">
-                <footer class="post-info">
-        <abbr class="published" title="2013-06-13T00:00:00">
-                Thu 13 June 2013
-        </abbr>
-
-                <address class="vcard author">
-                By <a class="url fn" href="../author/limengyun.html">limengyun</a>
-        </address>
-        <p>In <a href="../category/backend.html">backend</a>. </p>
-<p>tags: <a href="../tag/cloudfoundry.html">cloudfoundry</a></p>
-</footer><!-- /.post-info -->                
-                <a class="readmore" href="../cloudfoundry/warden.html">read more</a>
-                                </div><!-- /.entry-content -->
-            </article></li>
-                            
-
-                 
-                        <li><article class="hentry">    
-                <header>
-                    <h1><a href="../cloudfoundry/index.html" rel="bookmark"
-                           title="Permalink to cloudfoundry 2.0文档小结">cloudfoundry 2.0文档小结</a></h1>
-                </header>
-                
-                <div class="entry-content">
-                <footer class="post-info">
-        <abbr class="published" title="2013-06-05T10:00:00">
-                Wed 05 June 2013
-        </abbr>
-
-                <address class="vcard author">
-                By <a class="url fn" href="../author/limengyun.html">limengyun</a>
-        </address>
-        <p>In <a href="../category/backend.html">backend</a>. </p>
-<p>tags: <a href="../tag/cloudfoundry.html">cloudfoundry</a></p>
-</footer><!-- /.post-info -->                <p>Hello, World!</p>
-                <a class="readmore" href="../cloudfoundry/index.html">read more</a>
-                                </div><!-- /.entry-content -->
-            </article></li>
-                            
-
-                 
-                        <li><article class="hentry">    
-                <header>
-                    <h1><a href="../backend/cloudfoundry-cloud_controller.html" rel="bookmark"
-                           title="Permalink to Cloud Controller">Cloud Controller</a></h1>
-                </header>
-                
-                <div class="entry-content">
-                <footer class="post-info">
-        <abbr class="published" title="2013-05-29T10:20:00">
-                Wed 29 May 2013
-        </abbr>
-
-                <address class="vcard author">
-                By <a class="url fn" href="../author/limengyun.html">limengyun</a>
-        </address>
-        <p>In <a href="../category/backend.html">backend</a>. </p>
-<p>tags: <a href="../tag/cloudfoundry.html">cloudfoundry</a></p>
-</footer><!-- /.post-info -->                <p>介绍Cloud Controller</p>
-                <a class="readmore" href="../backend/cloudfoundry-cloud_controller.html">read more</a>
-                                </div><!-- /.entry-content -->
-            </article></li>
-                            
-
-                 
-                        <li><article class="hentry">    
-                <header>
-                    <h1><a href="../backend/cloudfoundry-console.html" rel="bookmark"
-                           title="Permalink to Console">Console</a></h1>
-                </header>
-                
-                <div class="entry-content">
-                <footer class="post-info">
-        <abbr class="published" title="2013-05-29T10:20:00">
-                Wed 29 May 2013
-        </abbr>
-
-                <address class="vcard author">
-                By <a class="url fn" href="../author/limengyun.html">limengyun</a>
-        </address>
-        <p>In <a href="../category/backend.html">backend</a>. </p>
-<p>tags: <a href="../tag/cloudfoundry.html">cloudfoundry</a></p>
-</footer><!-- /.post-info -->                
-                <a class="readmore" href="../backend/cloudfoundry-console.html">read more</a>
-                                </div><!-- /.entry-content -->
-            </article></li>
-                            
-
-                 
-                        <li><article class="hentry">    
-                <header>
-                    <h1><a href="../cloudfoundry/nats.html" rel="bookmark"
-                           title="Permalink to NATS">NATS</a></h1>
-                </header>
-                
-                <div class="entry-content">
-                <footer class="post-info">
-        <abbr class="published" title="2013-05-29T10:20:00">
-                Wed 29 May 2013
-        </abbr>
-
-                <address class="vcard author">
-                By <a class="url fn" href="../author/limengyun.html">limengyun</a>
-        </address>
-        <p>In <a href="../category/backend.html">backend</a>. </p>
-<p>tags: <a href="../tag/cloudfoundry.html">cloudfoundry</a></p>
-</footer><!-- /.post-info -->                <p>an article for cloudfoundry architecture</p>
-                <a class="readmore" href="../cloudfoundry/nats.html">read more</a>
-                                </div><!-- /.entry-content -->
-            </article></li>
-                            </ol><!-- /#posts-list -->
-                            <p class="paginator">
-        Page 1 / 1
-    </p>
-                        </section><!-- /#content -->
-                    <section id="extras" class="body">
+没用起来就只能权当技术储备，锻炼个人能力了。</p>
+    </div><!-- /.entry-content -->
+    
+  </article>
+</section>
+        <section id="extras" class="body">
                         <div class="blogroll">
                         <h2>blogroll</h2>
                         <ul>

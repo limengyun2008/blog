@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+        <meta charset="utf-8">
+        <title>Cloud Controller</title>
+        <link rel="stylesheet" href="../theme/css/main.css">
+                <link href="http://limengyun.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="limengyun's blog Atom Feed" />
+                
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="../">limengyun's blog </a></h1>
+                <nav><ul>
+                                                                                    <li class="active"><a href="../category/backend.html">backend</a></li>
+                                    <li ><a href="../category/misc.html">misc</a></li>
+                                                </ul></nav>
+        </header><!-- /#banner -->
+        <section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="../backend/cloudfoundry-cloud_controller.html" rel="bookmark"
+           title="Permalink to Cloud Controller">Cloud Controller</a></h1>
+          </header>
+
+    <div class="entry-content">
+      <footer class="post-info">
+        <abbr class="published" title="2013-05-29T10:20:00">
+                Wed 29 May 2013
+        </abbr>
+
+                <address class="vcard author">
+                By <a class="url fn" href="../author/limengyun.html">limengyun</a>
+        </address>
+        <p>In <a href="../category/backend.html">backend</a>. </p>
+<p>tags: <a href="../tag/cloudfoundry.html">cloudfoundry</a></p>
+</footer><!-- /.post-info -->      <p>Cloud Controller 是整个cloudfoundry平台的控制中心。它对外提供api，所有的操作都是依赖这些api来进行的。
+这里是详细的api列表：http://docs.cloudfoundry.com/docs/reference/cc-api.html
+同时在项目的根目录的docs目录下有详细的设计文档。</p>
+<p>Cloud Controller 2.0引入了多个新概念，如Organizations，Spaces，Domains，Routes
+这篇官方文档http://docs.cloudfoundry.com/docs/using/managing-apps/orgs-and-spaces.html可以很好的帮助你理解这些概念。</p>
+<p>直接使用这些API还是比较费劲的，官方和第三方都有不同语言的基于这些api的lib，比如官方的ruby lib为CFoundry（https://github.com/cloudfoundry/cfoundry）。
+进行更上层开发的时候可以基于这些lib而不是直接操作api，会省下不少时间。官方的客户端cf也是基于cfoundry进行的开发。</p>
+<h2>安装</h2>
+<p>TBD</p>
+<h2>配置</h2>
+<p>TBD</p>
+<h2>TIPS</h2>
+<p>Cloud Controller 需要一个数据库（即CCDB），如果你选择mysql，请使用Innodb或其他支持事务处理的引擎，千万记得不要使用默认的MYisAM引擎，因为它不支持事务。</p>
+<p>请看lib/cloud_controller/rest_controller/model_controller.rb</p>
+<div class="highlight"><pre><span class="c1"># Create operation</span>
+<span class="k">def</span> <span class="nf">create</span>
+  <span class="n">logger</span><span class="o">.</span><span class="n">debug</span> <span class="s2">&quot;create: </span><span class="si">#{</span><span class="n">request_attrs</span><span class="si">}</span><span class="s2">&quot;</span>
+
+  <span class="n">json_msg</span> <span class="o">=</span> <span class="nb">self</span><span class="o">.</span><span class="n">class</span><span class="o">::</span><span class="no">CreateMessage</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+  <span class="vi">@request_attrs</span> <span class="o">=</span> <span class="n">json_msg</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="ss">:stringify_keys</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">)</span>
+  <span class="k">raise</span> <span class="no">InvalidRequest</span> <span class="k">unless</span> <span class="n">request_attrs</span>
+
+  <span class="n">before_create</span> <span class="k">if</span> <span class="nb">respond_to?</span> <span class="ss">:before_create</span>
+  <span class="n">obj</span> <span class="o">=</span> <span class="kp">nil</span>
+  <span class="n">model</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">transaction</span> <span class="k">do</span>
+    <span class="n">obj</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">create_from_hash</span><span class="p">(</span><span class="n">request_attrs</span><span class="p">)</span>
+    <span class="n">validate_access</span><span class="p">(</span><span class="ss">:create</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">roles</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="o">[</span>
+    <span class="ss">HTTP</span><span class="p">:</span><span class="ss">:CREATED</span><span class="p">,</span>
+    <span class="p">{</span> <span class="s2">&quot;Location&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="nb">self</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">obj</span><span class="o">.</span><span class="n">guid</span><span class="si">}</span><span class="s2">&quot;</span> <span class="p">},</span>
+    <span class="n">serialization</span><span class="o">.</span><span class="n">render_json</span><span class="p">(</span><span class="nb">self</span><span class="o">.</span><span class="n">class</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="vi">@opts</span><span class="p">)</span>
+  <span class="o">]</span>
+<span class="k">end</span>
+</pre></div>
+
+
+<p>可以看到Cloud Controller 的创建或更新都依赖数据库的事务功能：先创建或更新，再判断是不是有权限执行操作。</p>
+<p>如果使用了一个不支持事务的数据库，虽然不会报错，但任何无权限的创建或更新都会被执行，留下隐患。</p>
+    </div><!-- /.entry-content -->
+    
+  </article>
+</section>
+        <section id="extras" class="body">
+                        <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                                                    <li><a href="http://getpelican.com/">Pelican</a></li>
+                                                    <li><a href="http://python.org/">Python.org</a></li>
+                                                    <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                                                    <li><a href="/pages/markdown-syntax.html">Markdown Syntax</a></li>
+                                                </ul>
+                </div><!-- /.blogroll -->
+                                <div class="social">
+                        <h2>友情链接</h2>
+                        <ul>
+                            <li><a href="http://limengyun.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            
+                                                    <li><a href="http://huihui.cn/?keyfrom=limengyun.com">网易惠惠</a></li>
+                                                    <li><a href="http://www.xiaoshuov.com">xiaoshuov</a></li>
+                                                </ul>
+                </div><!-- /.social -->
+                </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>&copy; copyright 2013. <a href="http://limengyun.com">limengyun.com</a>, thanks for visiting!</p>
+        </footer><!-- /#contentinfo -->
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-37781337-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+</body>
+</html>

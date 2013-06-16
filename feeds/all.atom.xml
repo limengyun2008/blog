@@ -1,5 +1,371 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>limengyun's blog</title><link href="http://limengyun.com/" rel="alternate"></link><link href="http://limengyun.com/feeds/all.atom.xml" rel="self"></link><id>http://limengyun.com/</id><updated>2013-05-30T10:20:00+08:00</updated><entry><title>解决ssh broken pipe的问题</title><link href="http://limengyun.com/backend/ssh-broken-pipe.html" rel="alternate"></link><updated>2013-05-30T10:20:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-05-30:backend/ssh-broken-pipe.html</id><summary type="html">&lt;p&gt;ssh连接在长时间不输入命令之后会出现连接中断的情况，即broken pipe的错误。&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>limengyun's blog</title><link href="http://limengyun.com/" rel="alternate"></link><link href="http://limengyun.com/feeds/all.atom.xml" rel="self"></link><id>http://limengyun.com/</id><updated>2013-06-13T11:00:00+08:00</updated><entry><title>cloudfoundry的一些想法</title><link href="http://limengyun.com/cloudfoundry/review.html" rel="alternate"></link><updated>2013-06-13T11:00:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-06-13:cloudfoundry/review.html</id><summary type="html">&lt;h2&gt;PAAS 拯救世界？&lt;/h2&gt;
+&lt;p&gt;就在前几天，云计算大会上代表cloudfoundry官方做展示的是VMware和EMC两家将云计算业务分拆出来组成的新公司Pivotal（&lt;a href="http://www.csdn.net/article/2013-04-25/2815037-GE_invest_CloudFoundry_and_Greenplum"&gt;文章链接&lt;/a&gt;），说明官方非常重视这个东西，他们已经开始着手cloudfoundry的商业进程了。&lt;/p&gt;
+&lt;p&gt;同时还有京东和Pivotal进行协作研发cloudfoundry的消息（&lt;a href="http://tech.sina.com.cn/it/2013-06-07/09078422241.shtml"&gt;文章链接&lt;/a&gt;），京东这似乎是要借外部力量学amazon卖云资源了么？&lt;/p&gt;
+&lt;p&gt;但关于PAAS这个东西，有人说是未来，我个人持保留态度。 PaaS的确能够非常迅速的扩容，应对快速的流量增长；合理使用也能很大程度上节省硬件的之处&lt;br /&gt;
+但它很难解决所有的需求，更多的只适合处理逻辑简单但同时有着大流量，高并发的应用，举两例：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;真正的大公司产品，有着你想不到的各种杂七杂八的需求。但PAAS上有着诸多限制的，比如不能本地写文件，不能访问内网等等，请看&lt;a href="http://docs.cloudfoundry.com/docs/using/app-arch/index.html"&gt;文章链接&lt;/a&gt;
+虽然这些技术限制都可以通过某些手段避开，但无疑增大了开发难度。如果碰到下面的需求：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;定时执行某个任务，普通机器上crontab，paas上怎么办？把这个任务做成一个http请求，然后定时访问这个http接口来执行&lt;/li&gt;
+&lt;li&gt;随时查看log，普通机器上tail -f， paas上怎么办？先用各种工具把log导出来，然后再看&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;所以，要是需求很杂，需要有应用的完整控制权，就不要用PAAS来恶心自己了。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;流量超大的应用大部分是分布式的，在cloudfoundry上部署一个分布式应用就超级麻烦。
+因为PAAS先天的动态分配资源的特性，应用不会在特定的某台机器上运行，
+如果应用自身都不知道自己在哪台机器上，怎么在config文件里面去填其他组件的host？&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;所以要想在paas上开发，先得对PAAS有个基本的了解，需要自己判断自己的应用是不是需要挪到PaaS上，可不是云平台包治百病。
+而且用上PaaS再想迁移下来就不是那么容易了，cloudfoundry还好，GAE这种用SDK的应用就等于要重写一遍。&lt;/p&gt;
+&lt;h2&gt;感想:&lt;/h2&gt;
+&lt;p&gt;很难评价cloudfoundry这个开源项目，如果把这个作为一个PAAS技术储备的工作来做，cloudfoundry是毫无疑问的首选。
+但真正想用起这个平台，方方面面的因素涉及到太多，不管你用官方的安装还是按照我的做法用源代码安装，都不可能一个bug都不碰到，对源码必须得熟悉。
+而这就会带来不小的时间成本，我看了这么久也只能了解到全貌，很多组件的技术细节还是有选择性的漏过不看，只有碰到BUG时才会针对性的DEBUG，但就算这样，时间还是拖了很久。&lt;/p&gt;
+&lt;p&gt;给自己找找借口，拖得久固然有人力少的原因，但也有很多别的原因&lt;/p&gt;
+&lt;p&gt;首先PAAS这么偏门的课题，公司里基本没有人真正理解你做了什么工作，做一个内部用且还不知有多少人用的东西，没有归宿感就等于没有了激情。&lt;/p&gt;
+&lt;p&gt;其次部署环境完全不匹配，相当于悲剧的在为cloudfoundry做centos 6的源码安装适配，客观上极大的增加了开发难度，一旦碰到bug，就不只是代码的问题，
+连操作系统都值得怀疑。比如当碰到 losf -i命令在ubuntu和centos上的执行结果格式不一致导致bug，软连接在centos上因为没有对应的文件系统不能使用这一类的问题时，
+你会作何感想？&lt;/p&gt;
+&lt;p&gt;最后，这个开源项目极其不友好，开始的时候基本没有文档可言，很多信息只能从它的官方google group上获取，
+可能人家是半商业化的，开源不过是走个形式罢了，还得靠卖技术支持赚钱呢，文档写多了就没钱赚了，对吧。&lt;/p&gt;
+&lt;p&gt;于是就有类似“stager模块在2.0中不再使用，改为在dea中使用buildpack替代”这种关键信息都只能靠着每天去看帖子来获取……
+也根本没一个地方说明github上的cloudfoundry帐号的几十个repo哪个是干什么的，哪些还能用，哪些已经废弃了，
+但特别令人发指的是：直到2.0快出来，才在一个回帖中提到1.0不再开发，“开发人员在全力赶2.0的进度”，
+真是是完全不顾别人的死活啊！！！跟着它的1.0跟了那么久居然中途直接不开发了，人都快崩溃了。
+而且1.0好歹有个vcap脚本安装，2.0直接只剩下用bosh在虚拟机环境下安装。为了不至于几个月的努力白费，以至于到后来硬着头皮从2.0源代码安装，被坑到吐血。&lt;/p&gt;
+&lt;p&gt;得到了一个教训：对于一个不成熟的开源软件，要先琢磨透了之后还得掂量掂量能不能hold住才敢用。&lt;/p&gt;
+&lt;p&gt;到现在半年过去了有了一个雏形，总归有了一个版本，如果没有被cloudfoundry改版坑那一次应该会提前不少。
+但现在机器紧张，原来YAE只占用一台机器，基于cloudfoundry的新YAE一台机器肯定是搞不定的，所以估计都不一定能应用的起来，先看看反馈再说。
+没用起来就只能权当技术储备，锻炼个人能力了。&lt;/p&gt;</summary><category term="cloudfoundry"></category></entry><entry><title>DEA 和 buildpack</title><link href="http://limengyun.com/cloudfoundry/dea.html" rel="alternate"></link><updated>2013-06-13T10:00:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-06-13:cloudfoundry/dea.html</id><summary type="html">&lt;h2&gt;术语&lt;/h2&gt;
+&lt;p&gt;dea组件的全称是 droplet execution agency， droplet是cloudfoundry自创的一个概念，它是一个app的可运行实例配合实例启停脚本的压缩包。&lt;/p&gt;
+&lt;p&gt;举例来说，如果我们要让一个php app程序运行，我们将代码下载之后需要做什么呢？&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;首先需要需要下载一个apache，&lt;/li&gt;
+&lt;li&gt;然后配置apache&lt;/li&gt;
+&lt;li&gt;最后将启动命令写入一个脚本。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;那如果我们将代码+apache+脚本一起打成一个压缩包，在其他服务器上启动这个应用的多个实例的时候只需要下载这个压缩包之后解压，启动脚本即可。
+这个机制也是整个cloudfoundry实现应用分布式的关键。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;这个压缩包即为 droplet&lt;/li&gt;
+&lt;li&gt;将用户代码和服务器打包压缩生成droplet的过程叫 staging&lt;/li&gt;
+&lt;li&gt;针对不同类型应用专门编写staging程序叫 buildpack&lt;/li&gt;
+&lt;li&gt;解压运行droplet的组件叫dea。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;staging和running droplet的过程&lt;/h2&gt;
+&lt;p&gt;在1.0中，staging 是由专门的组件stager来完成的，在2.0中去掉了stager改为直接在dea中进行staging。&lt;/p&gt;
+&lt;p&gt;官方专门针对staging和running的流程撰写了文档： &lt;a href="http://docs.cloudfoundry.com/docs/running/architecture/how-applications-are-staged.html"&gt;文章链接&lt;/a&gt;&lt;/p&gt;
+&lt;h2&gt;应用对外提供服务的过程。&lt;/h2&gt;
+&lt;p&gt;dea上的应用流量无论有多大，对dea的影响都微乎其微。
+因为dea不对外提供服务，dea控制的container才对外提供服务。
+router和dea会定时通过NATS通信，dea将dea下的container的ip，host，port等消息报告给router，这一部分在&lt;a href="./nats.html"&gt;NATS细节&lt;/a&gt;中已经说明过。&lt;/p&gt;
+&lt;h2&gt;dea directory server和file api server&lt;/h2&gt;
+&lt;p&gt;dea启动时会附带启动一个file api server，而dea directory server的启动则是单独进行的，代码在dea/go目录下。
+这两个server的区别在于&lt;/p&gt;
+&lt;p&gt;dea directory server 会向router注册，外部可以访问到dea directory server。从而所有跟dea相关的上传（上传droplet）和下载（获取各种文件内容，如log文件）都是直接通过dea directory server来进行的。
+file api server起一个验证并返回请求真实路径的作用
+比如执行cf logs XXX -t命令，表面上看起来是客户端cf向cloud controller发起请求，但实际上是cloud controller 重定向到dea directory server来提供服务的&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;Getting&lt;/span&gt; &lt;span class="n"&gt;logs&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="mi"&gt;23423&lt;/span&gt; &lt;span class="err"&gt;#&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt;
+&lt;span class="nl"&gt;REQUEST:&lt;/span&gt; &lt;span class="n"&gt;GET&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//api.cf2.youdao.com/v2/apps/de48824b-8243-4218-8b52-d92c974453f8/instances/0/files/logs&lt;/span&gt;
+&lt;span class="nl"&gt;REQUEST_HEADERS:&lt;/span&gt;
+  &lt;span class="n"&gt;Authorization&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;bearer&lt;/span&gt; &lt;span class="n"&gt;eyJhbGciOiJIUzI1NiJ9&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;eyJqdGkiOiIzZjMyMTNmZS1jODMzLTQ4YmMtYTYwZi00ZmM0NTAzODk0ZjAiLCJzdWIiOiJkNmE2M2Q1OC04ZmQ4LTRhNzUtOGZhOC1mNWI2ZDJjOGQwMDAiLCJzY29wZSI6WyJwYXNzd29yZC53cml0ZSIsImNsb3VkX2NvbnRyb2xsZXIud3JpdGUiLCJvcGVuaWQiLCJjbG91ZF9jb250cm9sbGVyLnJlYWQiXSwiY2xpZW50X2lkIjoiY2YiLCJjaWQiOiJjZiIsInVzZXJfaWQiOiJkNmE2M2Q1OC04ZmQ4LTRhNzUtOGZhOC1mNWI2ZDJjOGQwMDAiLCJ1c2VyX25hbWUiOiJsaW15IiwiZW1haWwiOiJsaW15QHJkLm5ldGVhc2UuY29tIiwiaWF0IjoxMzcxMzcyNjQyLCJleHAiOjEzNzE5Nzc0NDIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODA4MC91YWEvb2F1dGgvdG9rZW4iLCJhdWQiOlsib3BlbmlkIiwiY2xvdWRfY29udHJvbGxlciIsInBhc3N3b3JkIl19&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cd11MxTrbCCpG_5fU9_DV1_bE9Nz_2lQ_c1kari1WXI&lt;/span&gt;
+  &lt;span class="n"&gt;Content&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;Length&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;
+&lt;span class="p"&gt;.&lt;/span&gt;  &lt;span class="n"&gt;RESPONSE&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;302&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="nl"&gt;RESPONSE_HEADERS:&lt;/span&gt;
+  &lt;span class="n"&gt;connection&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;keep&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;alive&lt;/span&gt;
+  &lt;span class="n"&gt;content&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;length&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;
+  &lt;span class="n"&gt;content&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;type&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;application&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;json&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="n"&gt;charset&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;utf&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt;
+  &lt;span class="n"&gt;date&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Sun&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;16&lt;/span&gt; &lt;span class="n"&gt;Jun&lt;/span&gt; &lt;span class="mi"&gt;2013&lt;/span&gt; &lt;span class="mi"&gt;08&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;51&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;37&lt;/span&gt; &lt;span class="n"&gt;GMT&lt;/span&gt;
+  &lt;span class="n"&gt;location&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//882aa9de3cfa35c4e06a6f5613f0df2d.cf2.youdao.com/instance_paths/b6d11bf2865189aafe0a4be4133688b7?hmac=cc48aa1aa305154ea4e49e8ee33c1ee4a3bbb9ddccd626b73f0a6ed9fe7d6d191a79ecf78b680e5e252ba8948e7ee444029e38ce216a9b828b3898e49dc49a06&amp;amp;path=logs&amp;amp;timestamp=1371372696&lt;/span&gt;
+  &lt;span class="n"&gt;server&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;nginx&lt;/span&gt;
+  &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;frame&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;options&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;sameorigin&lt;/span&gt;
+  &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;vcap&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;76e95020&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;cd2c&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="n"&gt;ba8&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;b41b&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;d99e8638e7aa&lt;/span&gt;
+  &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;xss&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;protection&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;mode&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;block&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;dea directory server 收到类似http://882aa9de3cfa35c4e06a6f5613f0df2d.cf2.youdao.com/instance_paths/b6d11bf2865189aafe0a4be4133688b7?hmac=cc48aa1aa305154ea4e49e8ee33c1ee4a3bbb9ddccd626b73f0a6ed9fe7d6d191a79ecf78b680e5e252ba8948e7ee444029e38ce216a9b828b3898e49dc49a06&amp;amp;path=logs&amp;amp;timestamp=1371372696
+这样的请求后会向file api server 发起请求，file api server根据hmac 判断请求是否合法，如果合法就返回log文件在操作系统上的真实地址，最后由dea directory server 返回log的内容。&lt;/p&gt;
+&lt;h2&gt;配置&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nl"&gt;domain:&lt;/span&gt; &lt;span class="err"&gt;你的平台域名。&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;这个配置项在默认配置中没有，但上面提到dea directory server会向router注册对外提供服务，
+在lib/dea/directory_server_v2.rb提供给外部访问路径的时候如果domain值为nil，会导致directory server无法被访问。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;def&lt;/span&gt; &lt;span class="n"&gt;external_hostname&lt;/span&gt;
+  &lt;span class="s"&gt;&amp;quot;#{uuid}.#{domain}&amp;quot;&lt;/span&gt;
+&lt;span class="n"&gt;end&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;此外，还需要特别注意你的ruby安装路径，配置项中与ruby相关的路径要填对。&lt;/p&gt;
+&lt;h2&gt;自定义buildpack支持&lt;/h2&gt;
+&lt;p&gt;如果想要cloudfoundry支持一门新的语言或框架，自定义一个buildpack就可以了，
+比如我们就将官方的java buildpack修改为支持ant+ivy编译，且从tomcat改为使用resin。
+（可真别以为J2EE架构下一个war包能在resin下跑就一定能在tomcat下跑）
+这样就可以直接上传源代码而不用上传war包，且与公司的习惯保持一致。。&lt;/p&gt;
+&lt;p&gt;每一种语言只有一种buildpack，不同类别的应用打包是在buildpack代码里面进行区分的。在buildpacks/vendor目录下，官方提供了三种语言（java，nodejs，ruby）的若干种应用类型的支持，同时也提供了一种方便添加自定义buildpack支持的机制。&lt;/p&gt;
+&lt;p&gt;新增添一个语言的buildpack需要实现以下三个脚本：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;./bin/detect 检查应用的类型，例如是一个sinatra应用还是一个rails应用，以供compile脚本使用&lt;/li&gt;
+&lt;li&gt;./bin/compile  打包的主脚本，根据detect的结果选择打包的方式。&lt;/li&gt;
+&lt;li&gt;./bin/release  输出自定义的启动命令等相关信息，以便写入到最终的启动脚本。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;dea会遍历所有的detect脚本，如果你编写的detect脚本满足条件，就会选择对应的compile脚本执行。&lt;/p&gt;
+&lt;p&gt;在执行你编写的compile脚本之前，dea已经给创建好了container，然后下载并解压好了代码，compile的内容就是根据这个代码要怎么打包。
+按照这个方式，怎么编写compile脚本就取决于你的实际情况，可以使用shell 也可以使用ruby脚本。写之前参考一下已有的buildpack就能了解思路。&lt;/p&gt;
+&lt;h4&gt;注意1：&lt;/h4&gt;
+&lt;p&gt;官方或开源第三方的buildpack在staging的时候基本都通过http下载一些东西，比如apache等等，关键在于这些地址都是在amazon s3上。
+在天朝的网络下，采用这种方式就要看GFW的心情了，要正常使用最好把那些下载地址全部换成内网地址。&lt;/p&gt;
+&lt;h4&gt;注意2：&lt;/h4&gt;
+&lt;p&gt;同样，有些buildpack 会将/home/vcap/app  软连接到/app/app   然后再在/app/app中进行操作。
+但在centos 6上使用默认文件系统实现的warden container 不具备完整的软连接功能（无法cd进入软连接后的目录，详情见warden的cent OS tip），
+所以想要在centos上正常使用仍然需要修改这部分代码。&lt;/p&gt;
+&lt;h4&gt;提示：&lt;/h4&gt;
+&lt;p&gt;http://www.appfog.com 是一个基于cloudfoundry的paas，他自定义了许多语言的支持并在github上开源出来（github： https://github.com/appfog/ ）。 &lt;/p&gt;</summary><category term="cloudfoundry"></category></entry><entry><title>warden及平台安全</title><link href="http://limengyun.com/cloudfoundry/warden.html" rel="alternate"></link><updated>2013-06-13T00:00:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-06-13:cloudfoundry/warden.html</id><summary type="html">&lt;p&gt;warden 是整个cloudfoundry平台的基石。他负责最关键的平台安全问题。即如何让多个应用之间直接互不干扰，组织恶意代码的执行？
+虚拟机可以很好的隔离，但这个解决方案对于隔离一个应用就显得太重量级了。&lt;/p&gt;
+&lt;p&gt;有一种在操作系统之上的基于系统内核的资源隔离技术&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Resource control is done by using &lt;a href="http://kernel.org/doc/Documentation/cgroups/cgroups.txt"&gt;Control Groups&lt;/a&gt;. Every container is placed in its own control group, 
+where it is configured to use an equal slice of CPU compared to other containers, and the maximum amount of memory it may use.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;著名的开源资源控制项目Linux Containers(LXC)基于cgroups开发的。 
+Linux Container容器是一种内核虚拟化技术，可以提供轻量级的虚拟化，以便隔离进程和资源，而且不需要提供指令解释机制以及全虚拟化的其他复杂性。
+容器有效地将由单个操作系统管理的资源划分到孤立的组中，以更好地在孤立的组之间平衡有冲突的资源使用需求
+简单的讲就是创建一个容器之后可以让一个进程运行在一个容器中，使用单独的文件系统，限制的网络和内存资源。
+而不是像虚拟机那样相当于在一个容器中运行了一整套操作系统。&lt;/p&gt;
+&lt;p&gt;早期的warden就是使用的LXC，但后来发现不太能提供外层完整的控制接口，而且LXC的很多功能也并不需要，warden的开发人员就自己实现了一个更满足需求的“container”，仅用了1千行C代码。&lt;/p&gt;
+&lt;h2&gt;功能&lt;/h2&gt;
+&lt;p&gt;安装完成后，在warden/bin 目录下有一个脚本。它可以用来测试warden所提供的所有功能。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;vcap&lt;/span&gt;&lt;span class="err"&gt;@&lt;/span&gt;&lt;span class="n"&gt;yae&lt;/span&gt; &lt;span class="n"&gt;warden&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="err"&gt;$&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;bin&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;warden&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;列出正在运行的所有container，一个container可以理解为一个简易的操作系统。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;warden&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;list&lt;/span&gt;
+&lt;span class="n"&gt;handles&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;16u&lt;/span&gt;&lt;span class="n"&gt;cmjgeeil&lt;/span&gt;
+&lt;span class="n"&gt;handles&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;16u&lt;/span&gt;&lt;span class="n"&gt;cmjgeeik&lt;/span&gt;
+&lt;span class="n"&gt;handles&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;16u&lt;/span&gt;&lt;span class="n"&gt;cket2otf&lt;/span&gt;
+&lt;span class="n"&gt;handles&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;16u&lt;/span&gt;&lt;span class="n"&gt;ci088oas&lt;/span&gt;
+&lt;span class="n"&gt;handles&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;16u&lt;/span&gt;&lt;span class="n"&gt;cuupdlgb&lt;/span&gt;
+&lt;span class="n"&gt;handles&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;16u&lt;/span&gt;&lt;span class="n"&gt;cuupdlgt&lt;/span&gt;
+&lt;span class="n"&gt;handles&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;16u&lt;/span&gt;&lt;span class="n"&gt;cuupdlh3&lt;/span&gt;
+&lt;span class="n"&gt;handles&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;7&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;16u&lt;/span&gt;&lt;span class="n"&gt;cuupdlh5&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;查看或设置一个container的内存限制&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;warden&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;limit_memory&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;handle&lt;/span&gt; &lt;span class="mi"&gt;16u&lt;/span&gt;&lt;span class="n"&gt;cuupdlh5&lt;/span&gt; 
+&lt;span class="n"&gt;limit_in_bytes&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;603979776&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;查看在某一个container下运行的程序&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;warden&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;run&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;handle&lt;/span&gt; &lt;span class="mi"&gt;16u&lt;/span&gt;&lt;span class="n"&gt;cuupdlh5&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;script&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;ps xf&amp;quot;&lt;/span&gt;
+  &lt;span class="n"&gt;PID&lt;/span&gt; &lt;span class="n"&gt;TTY&lt;/span&gt;      &lt;span class="n"&gt;STAT&lt;/span&gt;   &lt;span class="n"&gt;TIME&lt;/span&gt; &lt;span class="n"&gt;COMMAND&lt;/span&gt;
+  &lt;span class="mi"&gt;100&lt;/span&gt; &lt;span class="o"&gt;?&lt;/span&gt;        &lt;span class="n"&gt;Ss&lt;/span&gt;     &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mo"&gt;00&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;bin&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;bash&lt;/span&gt;
+  &lt;span class="mi"&gt;101&lt;/span&gt; &lt;span class="o"&gt;?&lt;/span&gt;        &lt;span class="n"&gt;R&lt;/span&gt;      &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mo"&gt;00&lt;/span&gt;  &lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;_&lt;/span&gt; &lt;span class="n"&gt;ps&lt;/span&gt; &lt;span class="n"&gt;xf&lt;/span&gt;
+   &lt;span class="mi"&gt;22&lt;/span&gt; &lt;span class="o"&gt;?&lt;/span&gt;        &lt;span class="n"&gt;Ss&lt;/span&gt;     &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mo"&gt;00&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;bin&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;bash&lt;/span&gt;
+   &lt;span class="mi"&gt;23&lt;/span&gt; &lt;span class="o"&gt;?&lt;/span&gt;        &lt;span class="n"&gt;S&lt;/span&gt;      &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mo"&gt;00&lt;/span&gt;  &lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;_&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;bin&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;bash&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;startup&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="mi"&gt;10446&lt;/span&gt;
+   &lt;span class="mi"&gt;25&lt;/span&gt; &lt;span class="o"&gt;?&lt;/span&gt;        &lt;span class="n"&gt;S&lt;/span&gt;      &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mo"&gt;00&lt;/span&gt;      &lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;_&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;bin&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;bash&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;startup&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="mi"&gt;10446&lt;/span&gt;
+   &lt;span class="mi"&gt;28&lt;/span&gt; &lt;span class="o"&gt;?&lt;/span&gt;        &lt;span class="n"&gt;Sl&lt;/span&gt;     &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;17&lt;/span&gt;          &lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;_&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;home&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;vcap&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;jdk&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;bin&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;java&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;Xss1m&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;Dresin&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;home&lt;/span&gt;&lt;span class="o"&gt;=/&lt;/span&gt;&lt;span class="n"&gt;home&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;vcap&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;resin&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;3.0.21&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;Dserver&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="o"&gt;=/&lt;/span&gt;&lt;span class="n"&gt;home&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;vcap&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;resin&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;3.0.21&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;Djava&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;util&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;logging&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;manager&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;caucho&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;log&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;LogManagerImpl&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;Djavax&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;management&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;builder&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;initial&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;caucho&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;jmx&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;MBeanServerBuilderImpl&lt;/span&gt; &lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;caucho&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;server&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;resin&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Resin&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;conf&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;home&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;vcap&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;resin&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;conf&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;上面显示的结果就是一个java应用的进程。&lt;/p&gt;
+&lt;p&gt;在命令行输入help可以得到warden的全部功能&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;warden&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;help&lt;/span&gt;
+
+    &lt;span class="n"&gt;copy_in&lt;/span&gt;       &lt;span class="n"&gt;Copy&lt;/span&gt; &lt;span class="n"&gt;files&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;directories&lt;/span&gt; &lt;span class="n"&gt;into&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;container&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+    &lt;span class="n"&gt;copy_out&lt;/span&gt;      &lt;span class="n"&gt;Copy&lt;/span&gt; &lt;span class="n"&gt;files&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;directories&lt;/span&gt; &lt;span class="n"&gt;out&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;container&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+    &lt;span class="n"&gt;create&lt;/span&gt;        &lt;span class="n"&gt;Create&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;container&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;optionally&lt;/span&gt; &lt;span class="n"&gt;pass&lt;/span&gt; &lt;span class="n"&gt;options&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+    &lt;span class="n"&gt;destroy&lt;/span&gt;       &lt;span class="n"&gt;Shutdown&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;container&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+    &lt;span class="n"&gt;echo&lt;/span&gt;          &lt;span class="n"&gt;Echo&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;message&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+    &lt;span class="n"&gt;info&lt;/span&gt;          &lt;span class="n"&gt;Show&lt;/span&gt; &lt;span class="n"&gt;metadata&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;container&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+    &lt;span class="n"&gt;limit_disk&lt;/span&gt;    &lt;span class="n"&gt;set&lt;/span&gt; &lt;span class="n"&gt;or&lt;/span&gt; &lt;span class="n"&gt;get&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;disk&lt;/span&gt; &lt;span class="n"&gt;limit&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;container&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+    &lt;span class="n"&gt;limit_memory&lt;/span&gt;  &lt;span class="n"&gt;Set&lt;/span&gt; &lt;span class="n"&gt;or&lt;/span&gt; &lt;span class="n"&gt;get&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;memory&lt;/span&gt; &lt;span class="n"&gt;limit&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;container&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+    &lt;span class="n"&gt;link&lt;/span&gt;          &lt;span class="n"&gt;Do&lt;/span&gt; &lt;span class="n"&gt;blocking&lt;/span&gt; &lt;span class="n"&gt;read&lt;/span&gt; &lt;span class="n"&gt;on&lt;/span&gt; &lt;span class="n"&gt;results&lt;/span&gt; &lt;span class="n"&gt;from&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;job&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+    &lt;span class="n"&gt;list&lt;/span&gt;          &lt;span class="n"&gt;List&lt;/span&gt; &lt;span class="n"&gt;containers&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+    &lt;span class="n"&gt;net_in&lt;/span&gt;        &lt;span class="n"&gt;Forward&lt;/span&gt; &lt;span class="n"&gt;port&lt;/span&gt; &lt;span class="n"&gt;on&lt;/span&gt; &lt;span class="n"&gt;external&lt;/span&gt; &lt;span class="n"&gt;interface&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;container&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+    &lt;span class="n"&gt;net_out&lt;/span&gt;       &lt;span class="n"&gt;Allow&lt;/span&gt; &lt;span class="n"&gt;traffic&lt;/span&gt; &lt;span class="n"&gt;from&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;container&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;address&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+    &lt;span class="n"&gt;ping&lt;/span&gt;          &lt;span class="n"&gt;Ping&lt;/span&gt; &lt;span class="n"&gt;warden&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+    &lt;span class="n"&gt;run&lt;/span&gt;           &lt;span class="n"&gt;Short&lt;/span&gt; &lt;span class="n"&gt;hand&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;spawn&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;stream&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cmd&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt; &lt;span class="n"&gt;spawns&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;command&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;streams&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+    &lt;span class="n"&gt;spawn&lt;/span&gt;         &lt;span class="n"&gt;Spawns&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;command&lt;/span&gt; &lt;span class="n"&gt;inside&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;container&lt;/span&gt; &lt;span class="n"&gt;and&lt;/span&gt; &lt;span class="n"&gt;returns&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;job&lt;/span&gt; &lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+    &lt;span class="n"&gt;stop&lt;/span&gt;          &lt;span class="n"&gt;Stop&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;processes&lt;/span&gt; &lt;span class="n"&gt;inside&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;container&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+    &lt;span class="n"&gt;stream&lt;/span&gt;        &lt;span class="n"&gt;Do&lt;/span&gt; &lt;span class="n"&gt;blocking&lt;/span&gt; &lt;span class="n"&gt;stream&lt;/span&gt; &lt;span class="n"&gt;on&lt;/span&gt; &lt;span class="n"&gt;results&lt;/span&gt; &lt;span class="n"&gt;from&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;job&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+    &lt;span class="n"&gt;help&lt;/span&gt;          &lt;span class="n"&gt;Show&lt;/span&gt; &lt;span class="n"&gt;help&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+
+&lt;span class="n"&gt;Use&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;help&lt;/span&gt; &lt;span class="n"&gt;with&lt;/span&gt; &lt;span class="n"&gt;each&lt;/span&gt; &lt;span class="n"&gt;command&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;more&lt;/span&gt; &lt;span class="n"&gt;information&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;详细的功能列表参见warden server源代码下的README文件：&lt;a href="https://github.com/cloudfoundry/warden/tree/master/warden"&gt;地址&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;在warden server 提供的功能基础上，DEA可以通过warden client 创建出供应用运行的容器，只需要给这些容器加上限制，就保证了平台的安全性。&lt;/p&gt;
+&lt;h2&gt;centos TIPS&lt;/h2&gt;
+&lt;p&gt;warden源代码的readme里阐述了container的文件系统的实现方式&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Every container gets a private root filesystem. 
+This filesystem is created by stacking a read-only filesytem and a read-write filesystem. 
+This is implemented by using aufs on Ubuntu versions from 10.04 up to 11.10, and overlayfs on Ubuntu 12.04.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;在centos上没有这两个文件系统，但warden专门为centos做了个适配，使用了默认文件系统做替代，
+在创建container的时候把 container文件系统的/目录设置为ro，把 /dev /etc /home /sbin /tmp 等几个目录设置为rw ，（代码如下）&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nx"&gt;setup_fs_other&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="nx"&gt;mkdir&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nx"&gt;p&lt;/span&gt; &lt;span class="nx"&gt;tmp&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nx"&gt;rootfs&lt;/span&gt; &lt;span class="nx"&gt;mnt&lt;/span&gt;
+  &lt;span class="nx"&gt;mkdir&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nx"&gt;p&lt;/span&gt; &lt;span class="nx"&gt;$rootfs_path&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nx"&gt;proc&lt;/span&gt;
+
+  &lt;span class="nx"&gt;mount&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nx"&gt;n&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="nx"&gt;bind&lt;/span&gt; &lt;span class="nx"&gt;$rootfs_path&lt;/span&gt; &lt;span class="nx"&gt;mnt&lt;/span&gt;
+  &lt;span class="nx"&gt;mount&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nx"&gt;n&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="nx"&gt;bind&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nx"&gt;o&lt;/span&gt; &lt;span class="nx"&gt;remount&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nx"&gt;ro&lt;/span&gt; &lt;span class="nx"&gt;$rootfs_path&lt;/span&gt; &lt;span class="nx"&gt;mnt&lt;/span&gt;
+
+  &lt;span class="nx"&gt;overlay_directory_in_rootfs&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nx"&gt;dev&lt;/span&gt; &lt;span class="nx"&gt;rw&lt;/span&gt;
+  &lt;span class="nx"&gt;overlay_directory_in_rootfs&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nx"&gt;etc&lt;/span&gt; &lt;span class="nx"&gt;rw&lt;/span&gt;
+  &lt;span class="nx"&gt;overlay_directory_in_rootfs&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nx"&gt;home&lt;/span&gt; &lt;span class="nx"&gt;rw&lt;/span&gt;
+  &lt;span class="nx"&gt;overlay_directory_in_rootfs&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nx"&gt;sbin&lt;/span&gt; &lt;span class="nx"&gt;rw&lt;/span&gt;
+
+  &lt;span class="nx"&gt;mkdir&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nx"&gt;p&lt;/span&gt; &lt;span class="nx"&gt;tmp&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nx"&gt;rootfs&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nx"&gt;tmp&lt;/span&gt;
+  &lt;span class="nx"&gt;chmod&lt;/span&gt; &lt;span class="mi"&gt;777&lt;/span&gt; &lt;span class="nx"&gt;tmp&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nx"&gt;rootfs&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nx"&gt;tmp&lt;/span&gt;
+  &lt;span class="nx"&gt;overlay_directory_in_rootfs&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nx"&gt;tmp&lt;/span&gt; &lt;span class="nx"&gt;rw&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;正常情况下在这几个目录读写文件不会有问题，但是DEA在container中操作的时候会在根目录创建一个目录/app,放置内容
+问题就在这: /目录是readonly的  不可能创建得了文件夹。&lt;/p&gt;
+&lt;p&gt;有人会觉得直接吧/设置为rw不就可以了么。warden在centos上是根据一个文件夹（默认为/tmp/warden/rootfs/）作为文件系统模板来创建文件系统的，
+设置/为rw会导致文件系统模板收到污染，即任何在container中进行的操作 会直接反映到这个文件夹上。&lt;/p&gt;
+&lt;p&gt;最后才用了一个笨办法：加上一行代码&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;overlay_directory_in_rootfs&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;app&lt;/span&gt; &lt;span class="n"&gt;rw&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;即创建container时新添加一个/app目录为rw。&lt;/p&gt;
+&lt;p&gt;后来又发现centos 上的container里无法创建软连接。但上层组件dea和buildpack部分代码使用了软链接，导致必须修改这些使用到了软链接的与warden相关的代码。
+那既然这样，上面的做法就没有必要了，因为如果使用centos上的warden，看样子不论如何都要修改上层dea代码，
+还不如彻底一点，把dea所有在warden container中的操作都在/home/vcap/app目录下进行，不再创建根目录下的/app，
+同时也不要使用任何软链接。这样warden就可以完全不用修改，保持跟官方的一致。
+但目前为止，我们仍然采用的是修改后的warden代码以保证上层代码不出错。&lt;/p&gt;
+&lt;h2&gt;安装&lt;/h2&gt;
+&lt;p&gt;&lt;a href="https://github.com/youdao-cf/docs/blob/master/install/warden.html.md"&gt;链接&lt;/a&gt;&lt;/p&gt;
+&lt;h2&gt;配置&lt;/h2&gt;
+&lt;p&gt;默认的配置大部分都不用修改，除了一个隐藏的配置可能会有问题：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;port&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+  &lt;span class="n"&gt;pool_start_port&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;10000&lt;/span&gt;
+  &lt;span class="n"&gt;pool_size&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;10000&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;在warden/lib/warden/config.rb中对这个配置是这么处理的&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nc"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;ip_local_port_range&lt;/span&gt;
+  &lt;span class="no"&gt;File&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;read&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/proc/sys/net/ipv4/ip_local_port_range&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;split&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;map&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="ss"&gt;:to_i&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nc"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;port_defaults&lt;/span&gt;
+  &lt;span class="n"&gt;_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ephemeral_stop&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ip_local_port_range&lt;/span&gt;
+  &lt;span class="n"&gt;start&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;ephemeral_stop&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+  &lt;span class="n"&gt;stop&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;65000&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+  &lt;span class="n"&gt;count&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;stop&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;start&lt;/span&gt;
+
+  &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="s2"&gt;&amp;quot;pool_start_port&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;start&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;&amp;quot;pool_size&amp;quot;&lt;/span&gt;       &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;count&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;如果没有在配置文件中定义，则使用/proc/sys/net/ipv4/ip_local_port_range文件中的数值，但是这文件的值是受linux
+系统设置影响的，在我的centos VPS上被设置成了65000，那么pool_size就会为0，会报错。&lt;/p&gt;
+&lt;p&gt;为了保险起见，最好还是在配置文件里面按照上面的示范加上关于port的配置。&lt;/p&gt;</summary><category term="cloudfoundry"></category></entry><entry><title>cloudfoundry 2.0文档小结</title><link href="http://limengyun.com/cloudfoundry/index.html" rel="alternate"></link><updated>2013-06-05T10:00:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-06-05:cloudfoundry/index.html</id><summary type="html">&lt;p&gt;不知不觉进入新的new-tech组鼓捣cloudfoundry已经几个月了，项目的起因是youdao之前已经有一个youdao App Engine，主要供内部使用，仅支持php语言，
+用来快速实现一些简单需求。但处于无人维护的状态，加入newtech组后，david问我能不能接过来然后改进一下，让它能支持更多语言。&lt;/p&gt;
+&lt;p&gt;但原有YAE强依赖了PHP的语言特性,所有的YAE的app都是一个apache在serve, 前端nginx将*.domain.com的二级域名前缀转换成path然后由apache来提供服务。
+但很多语言的应用部署都是基于独立占用一个端口的方式，新增加语言支持实际上就是要重新设计一套机制，等于做一个PaaS。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;SaaS（Software as a Service）: 软件即服务，极其常见的形式：如gmail，云笔记等&lt;/p&gt;
+&lt;p&gt;PaaS（Platform as a Service）: 提供应用运行的平台作为服务。最早的有GAE：Google App Engine 国内发展的比较好的还有SAE, 剩下的基本不知名。&lt;/p&gt;
+&lt;p&gt;IaaS（Infrastructure as a Service）: 提供基础架构作为服务。多数开源的云计算项目都位于这一层，例如openstack等等。商业的国外有最著名的amazon。国内有阿里云，盛大云等。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;在调研了不同项目之后，我接触到了cloudfoundry：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;第一个开源的paas，来自vmware。&lt;/li&gt;
+&lt;li&gt;天然分布式，而且可以很方便的添加语言支持&lt;/li&gt;
+&lt;li&gt;已有appfog这种基于它开发的商业项目。自身也已经有公有paas对外提供服务。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;最终我选择了基于cloudfoundry搭建一个paas，然后再在其上层实现原有的YAE提供的功能的方案。&lt;/p&gt;
+&lt;h2&gt;安装&lt;/h2&gt;
+&lt;p&gt;有可能我是唯一一个采用这种办法安装cloudfoundry的人：使用&lt;strong&gt;各个组件的源代码&lt;/strong&gt;在&lt;strong&gt;centOS 6&lt;/strong&gt;上搭建cloudfoundry 2.0。之所以这么做，原因见下：&lt;/p&gt;
+&lt;p&gt;2012年十一月开始的时候，cloudfoundry 1.0和2.0都在同时开发中，1.0已有公有云，文档稍多，且提供了一个部署脚本部署所有的组件到一台机器上；2.0则基本没有任何文档。我选择了1.0作为研究对象，
+但cloudfoundry 1.0的脚本只支持部署在ubuntu上，而公司的机器只有centos，在我解决掉一个又一个在centos上特有的bug成功的将cloudfoundry 1.0运行在centos上没多久，
+我就在官方的google group上的一个回帖中得知1.0不再进行开发。而很多特性只有2.0才有。这个时候我再转向2.0等于重新开始。&lt;/p&gt;
+&lt;p&gt;对于最新的2.0，官方仅给出了一种部署方式——基于Iaas和官方开发的用于操作IaaS的一个名为bosh的工具的部署方式。这个需要有openstack，Vsphere 等IaaS作为支持，可公司也没有。&lt;/p&gt;
+&lt;p&gt;在这种背景下，如果想继续使用cloudfoundry，只有三种方案：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;使用cloudfoundry 1.0&lt;/li&gt;
+&lt;li&gt;先搭一个openstack，用熟了再基于官方提供的部署方式进行安装&lt;/li&gt;
+&lt;li&gt;自己鼓捣源码，在centOS上自己装&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;1等于以后都自己玩，2不属于自己的工作范围，等于是一个研发去弄运维的事情。权衡利弊之后选择了方案3，但是在这个过程中同样遇到了很多centOS上特有的问题。&lt;/p&gt;
+&lt;p&gt;在解决问题的过程中，我们记录了一些文档，放在github上： &lt;a href="https://github.com/youdao-cf/docs/tree/master/install"&gt;链接&lt;/a&gt; 上，简单描述如何在centos上安装cloudfoundry并进行配置.&lt;/p&gt;
+&lt;p&gt;总体来说，如果是ubuntu系统（最好是10.04）基本所有组件都可以正常运行，如果运行不起来就是配置问题，需要特别注意的会在下面各组件细节中提到。&lt;/p&gt;
+&lt;p&gt;但如果是其他linux发行版，除了配置问题，还会碰到各种因为操作系统引起的bug，有一些需要修改源代码，所有修改的源码地址都在安装文档中给出，在组件细节中也会提出修改的思路。&lt;/p&gt;
+&lt;p&gt;同时声明一点：&lt;strong&gt;不要指望按照这篇文档能直接毫无问题的搭出cloudfoundry 2.0&lt;/strong&gt;&lt;/p&gt;
+&lt;h2&gt;cloudfoundry 组件简介&lt;/h2&gt;
+&lt;p&gt;Cloudfoudnry 1.0已于在2013年1月底停止开发与维护。现在网上许多cloudfoundry的文章将的都是跟1.0有关的内容，在此指出一些主要的区别。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;1.0中router使用的是nginx+lua+ruby server的方式，2.0使用了go语言gorouter，据称支持了websocket且极大提升了性能。&lt;/li&gt;
+&lt;li&gt;2.0中cloud contoller新增了quota，org，space等新的概念，更方便的进行权限和资源管理。&lt;/li&gt;
+&lt;li&gt;1.0中为应用打包使用的是stager组件，2.0中移除了该组件，将打包功能加入到dea中，并将所有语言的打包程序以submodule的形式放在buildpacks/vendors 目录下。&lt;/li&gt;
+&lt;li&gt;完全重写了health manager&lt;/li&gt;
+&lt;li&gt;1.0里 dea可以独立运行，一个dea负责的所有app都以子进程的形式挂在dea主进程下。但2.0之后dea强依赖于warden提供的安全容器来运行app了&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;下面是cloudfoundry 2.0的架构示意图，&lt;/p&gt;
+&lt;p&gt;&lt;img src="http://docs.cloudfoundry.com/images/cf_architecture.png" style="width:785px;" alt="cloudfoundry 架构图" /&gt;&lt;/p&gt;
+&lt;h4&gt;NATS&lt;/h4&gt;
+&lt;p&gt;CloudFoundry是一个多模块的分布式系统，支持模块自发现，错误自检，且模块间低耦合。其核心原理就是基于消息发布订阅机制。&lt;/p&gt;
+&lt;p&gt;而NATS则是支持这个机制的最关键的消息系统，它是cloudfoundry中最核心的组件。&lt;/p&gt;
+&lt;p&gt;&lt;a href="./nats.html"&gt;nats链接组件的两个例子&lt;/a&gt;&lt;/p&gt;
+&lt;h4&gt;Router&lt;/h4&gt;
+&lt;p&gt;负责处理分发所有的请求到相对应的模块，包括来自外部用户对app的请求和平台内部控制请求。&lt;/p&gt;
+&lt;h4&gt;Cloud Controller&lt;/h4&gt;
+&lt;p&gt;Cloud Controller是CloudFoundry的管理模块。对外提供平台全部的api，如：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;对apps的增删改读；&lt;/li&gt;
+&lt;li&gt;启动、停止应用程序；&lt;/li&gt;
+&lt;li&gt;Staging apps（把apps打包成一个droplet）；&lt;/li&gt;
+&lt;li&gt;修改应用程序运行环境，包括instance、mem等等；&lt;/li&gt;
+&lt;li&gt;管理service，包括service与app的绑定等；&lt;/li&gt;
+&lt;li&gt;Cloud环境的管理；&lt;/li&gt;
+&lt;li&gt;修改Cloud的用户信息；&lt;/li&gt;
+&lt;li&gt;查看Cloud Foundry，以及每一个app的log信息。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4&gt;Warden&lt;/h4&gt;
+&lt;p&gt;warden 在操作系统上层提供轻量级的运行应用的虚拟容器，为平台提供安全支持。&lt;/p&gt;
+&lt;p&gt;&lt;a href="./warden.html"&gt;warden及平台安全&lt;/a&gt;&lt;/p&gt;
+&lt;h4&gt;DEA&lt;/h4&gt;
+&lt;p&gt;接收来自cloud controller的指令，根据指令使用warden提供的虚拟容器对应用进行打包，运行等关键操作。&lt;/p&gt;
+&lt;p&gt;&lt;a href="./dea.html"&gt;dea和buildpack&lt;/a&gt;&lt;/p&gt;
+&lt;h4&gt;UAA&lt;/h4&gt;
+&lt;p&gt;全称是User Account and Authentication，负责用户账户和验证&lt;/p&gt;
+&lt;h4&gt;Health Manager&lt;/h4&gt;
+&lt;p&gt;负责检查各个组件的状态&lt;/p&gt;
+&lt;h4&gt;其他组件&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;Services: cloudfoundry为应用提供的各类服务，如mysql，memcached，由于时间原因，我暂时没有支持。&lt;/li&gt;
+&lt;li&gt;Syslog Aggregator：归集log的组件，非必要，也没有支持&lt;/li&gt;
+&lt;li&gt;Collector： 监听nats中的各类消息来监控各组件的运行状态，非必要，也没有支持。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;自行开发的组件&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;console： cloudfoundry的web界面。官方一直到6月10号才有web界面。&lt;/li&gt;
+&lt;li&gt;mysql&lt;/li&gt;
+&lt;li&gt;monitor&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;a href="./review.html"&gt;总结&lt;/a&gt;&lt;/p&gt;</summary><category term="cloudfoundry"></category></entry><entry><title>解决ssh broken pipe的问题</title><link href="http://limengyun.com/backend/ssh-broken-pipe.html" rel="alternate"></link><updated>2013-05-30T10:20:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-05-30:backend/ssh-broken-pipe.html</id><summary type="html">&lt;p&gt;ssh连接在长时间不输入命令之后会出现连接中断的情况，即broken pipe的错误。&lt;/p&gt;
 &lt;p&gt;解决办法有两个&lt;/p&gt;
 &lt;h2&gt;在服务器端修改ssh server的配置&lt;/h2&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;vi&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;etc&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;ssh&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;sshd_config&lt;/span&gt;
@@ -88,7 +454,75 @@
          &lt;span class="n"&gt;be&lt;/span&gt; &lt;span class="n"&gt;sent&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;server&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;or&lt;/span&gt; &lt;span class="mi"&gt;300&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;BatchMode&lt;/span&gt; &lt;span class="n"&gt;option&lt;/span&gt; &lt;span class="n"&gt;is&lt;/span&gt; &lt;span class="n"&gt;set&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;  &lt;span class="n"&gt;This&lt;/span&gt; &lt;span class="n"&gt;option&lt;/span&gt; &lt;span class="n"&gt;applies&lt;/span&gt;
          &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;protocol&lt;/span&gt; &lt;span class="n"&gt;version&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt; &lt;span class="n"&gt;only&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;  &lt;span class="n"&gt;ProtocolKeepAlives&lt;/span&gt; &lt;span class="n"&gt;and&lt;/span&gt; &lt;span class="n"&gt;SetupTimeOut&lt;/span&gt; &lt;span class="n"&gt;are&lt;/span&gt; &lt;span class="n"&gt;Debian&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;specific&lt;/span&gt;
          &lt;span class="n"&gt;compatibility&lt;/span&gt; &lt;span class="n"&gt;aliases&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;this&lt;/span&gt; &lt;span class="n"&gt;option&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;</summary><category term="linux"></category></entry><entry><title>cloudfoundry 架构剖析</title><link href="http://limengyun.com/backend/cloudfoundry-architecture.html" rel="alternate"></link><updated>2013-05-29T10:20:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-05-29:backend/cloudfoundry-architecture.html</id><summary type="html">&lt;p&gt;this is a placeholder&lt;/p&gt;</summary><category term="cloudfoundry"></category></entry><entry><title>用pelican搭建自己的博客</title><link href="http://limengyun.com/backend/blogging-with-pelican.html" rel="alternate"></link><updated>2013-05-29T09:20:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-05-29:backend/blogging-with-pelican.html</id><summary type="html">&lt;h2&gt;什么是pelican&lt;/h2&gt;
+&lt;/pre&gt;&lt;/div&gt;</summary><category term="linux"></category></entry><entry><title>Cloud Controller</title><link href="http://limengyun.com/backend/cloudfoundry-cloud_controller.html" rel="alternate"></link><updated>2013-05-29T10:20:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-05-29:backend/cloudfoundry-cloud_controller.html</id><summary type="html">&lt;p&gt;Cloud Controller 是整个cloudfoundry平台的控制中心。它对外提供api，所有的操作都是依赖这些api来进行的。
+这里是详细的api列表：http://docs.cloudfoundry.com/docs/reference/cc-api.html
+同时在项目的根目录的docs目录下有详细的设计文档。&lt;/p&gt;
+&lt;p&gt;Cloud Controller 2.0引入了多个新概念，如Organizations，Spaces，Domains，Routes
+这篇官方文档http://docs.cloudfoundry.com/docs/using/managing-apps/orgs-and-spaces.html可以很好的帮助你理解这些概念。&lt;/p&gt;
+&lt;p&gt;直接使用这些API还是比较费劲的，官方和第三方都有不同语言的基于这些api的lib，比如官方的ruby lib为CFoundry（https://github.com/cloudfoundry/cfoundry）。
+进行更上层开发的时候可以基于这些lib而不是直接操作api，会省下不少时间。官方的客户端cf也是基于cfoundry进行的开发。&lt;/p&gt;
+&lt;h2&gt;安装&lt;/h2&gt;
+&lt;p&gt;TBD&lt;/p&gt;
+&lt;h2&gt;配置&lt;/h2&gt;
+&lt;p&gt;TBD&lt;/p&gt;
+&lt;h2&gt;TIPS&lt;/h2&gt;
+&lt;p&gt;Cloud Controller 需要一个数据库（即CCDB），如果你选择mysql，请使用Innodb或其他支持事务处理的引擎，千万记得不要使用默认的MYisAM引擎，因为它不支持事务。&lt;/p&gt;
+&lt;p&gt;请看lib/cloud_controller/rest_controller/model_controller.rb&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c1"&gt;# Create operation&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;create&lt;/span&gt;
+  &lt;span class="n"&gt;logger&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;debug&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;create: &lt;/span&gt;&lt;span class="si"&gt;#{&lt;/span&gt;&lt;span class="n"&gt;request_attrs&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+
+  &lt;span class="n"&gt;json_msg&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;class&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;CreateMessage&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;decode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;body&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="vi"&gt;@request_attrs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;json_msg&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;extract&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;:stringify_keys&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="k"&gt;raise&lt;/span&gt; &lt;span class="no"&gt;InvalidRequest&lt;/span&gt; &lt;span class="k"&gt;unless&lt;/span&gt; &lt;span class="n"&gt;request_attrs&lt;/span&gt;
+
+  &lt;span class="n"&gt;before_create&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nb"&gt;respond_to?&lt;/span&gt; &lt;span class="ss"&gt;:before_create&lt;/span&gt;
+  &lt;span class="n"&gt;obj&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kp"&gt;nil&lt;/span&gt;
+  &lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;transaction&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+    &lt;span class="n"&gt;obj&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create_from_hash&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;request_attrs&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;validate_access&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;:create&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;obj&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;roles&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+
+  &lt;span class="o"&gt;[&lt;/span&gt;
+    &lt;span class="ss"&gt;HTTP&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="ss"&gt;:CREATED&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Location&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;#{&lt;/span&gt;&lt;span class="nb"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;class&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;/&lt;/span&gt;&lt;span class="si"&gt;#{&lt;/span&gt;&lt;span class="n"&gt;obj&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;guid&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;},&lt;/span&gt;
+    &lt;span class="n"&gt;serialization&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;render_json&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;class&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;obj&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="vi"&gt;@opts&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;可以看到Cloud Controller 的创建或更新都依赖数据库的事务功能：先创建或更新，再判断是不是有权限执行操作。&lt;/p&gt;
+&lt;p&gt;如果使用了一个不支持事务的数据库，虽然不会报错，但任何无权限的创建或更新都会被执行，留下隐患。&lt;/p&gt;</summary><category term="cloudfoundry"></category></entry><entry><title>Console</title><link href="http://limengyun.com/backend/cloudfoundry-console.html" rel="alternate"></link><updated>2013-05-29T10:20:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-05-29:backend/cloudfoundry-console.html</id><summary type="html">&lt;p&gt;在写这篇文章的前两天，cloudfoundry 2.0 的官方云出品了。伴随着一个web界面：http://run.pivotal.io/  &lt;/p&gt;
+&lt;h2&gt;console有哪些不同？&lt;/h2&gt;
+&lt;p&gt;可以先用用官方的，然后再看视频……&lt;/p&gt;
+&lt;p&gt;为了最大化的实现原有YAE的功能，我们为console赋予了更多的功能，同时为了适应内部使用的需要，修改或添加了一些东西：&lt;/p&gt;
+&lt;p&gt;首先，登录使用LDAP，不提供注册功能。&lt;/p&gt;
+&lt;p&gt;第二，屏蔽了space的概念，首次登录默认创建与LDAP账号相同的organization，在这个organization下创建一个名为default的space，
+space对用户不可见，但用户所有的app都被放置在default space中，所以感觉上是应用都是直接归属于organization。 这样设计是感觉两层的权限对内部使用还是太繁琐了&lt;/p&gt;
+&lt;p&gt;第三，用户可以在web上直接一键创建应用，而不用跟官方console一样，还需要使用cf命令行。
+且应用一旦创建便绑定一个svn代码地址，修改svn之后，在web上输入版本号便可以更新应用。&lt;/p&gt;
+&lt;p&gt;当然，时间原因，先做demo，代码基本没进行边界和错误处理……&lt;/p&gt;</summary><category term="cloudfoundry"></category></entry><entry><title>NATS</title><link href="http://limengyun.com/cloudfoundry/nats.html" rel="alternate"></link><updated>2013-05-29T10:20:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-05-29:cloudfoundry/nats.html</id><summary type="html">&lt;p&gt;NATS是一个轻量级的基于pub-sub机制的分布式消息队列系统，它负责衔接各组件。官方文档在这里：(http://docs.cloudfoundry.com/docs/running/architecture/messaging-nats.html)。&lt;/p&gt;
+&lt;p&gt;但看完官方文档仍然有点不太直观，举几个典型的例子来说明：&lt;/p&gt;
+&lt;h2&gt;向router注册&lt;/h2&gt;
+&lt;p&gt;不管是外部用户对平台上的应用发起的请求，还是内部组件提供对外的api（uaa和cloud controller），都是通过router转发的request，要能让router转发则首先需要向router注册。
+以下是实现逻辑：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;router启动时，会订阅 &lt;strong&gt;router.register&lt;/strong&gt; 这个channel，同时也会定时的向 &lt;strong&gt;router.start&lt;/strong&gt; 这个channel发送消息，&lt;/li&gt;
+&lt;li&gt;其他需要向router注册的组件，启动时会订阅&lt;strong&gt;router.start&lt;/strong&gt;这个channel。一旦接收到消息，会立刻收集需要注册的信息（如ip，port等）然后向router.register频道发送消息。&lt;/li&gt;
+&lt;li&gt;router接收到&lt;strong&gt;router.register&lt;/strong&gt;消息后立即更新路由信息。&lt;/li&gt;
+&lt;li&gt;以上过程不停循环，使router的状态时刻保持最新。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;cloud controller指挥dea进行打包和运行。&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;所有组件，包括dea启动时，会生成一个唯一的UUID，来标识组件。dea会定时的将自身情况和ID发送到&lt;strong&gt;stager.advertise&lt;/strong&gt; 和 &lt;strong&gt;dea.advertise&lt;/strong&gt;这两个channel，同时会订阅
+&lt;strong&gt;staging.&amp;lt;uuid&gt;.start&lt;/strong&gt; 和&lt;strong&gt;dea.&amp;lt;uuid&gt;.start&lt;/strong&gt;这两个channel&lt;/li&gt;
+&lt;li&gt;cloud controller 订阅这两个channel 并根据channel的信息构造并时刻更新dea_pool和stager_pool,&lt;/li&gt;
+&lt;li&gt;当有打包或者运行应用的请求时，cloud controller会去查询这两个pool，如果有合适的dea，就会向对应的&lt;strong&gt;[dea|stager].&amp;lt;uuid&gt;.start&lt;/strong&gt;发送消息&lt;/li&gt;
+&lt;li&gt;对应uuid的dea收到消息，根据消息执行打包或运行任务。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;还有很多类似的衔接各组件的逻辑，都可以在源码中发现。&lt;/p&gt;
+&lt;p&gt;这里有一个非官方且不完整的cloudfoundry 1.0的消息说明文档，http://apidocs.cloudfoundry.com/ ，仅供参考。&lt;/p&gt;</summary><category term="cloudfoundry"></category></entry><entry><title>用pelican搭建自己的博客</title><link href="http://limengyun.com/backend/blogging-with-pelican.html" rel="alternate"></link><updated>2013-05-29T09:20:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-05-29:backend/blogging-with-pelican.html</id><summary type="html">&lt;h2&gt;什么是pelican&lt;/h2&gt;
 &lt;p&gt;pelican是一个用python写的开源的博客系统，类似ruby的jekyll/otcopress。这一类博客都属于static site generator，工作原理就是直接使用markdown等结构化文本语言撰写博客内容之后再使用脚本配合定制的CSS/JS及templates文件生成一个静态站点,很对我的胃口。最早接触的static site generator就是otcpress，但个人用python习惯之后实在是不习惯ruby的语法，在一番折腾之后终于找到了一个python版的otcopress——pelican。&lt;/p&gt;
 &lt;p&gt;&lt;b&gt;这个博客就是使用的pelican&lt;/b&gt;&lt;/p&gt;
 &lt;h2&gt;requirements&lt;/h2&gt;
