@@ -22,26 +22,18 @@
 &lt;/ol&gt;
 &lt;p&gt;所以要想在paas上开发，先得对PAAS有个基本的了解，需要自己判断自己的应用是不是需要挪到PaaS上，可不是云平台包治百病。
 而且用上PaaS再想迁移下来就不是那么容易了，cloudfoundry还好，GAE这种用SDK的应用就等于要重写一遍。&lt;/p&gt;
-&lt;h2&gt;感想:&lt;/h2&gt;
-&lt;p&gt;很难评价cloudfoundry这个开源项目，如果把这个作为一个PAAS技术储备的工作来做，cloudfoundry是毫无疑问的首选。
-但真正想用起这个平台，方方面面的因素涉及到太多，不管你用官方的安装还是按照我的做法用源代码安装，都不可能一个bug都不碰到，对源码必须得熟悉。
-而这就会带来不小的时间成本，我看了这么久也只能了解到全貌，很多组件的技术细节还是有选择性的漏过不看，只有碰到BUG时才会针对性的DEBUG，但就算这样，时间还是拖了很久。&lt;/p&gt;
-&lt;p&gt;给自己找找借口，拖得久固然有人力少的原因，但也有很多别的原因&lt;/p&gt;
-&lt;p&gt;首先PAAS这么偏门的课题，公司里基本没有人真正理解你做了什么工作，做一个内部用且还不知有多少人用的东西，没有归宿感就等于没有了激情。&lt;/p&gt;
-&lt;p&gt;其次部署环境完全不匹配，相当于悲剧的在为cloudfoundry做centos 6的源码安装适配，客观上极大的增加了开发难度，一旦碰到bug，就不只是代码的问题，
-连操作系统都值得怀疑。比如当碰到 losf -i命令在ubuntu和centos上的执行结果格式不一致导致bug，软连接在centos上因为没有对应的文件系统不能使用这一类的问题时，
-你会作何感想？&lt;/p&gt;
-&lt;p&gt;最后，这个开源项目极其不友好，开始的时候基本没有文档可言，很多信息只能从它的官方google group上获取，
-可能人家是半商业化的，开源不过是走个形式罢了，还得靠卖技术支持赚钱呢，文档写多了就没钱赚了，对吧。&lt;/p&gt;
-&lt;p&gt;于是就有类似“stager模块在2.0中不再使用，改为在dea中使用buildpack替代”这种关键信息都只能靠着每天去看帖子来获取……
-也根本没一个地方说明github上的cloudfoundry帐号的几十个repo哪个是干什么的，哪些还能用，哪些已经废弃了，
-但特别令人发指的是：直到2.0快出来，才在一个回帖中提到1.0不再开发，“开发人员在全力赶2.0的进度”，
-真是是完全不顾别人的死活啊！！！跟着它的1.0跟了那么久居然中途直接不开发了，人都快崩溃了。
-而且1.0好歹有个vcap脚本安装，2.0直接只剩下用bosh在虚拟机环境下安装。为了不至于几个月的努力白费，以至于到后来硬着头皮从2.0源代码安装，被坑到吐血。&lt;/p&gt;
-&lt;p&gt;得到了一个教训：对于一个不成熟的开源软件，要先琢磨透了之后还得掂量掂量能不能hold住才敢用。&lt;/p&gt;
-&lt;p&gt;到现在半年过去了有了一个雏形，总归有了一个版本，如果没有被cloudfoundry改版坑那一次应该会提前不少。
-但现在机器紧张，原来YAE只占用一台机器，基于cloudfoundry的新YAE一台机器肯定是搞不定的，所以估计都不一定能应用的起来，先看看反馈再说。
-没用起来就只能权当技术储备，锻炼个人能力了。&lt;/p&gt;</summary><category term="cloudfoundry"></category></entry><entry><title>DEA 和 buildpack</title><link href="http://limengyun.com/cloudfoundry/dea.html" rel="alternate"></link><updated>2013-06-13T10:00:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-06-13:cloudfoundry/dea.html</id><summary type="html">&lt;h2&gt;术语&lt;/h2&gt;
+&lt;h2&gt;思考: 应不应该选择cloudfoundry&lt;/h2&gt;
+&lt;p&gt;一个人+一个实习生做了半年，到现在我还在思考选择cloudfoundry是对还是错。&lt;/p&gt;
+&lt;p&gt;如果把这个作为一个PAAS技术储备的工作来做，cloudfoundry是毫无疑问的首选。
+因为考虑到cloudfoundry一直到现在才开发进入稳定期，
+开始的时候基本没有文档可言，类似“stager模块在2.0中不再使用，改为在dea中使用buildpack替代”这种关键信息都只能靠着每天去看帖子来获取，
+特别是辛辛苦苦把1.0安装成功没过多久在一个回帖中看到1.0不再开发导致之前的努力大部分浪费，加上还要自己做centos上的适配。我们耗费半年的时间也很正常。&lt;/p&gt;
+&lt;p&gt;但如果不是技术储备，仅仅为了改进一个内部使用的东西让它支持一门新语言，耗费半年是否值得？
+而且原来YAE是个单机应用，利用PHP可以一台服务器服务多个应用的特性仅占用了一台机器，
+基于cloudfoundry的新YAE一台机器肯定不可能，所以估计都不一定能应用的起来，先看看空余机器再说。&lt;/p&gt;
+&lt;p&gt;综合考虑，这个项目是不是就不应该选择开始……或者应该选择晚一点再开始，等它稳定了再进行研究？
+可是不深入研究cloudfoundry，仅从官方吹得天花乱坠的介绍中，这些问题都是无法被发现的&lt;/p&gt;
+&lt;p&gt;得到一个教训：开源软件不都是甜的，对于一个不成熟的开源软件，用之前要三思，即便用也要考虑好时机。&lt;/p&gt;</summary><category term="cloudfoundry"></category></entry><entry><title>DEA 和 buildpack</title><link href="http://limengyun.com/cloudfoundry/dea.html" rel="alternate"></link><updated>2013-06-13T10:00:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-06-13:cloudfoundry/dea.html</id><summary type="html">&lt;h2&gt;术语&lt;/h2&gt;
 &lt;p&gt;dea组件的全称是 droplet execution agency， droplet是cloudfoundry自创的一个概念，它是一个app的可运行实例配合实例启停脚本的压缩包。&lt;/p&gt;
 &lt;p&gt;举例来说，如果我们要让一个php app程序运行，我们将代码下载之后需要做什么呢？&lt;/p&gt;
 &lt;ul&gt;
