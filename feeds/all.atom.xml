@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>limengyun's blog</title><link href="http://limengyun.com/" rel="alternate"></link><link href="http://limengyun.com/feeds/all.atom.xml" rel="self"></link><id>http://limengyun.com/</id><updated>2013-06-17T10:00:00+08:00</updated><entry><title>cloudfoundry 2.0文档小结</title><link href="http://limengyun.com/cloudfoundry/index.html" rel="alternate"></link><updated>2013-06-17T10:00:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-06-17:cloudfoundry/index.html</id><summary type="html">&lt;p&gt;不知不觉进入新的new-tech组鼓捣cloudfoundry已经几个月了，项目的起因是youdao之前已经有一个youdao App Engine，主要供内部使用，仅支持php语言，
+<feed xmlns="http://www.w3.org/2005/Atom"><title>limengyun's blog</title><link href="http://limengyun.com/" rel="alternate"></link><link href="http://limengyun.com/feeds/all.atom.xml" rel="self"></link><id>http://limengyun.com/</id><updated>2013-06-17T10:00:00+08:00</updated><entry><title>cloudfoundry 2.0文档小结</title><link href="http://limengyun.com/cloudfoundry/index.html" rel="alternate"></link><updated>2013-06-17T10:00:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-06-17:cloudfoundry/index.html</id><summary type="html">&lt;p&gt;不知不觉进入新的team鼓捣cloudfoundry已经几个月了，项目的起因是youdao之前已经有一个youdao App Engine，主要供内部使用，仅支持php语言，
 用来快速实现一些简单需求。但处于无人维护的状态，加入newtech组后，david问我能不能接过来然后改进一下，让它能支持更多语言。&lt;/p&gt;
 &lt;p&gt;但原有YAE强依赖了PHP的语言特性,所有的YAE的app都是一个apache在serve, 前端nginx将*.domain.com的二级域名前缀转换成path然后由apache来提供服务。
 但很多语言的应用部署都是基于独立占用一个端口的方式，新增加语言支持实际上就是要重新设计一套机制，等于做一个PaaS。&lt;/p&gt;
@@ -8,7 +8,7 @@
 &lt;p&gt;PaaS（Platform as a Service）: 提供应用运行的平台作为服务。最早的有GAE：Google App Engine 国内发展的比较好的还有SAE, 剩下的基本不知名。&lt;/p&gt;
 &lt;p&gt;IaaS（Infrastructure as a Service）: 提供基础架构作为服务。多数开源的云计算项目都位于这一层，例如openstack等等。商业的国外有最著名的amazon。国内有阿里云，盛大云等。&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;在调研了不同项目之后，我接触到了cloudfoundry：&lt;/p&gt;
+&lt;p&gt;在调研了不同项目之后接触到了cloudfoundry：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;第一个开源的paas，来自vmware。&lt;/li&gt;
 &lt;li&gt;天然分布式，而且可以很方便的添加语言支持&lt;/li&gt;
@@ -17,7 +17,8 @@
 &lt;p&gt;最终我选择了基于cloudfoundry搭建一个paas，然后再在其上层实现原有的YAE提供的功能的方案。&lt;/p&gt;
 &lt;h2&gt;安装&lt;/h2&gt;
 &lt;p&gt;有可能我是唯一一个采用这种办法安装cloudfoundry的人：使用&lt;strong&gt;各个组件的源代码&lt;/strong&gt;在&lt;strong&gt;centOS 6&lt;/strong&gt;上搭建cloudfoundry 2.0。之所以这么做，原因见下：&lt;/p&gt;
-&lt;p&gt;2012年十一月开始的时候，cloudfoundry 1.0和2.0都在同时开发中，1.0已有公有云，文档稍多，且提供了一个部署脚本部署所有的组件到一台机器上；2.0则基本没有任何文档。我选择了1.0作为研究对象，
+&lt;p&gt;2012年十一月开始的时候，cloudfoundry 1.0和2.0都在同时开发中，1.0已有公有云（http://api.cloudfoundry.com），文档稍多，
+且提供了一个部署脚本部署所有的组件到一台机器上；2.0则基本没有任何文档。我选择了1.0作为研究对象，
 但cloudfoundry 1.0的脚本只支持部署在ubuntu上，而公司的机器只有centos，在我解决掉一个又一个在centos上特有的bug成功的将cloudfoundry 1.0运行在centos上没多久，
 我就在官方的google group上的一个回帖中得知1.0不再进行开发。而很多特性只有2.0才有。这个时候我再转向2.0等于重新开始。&lt;/p&gt;
 &lt;p&gt;对于最新的2.0，官方仅给出了一种部署方式——基于Iaas和官方开发的用于操作IaaS的一个名为bosh的工具的部署方式。这个需要有openstack，Vsphere 等IaaS作为支持，可公司也没有。&lt;/p&gt;
@@ -31,7 +32,6 @@
 &lt;p&gt;在解决问题的过程中，我们记录了一些文档，放在github上： &lt;a href="https://github.com/youdao-cf/docs/tree/master/install"&gt;链接&lt;/a&gt; 上，简单描述如何在centos上安装cloudfoundry并进行配置.&lt;/p&gt;
 &lt;p&gt;总体来说，如果是ubuntu系统（最好是10.04）基本所有组件都可以正常运行，如果运行不起来就是配置问题，需要特别注意的会在下面各组件细节中提到。&lt;/p&gt;
 &lt;p&gt;但如果是其他linux发行版，除了配置问题，还会碰到各种因为操作系统引起的bug，有一些需要修改源代码，所有修改的源码地址都在安装文档中给出，在组件细节中也会提出修改的思路。&lt;/p&gt;
-&lt;p&gt;同时声明一点：&lt;strong&gt;不要指望按照这篇文档能直接毫无问题的搭出cloudfoundry 2.0&lt;/strong&gt;&lt;/p&gt;
 &lt;h2&gt;cloudfoundry 组件简介&lt;/h2&gt;
 &lt;p&gt;Cloudfoudnry 1.0已于在2013年1月底停止开发与维护。现在网上许多cloudfoundry的文章将的都是跟1.0有关的内容，在此指出一些主要的区别。&lt;/p&gt;
 &lt;ul&gt;
