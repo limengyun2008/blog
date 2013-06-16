@@ -32,7 +32,7 @@ RELATIVE_URLS = True
 
 THEME = "themes/notmyidea"
 
-GOOGLE_ANALYTICS = "xx"
+GOOGLE_ANALYTICS = "UA-37781337-1"
 
 PLUGIN_PATH = './pelican-plugins'
 PLUGINS = ['sitemap',]
@@ -40,3 +40,8 @@ PLUGINS = ['sitemap',]
 SITEMAP = {
     'format': 'xml',
 }
+
+FILES_TO_COPY = (('extra/CNAME', 'CNAME'),
+		('extra/robots.txt', 'robots.txt'),
+		('extra/83305223c55eb57b6c1fa13fc1a835b2.txt', '83305223c55eb57b6c1fa13fc1a835b2.txt')
+		)
