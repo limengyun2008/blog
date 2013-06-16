@@ -24,8 +24,118 @@
 
                             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="../cloudfoundry/review.html">cloudfoundry的一些想法</a></h1> 
+                    <h1 class="entry-title"><a href="../cloudfoundry/index.html">cloudfoundry 2.0文档小结</a></h1> 
                     <footer class="post-info">
+        <abbr class="published" title="2013-06-17T10:00:00">
+                Mon 17 June 2013
+        </abbr>
+
+                <address class="vcard author">
+                By <a class="url fn" href="../author/limengyun.html">limengyun</a>
+        </address>
+        <p>In <a href="../category/backend.html">backend</a>. </p>
+<p>tags: <a href="../tag/cloudfoundry.html">cloudfoundry</a></p>
+</footer><!-- /.post-info --><p>不知不觉进入新的new-tech组鼓捣cloudfoundry已经几个月了，项目的起因是youdao之前已经有一个youdao App Engine，主要供内部使用，仅支持php语言，
+用来快速实现一些简单需求。但处于无人维护的状态，加入newtech组后，david问我能不能接过来然后改进一下，让它能支持更多语言。</p>
+<p>但原有YAE强依赖了PHP的语言特性,所有的YAE的app都是一个apache在serve, 前端nginx将*.domain.com的二级域名前缀转换成path然后由apache来提供服务。
+但很多语言的应用部署都是基于独立占用一个端口的方式，新增加语言支持实际上就是要重新设计一套机制，等于做一个PaaS。</p>
+<blockquote>
+<p>SaaS（Software as a Service）: 软件即服务，极其常见的形式：如gmail，云笔记等</p>
+<p>PaaS（Platform as a Service）: 提供应用运行的平台作为服务。最早的有GAE：Google App Engine 国内发展的比较好的还有SAE, 剩下的基本不知名。</p>
+<p>IaaS（Infrastructure as a Service）: 提供基础架构作为服务。多数开源的云计算项目都位于这一层，例如openstack等等。商业的国外有最著名的amazon。国内有阿里云，盛大云等。</p>
+</blockquote>
+<p>在调研了不同项目之后，我接触到了cloudfoundry：</p>
+<ul>
+<li>第一个开源的paas，来自vmware。</li>
+<li>天然分布式，而且可以很方便的添加语言支持</li>
+<li>已有appfog这种基于它开发的商业项目。自身也已经有公有paas对外提供服务。</li>
+</ul>
+<p>最终我选择了基于cloudfoundry搭建一个paas，然后再在其上层实现原有的YAE提供的功能的方案。</p>
+<h2>安装</h2>
+<p>有可能我是唯一一个采用这种办法安装cloudfoundry的人：使用<strong>各个组件的源代码</strong>在<strong>centOS 6</strong>上搭建cloudfoundry 2.0。之所以这么做，原因见下：</p>
+<p>2012年十一月开始的时候，cloudfoundry 1.0和2.0都在同时开发中，1.0已有公有云，文档稍多，且提供了一个部署脚本部署所有的组件到一台机器上；2.0则基本没有任何文档。我选择了1.0作为研究对象，
+但cloudfoundry 1.0的脚本只支持部署在ubuntu上，而公司的机器只有centos，在我解决掉一个又一个在centos上特有的bug成功的将cloudfoundry 1.0运行在centos上没多久，
+我就在官方的google group上的一个回帖中得知1.0不再进行开发。而很多特性只有2.0才有。这个时候我再转向2.0等于重新开始。</p>
+<p>对于最新的2.0，官方仅给出了一种部署方式——基于Iaas和官方开发的用于操作IaaS的一个名为bosh的工具的部署方式。这个需要有openstack，Vsphere 等IaaS作为支持，可公司也没有。</p>
+<p>在这种背景下，如果想继续使用cloudfoundry，只有三种方案：</p>
+<ol>
+<li>使用cloudfoundry 1.0</li>
+<li>先搭一个openstack，用熟了再基于官方提供的部署方式进行安装</li>
+<li>自己鼓捣源码，在centOS上自己装</li>
+</ol>
+<p>1等于以后都自己玩，2不属于自己的工作范围，等于是一个研发去弄运维的事情。权衡利弊之后选择了方案3，但是在这个过程中同样遇到了很多centOS上特有的问题。</p>
+<p>在解决问题的过程中，我们记录了一些文档，放在github上： <a href="https://github.com/youdao-cf/docs/tree/master/install">链接</a> 上，简单描述如何在centos上安装cloudfoundry并进行配置.</p>
+<p>总体来说，如果是ubuntu系统（最好是10.04）基本所有组件都可以正常运行，如果运行不起来就是配置问题，需要特别注意的会在下面各组件细节中提到。</p>
+<p>但如果是其他linux发行版，除了配置问题，还会碰到各种因为操作系统引起的bug，有一些需要修改源代码，所有修改的源码地址都在安装文档中给出，在组件细节中也会提出修改的思路。</p>
+<p>同时声明一点：<strong>不要指望按照这篇文档能直接毫无问题的搭出cloudfoundry 2.0</strong></p>
+<h2>cloudfoundry 组件简介</h2>
+<p>Cloudfoudnry 1.0已于在2013年1月底停止开发与维护。现在网上许多cloudfoundry的文章将的都是跟1.0有关的内容，在此指出一些主要的区别。</p>
+<ul>
+<li>1.0中router使用的是nginx+lua+ruby server的方式，2.0使用了go语言gorouter，据称支持了websocket且极大提升了性能。</li>
+<li>2.0中cloud contoller新增了quota，org，space等新的概念，更方便的进行权限和资源管理。</li>
+<li>1.0中为应用打包使用的是stager组件，2.0中移除了该组件，将打包功能加入到dea中，并将所有语言的打包程序以submodule的形式放在buildpacks/vendors 目录下。</li>
+<li>完全重写了health manager</li>
+<li>1.0里 dea可以独立运行，一个dea负责的所有app都以子进程的形式挂在dea主进程下。但2.0之后dea强依赖于warden提供的安全容器来运行app了</li>
+</ul>
+<p>下面是cloudfoundry 2.0的架构示意图，</p>
+<p><img src="http://docs.cloudfoundry.com/images/cf_architecture.png" style="width:785px;" alt="cloudfoundry 架构图" /></p>
+<h4>NATS</h4>
+<p>CloudFoundry是一个多模块的分布式系统，支持模块自发现，错误自检，且模块间低耦合。其核心原理就是基于消息发布订阅机制。</p>
+<p>而NATS则是支持这个机制的最关键的消息系统，它是cloudfoundry中最核心的组件。</p>
+<p><a href="./nats.html">nats链接组件的两个例子</a></p>
+<h4>Router</h4>
+<p>负责处理分发所有的请求到相对应的模块，包括来自外部用户对app的请求和平台内部控制请求。</p>
+<h4>Cloud Controller</h4>
+<p>Cloud Controller是CloudFoundry的管理模块。对外提供平台全部的api，如：</p>
+<ol>
+<li>对apps的增删改读；</li>
+<li>启动、停止应用程序；</li>
+<li>Staging apps（把apps打包成一个droplet）；</li>
+<li>修改应用程序运行环境，包括instance、mem等等；</li>
+<li>管理service，包括service与app的绑定等；</li>
+<li>Cloud环境的管理；</li>
+<li>修改Cloud的用户信息；</li>
+<li>查看Cloud Foundry，以及每一个app的log信息。</li>
+</ol>
+<h4>Warden</h4>
+<p>warden 在操作系统上层提供轻量级的运行应用的虚拟容器，为平台提供安全支持。</p>
+<p><a href="./warden.html">warden及平台安全</a></p>
+<h4>DEA</h4>
+<p>接收来自cloud controller的指令，根据指令使用warden提供的虚拟容器对应用进行打包，运行等关键操作。</p>
+<p><a href="./dea.html">dea和buildpack</a></p>
+<h4>UAA</h4>
+<p>全称是User Account and Authentication，负责用户账户和验证</p>
+<h4>Health Manager</h4>
+<p>负责检查各个组件的状态</p>
+<h4>其他组件</h4>
+<ul>
+<li>Services: cloudfoundry为应用提供的各类服务，如mysql，memcached，由于时间原因，我暂时没有支持。</li>
+<li>Syslog Aggregator：归集log的组件，非必要，也没有支持</li>
+<li>Collector： 监听nats中的各类消息来监控各组件的运行状态，非必要，也没有支持。</li>
+</ul>
+<h4>自行开发的组件</h4>
+<ul>
+<li>console： cloudfoundry的web界面。官方一直到6月10号才有web界面。</li>
+<li>mysql</li>
+<li>monitor</li>
+</ul>
+<p><a href="./review.html">总结</a></p>                </article>
+                            </aside><!-- /#featured -->
+                            <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+                                                
+
+                 
+                        <li><article class="hentry">    
+                <header>
+                    <h1><a href="../cloudfoundry/review.html" rel="bookmark"
+                           title="Permalink to cloudfoundry的一些想法">cloudfoundry的一些想法</a></h1>
+                </header>
+                
+                <div class="entry-content">
+                <footer class="post-info">
         <abbr class="published" title="2013-06-13T11:00:00">
                 Thu 13 June 2013
         </abbr>
@@ -35,47 +145,11 @@
         </address>
         <p>In <a href="../category/backend.html">backend</a>. </p>
 <p>tags: <a href="../tag/cloudfoundry.html">cloudfoundry</a></p>
-</footer><!-- /.post-info --><h2>PAAS 拯救世界？</h2>
-<p>就在前几天，云计算大会上代表cloudfoundry官方做展示的是VMware和EMC两家将云计算业务分拆出来组成的新公司Pivotal（<a href="http://www.csdn.net/article/2013-04-25/2815037-GE_invest_CloudFoundry_and_Greenplum">文章链接</a>），说明官方非常重视这个东西，他们已经开始着手cloudfoundry的商业进程了。</p>
-<p>同时还有京东和Pivotal进行协作研发cloudfoundry的消息（<a href="http://tech.sina.com.cn/it/2013-06-07/09078422241.shtml">文章链接</a>），京东这似乎是要借外部力量学amazon卖云资源了么？</p>
-<p>但关于PAAS这个东西，有人说是未来，我个人持保留态度。 PaaS的确能够非常迅速的扩容，应对快速的流量增长；合理使用也能很大程度上节省硬件的之处<br />
-但它很难解决所有的需求，更多的只适合处理逻辑简单但同时有着大流量，高并发的应用，举两例：</p>
-<ol>
-<li>
-<p>真正的大公司产品，有着你想不到的各种杂七杂八的需求。但PAAS上有着诸多限制的，比如不能本地写文件，不能访问内网等等，请看<a href="http://docs.cloudfoundry.com/docs/using/app-arch/index.html">文章链接</a>
-虽然这些技术限制都可以通过某些手段避开，但无疑增大了开发难度。如果碰到下面的需求：</p>
-<ul>
-<li>定时执行某个任务，普通机器上crontab，paas上怎么办？把这个任务做成一个http请求，然后定时访问这个http接口来执行</li>
-<li>随时查看log，普通机器上tail -f， paas上怎么办？先用各种工具把log导出来，然后再看</li>
-</ul>
-<p>所以，要是需求很杂，需要有应用的完整控制权，就不要用PAAS来恶心自己了。</p>
-</li>
-<li>
-<p>流量超大的应用大部分是分布式的，在cloudfoundry上部署一个分布式应用就超级麻烦。
-因为PAAS先天的动态分配资源的特性，应用不会在特定的某台机器上运行，
-如果应用自身都不知道自己在哪台机器上，怎么在config文件里面去填其他组件的host？</p>
-</li>
-</ol>
-<p>所以要想在paas上开发，先得对PAAS有个基本的了解，需要自己判断自己的应用是不是需要挪到PaaS上，可不是云平台包治百病。
-而且用上PaaS再想迁移下来就不是那么容易了，cloudfoundry还好，GAE这种用SDK的应用就等于要重写一遍。</p>
-<h2>思考: 应不应该选择cloudfoundry</h2>
-<p>一个人+一个实习生做了半年，到现在我还在思考选择cloudfoundry是对还是错。</p>
-<p>如果把这个作为一个PAAS技术储备的工作来做，cloudfoundry是毫无疑问的首选。
-因为考虑到cloudfoundry一直到现在才开发进入稳定期，
-开始的时候基本没有文档可言，类似“stager模块在2.0中不再使用，改为在dea中使用buildpack替代”这种关键信息都只能靠着每天去看帖子来获取，
-特别是辛辛苦苦把1.0安装成功没过多久在一个回帖中看到1.0不再开发导致之前的努力大部分浪费，加上还要自己做centos上的适配。我们耗费半年的时间也很正常。</p>
-<p>但如果不是技术储备，仅仅为了改进一个内部使用的东西让它支持一门新语言，耗费半年是否值得？
-而且原来YAE是个单机应用，利用PHP可以一台服务器服务多个应用的特性仅占用了一台机器，
-基于cloudfoundry的新YAE一台机器肯定不可能，所以估计都不一定能应用的起来，先看看空余机器再说。</p>
-<p>综合考虑，这个项目是不是就不应该选择开始……或者应该选择晚一点再开始，等它稳定了再进行研究？
-可是不深入研究cloudfoundry，仅从官方吹得天花乱坠的介绍中，这些问题都是无法被发现的</p>
-<p>得到一个教训：开源软件不都是甜的，对于一个不成熟的开源软件，用之前要三思，即便用也要考虑好时机。</p>                </article>
-                            </aside><!-- /#featured -->
-                            <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
-                                                
+</footer><!-- /.post-info -->                
+                <a class="readmore" href="../cloudfoundry/review.html">read more</a>
+                                </div><!-- /.entry-content -->
+            </article></li>
+                            
 
                  
                         <li><article class="hentry">    
@@ -121,30 +195,6 @@
 <p>tags: <a href="../tag/cloudfoundry.html">cloudfoundry</a></p>
 </footer><!-- /.post-info -->                
                 <a class="readmore" href="../cloudfoundry/warden.html">read more</a>
-                                </div><!-- /.entry-content -->
-            </article></li>
-                            
-
-                 
-                        <li><article class="hentry">    
-                <header>
-                    <h1><a href="../cloudfoundry/index.html" rel="bookmark"
-                           title="Permalink to cloudfoundry 2.0文档小结">cloudfoundry 2.0文档小结</a></h1>
-                </header>
-                
-                <div class="entry-content">
-                <footer class="post-info">
-        <abbr class="published" title="2013-06-05T10:00:00">
-                Wed 05 June 2013
-        </abbr>
-
-                <address class="vcard author">
-                By <a class="url fn" href="../author/limengyun.html">limengyun</a>
-        </address>
-        <p>In <a href="../category/backend.html">backend</a>. </p>
-<p>tags: <a href="../tag/cloudfoundry.html">cloudfoundry</a></p>
-</footer><!-- /.post-info -->                <p>Hello, World!</p>
-                <a class="readmore" href="../cloudfoundry/index.html">read more</a>
                                 </div><!-- /.entry-content -->
             </article></li>
                             
