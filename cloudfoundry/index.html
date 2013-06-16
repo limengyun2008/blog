@@ -55,7 +55,7 @@
 </ul>
 <p>最终我选择了基于cloudfoundry搭建一个paas，然后再在其上层实现原有的YAE提供的功能的方案。</p>
 <h2>安装</h2>
-<p>有可能我是唯一一个采用这种办法安装cloudfoundry的人：使用<strong>各个组件的源代码</strong>在<strong>centOS 6</strong>上搭建cloudfoundry 2.0。之所以这么做，原因见下：</p>
+<p>采用的不是官方的安装方法：使用<strong>各个组件的源代码</strong>在<strong>centOS 6</strong>上搭建cloudfoundry 2.0。之所以这么做，原因见下：</p>
 <p>2012年十一月开始的时候，cloudfoundry 1.0和2.0都在同时开发中，1.0已有公有云（http://api.cloudfoundry.com），文档稍多，
 且提供了一个部署脚本部署所有的组件到一台机器上；2.0则基本没有任何文档。我选择了1.0作为研究对象，
 但cloudfoundry 1.0的脚本只支持部署在ubuntu上，而公司的机器只有centos，在我解决掉一个又一个在centos上特有的bug成功的将cloudfoundry 1.0运行在centos上没多久，
