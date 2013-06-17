@@ -49,24 +49,14 @@
 &lt;p&gt;&lt;a href="./nats.html"&gt;nats链接组件的两个例子&lt;/a&gt;&lt;/p&gt;
 &lt;h4&gt;Router&lt;/h4&gt;
 &lt;p&gt;负责处理分发所有的请求到相对应的模块，包括来自外部用户对app的请求和平台内部控制请求。&lt;/p&gt;
-&lt;h4&gt;Cloud Controller&lt;/h4&gt;
-&lt;p&gt;Cloud Controller是CloudFoundry的管理模块。对外提供平台全部的api，如：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;对apps的增删改读；&lt;/li&gt;
-&lt;li&gt;启动、停止应用程序；&lt;/li&gt;
-&lt;li&gt;Staging apps（把apps打包成一个droplet）；&lt;/li&gt;
-&lt;li&gt;修改应用程序运行环境，包括instance、mem等等；&lt;/li&gt;
-&lt;li&gt;管理service，包括service与app的绑定等；&lt;/li&gt;
-&lt;li&gt;Cloud环境的管理；&lt;/li&gt;
-&lt;li&gt;修改Cloud的用户信息；&lt;/li&gt;
-&lt;li&gt;查看Cloud Foundry，以及每一个app的log信息。&lt;/li&gt;
-&lt;/ol&gt;
 &lt;h4&gt;Warden&lt;/h4&gt;
 &lt;p&gt;warden 在操作系统上层提供轻量级的运行应用的虚拟容器，为平台提供安全支持。&lt;/p&gt;
-&lt;p&gt;&lt;a href="./warden.html"&gt;warden及平台安全&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/cloudfoundry/warden.html"&gt;warden及平台安全&lt;/a&gt;&lt;/p&gt;
+&lt;h4&gt;Cloud Controller&lt;/h4&gt;
+&lt;p&gt;Cloud Controller是CloudFoundry的管理模块。对外提供平台全部的api&lt;/p&gt;
 &lt;h4&gt;DEA&lt;/h4&gt;
 &lt;p&gt;接收来自cloud controller的指令，根据指令使用warden提供的虚拟容器对应用进行打包，运行等关键操作。&lt;/p&gt;
-&lt;p&gt;&lt;a href="./dea.html"&gt;dea和buildpack&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/cloudfoundry/dea.html"&gt;dea和buildpack&lt;/a&gt;&lt;/p&gt;
 &lt;h4&gt;UAA&lt;/h4&gt;
 &lt;p&gt;全称是User Account and Authentication，负责用户账户和验证&lt;/p&gt;
 &lt;h4&gt;Health Manager&lt;/h4&gt;
@@ -83,41 +73,7 @@
 &lt;li&gt;mysql&lt;/li&gt;
 &lt;li&gt;monitor&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;a href="./review.html"&gt;总结&lt;/a&gt;&lt;/p&gt;</summary><category term="cloudfoundry"></category></entry><entry><title>cloudfoundry的一些想法</title><link href="http://limengyun.com/cloudfoundry/review.html" rel="alternate"></link><updated>2013-06-13T11:00:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-06-13:cloudfoundry/review.html</id><summary type="html">&lt;h2&gt;PAAS 拯救世界？&lt;/h2&gt;
-&lt;p&gt;就在前几天，云计算大会上代表cloudfoundry官方做展示的是VMware和EMC两家将云计算业务分拆出来组成的新公司Pivotal（&lt;a href="http://www.csdn.net/article/2013-04-25/2815037-GE_invest_CloudFoundry_and_Greenplum"&gt;文章链接&lt;/a&gt;），说明官方非常重视这个东西，他们已经开始着手cloudfoundry的商业进程了。&lt;/p&gt;
-&lt;p&gt;同时还有京东和Pivotal进行协作研发cloudfoundry的消息（&lt;a href="http://tech.sina.com.cn/it/2013-06-07/09078422241.shtml"&gt;文章链接&lt;/a&gt;），京东这似乎是要借外部力量学amazon卖云资源了么？&lt;/p&gt;
-&lt;p&gt;但关于PAAS这个东西，有人说是未来，我个人持保留态度。 PaaS的确能够非常迅速的扩容，应对快速的流量增长；合理使用也能很大程度上节省硬件的之处&lt;br /&gt;
-但它很难解决所有的需求，更多的只适合处理逻辑简单但同时有着大流量，高并发的应用，举两例：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;
-&lt;p&gt;真正的大公司产品，有着你想不到的各种杂七杂八的需求。但PAAS上有着诸多限制的，比如不能本地写文件，不能访问内网等等，请看&lt;a href="http://docs.cloudfoundry.com/docs/using/app-arch/index.html"&gt;文章链接&lt;/a&gt;
-虽然这些技术限制都可以通过某些手段避开，但无疑增大了开发难度。如果碰到下面的需求：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;定时执行某个任务，普通机器上crontab，paas上怎么办？把这个任务做成一个http请求，然后定时访问这个http接口来执行&lt;/li&gt;
-&lt;li&gt;随时查看log，普通机器上tail -f， paas上怎么办？先用各种工具把log导出来，然后再看&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;所以，要是需求很杂，需要有应用的完整控制权，就不要用PAAS来恶心自己了。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;流量超大的应用大部分是分布式的，在cloudfoundry上部署一个分布式应用就超级麻烦。
-因为PAAS先天的动态分配资源的特性，应用不会在特定的某台机器上运行，
-如果应用自身都不知道自己在哪台机器上，怎么在config文件里面去填其他组件的host？&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;所以要想在paas上开发，先得对PAAS有个基本的了解，需要自己判断自己的应用是不是需要挪到PaaS上，可不是云平台包治百病。
-而且用上PaaS再想迁移下来就不是那么容易了，cloudfoundry还好，GAE这种用SDK的应用就等于要重写一遍。&lt;/p&gt;
-&lt;h2&gt;思考: 应不应该选择cloudfoundry&lt;/h2&gt;
-&lt;p&gt;一个人+一个实习生做了半年，到现在我还在思考选择cloudfoundry是对还是错。&lt;/p&gt;
-&lt;p&gt;如果把这个作为一个PAAS技术储备的工作来做，cloudfoundry是毫无疑问的首选。
-因为考虑到cloudfoundry一直到现在才开发进入稳定期，
-开始的时候基本没有文档可言，类似“stager模块在2.0中不再使用，改为在dea中使用buildpack替代”这种关键信息都只能靠着每天去看帖子来获取，
-特别是辛辛苦苦把1.0安装成功没过多久在一个回帖中看到1.0不再开发导致之前的努力大部分浪费，加上还要自己做centos上的适配。我们耗费半年的时间也很正常。&lt;/p&gt;
-&lt;p&gt;但如果不是技术储备，仅仅为了改进一个内部使用的东西让它支持一门新语言，耗费半年是否值得？
-而且原来YAE是个单机应用，利用PHP可以一台服务器服务多个应用的特性仅占用了一台机器，
-基于cloudfoundry的新YAE一台机器肯定不可能，所以估计都不一定能应用的起来，先看看空余机器再说。&lt;/p&gt;
-&lt;p&gt;综合考虑，这个项目是不是就不应该选择开始……或者应该选择晚一点再开始，等它稳定了再进行研究？
-可是不深入研究cloudfoundry，仅从官方吹得天花乱坠的介绍中，这些问题都是无法被发现的&lt;/p&gt;
-&lt;p&gt;得到一个教训：开源软件不都是甜的，对于一个不成熟的开源软件，用之前要三思，即便用也要考虑好时机。&lt;/p&gt;</summary><category term="cloudfoundry"></category></entry><entry><title>DEA 和 buildpack</title><link href="http://limengyun.com/cloudfoundry/dea.html" rel="alternate"></link><updated>2013-06-13T10:00:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-06-13:cloudfoundry/dea.html</id><summary type="html">&lt;h2&gt;术语&lt;/h2&gt;
+&lt;p&gt;&lt;a href="/cloudfoundry/review.html"&gt;总结&lt;/a&gt;&lt;/p&gt;</summary><category term="cloudfoundry"></category></entry><entry><title>DEA 和 buildpack</title><link href="http://limengyun.com/cloudfoundry/dea.html" rel="alternate"></link><updated>2013-06-13T10:00:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-06-13:cloudfoundry/dea.html</id><summary type="html">&lt;h2&gt;术语&lt;/h2&gt;
 &lt;p&gt;dea组件的全称是 droplet execution agency， droplet是cloudfoundry自创的一个概念，它是一个app的可运行实例配合实例启停脚本的压缩包。&lt;/p&gt;
 &lt;p&gt;举例来说，如果我们要让一个php app程序运行，我们将代码下载之后需要做什么呢？&lt;/p&gt;
 &lt;ul&gt;
@@ -133,19 +89,23 @@
 &lt;li&gt;针对不同类型应用专门编写staging程序叫 buildpack&lt;/li&gt;
 &lt;li&gt;解压运行droplet的组件叫dea。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2&gt;staging和running droplet的过程&lt;/h2&gt;
+&lt;h2&gt;dea职责&lt;/h2&gt;
+&lt;h3&gt;staging和running droplet&lt;/h3&gt;
 &lt;p&gt;在1.0中，staging 是由专门的组件stager来完成的，在2.0中去掉了stager改为直接在dea中进行staging。&lt;/p&gt;
+&lt;p&gt;这是dea最重要的两个职责。&lt;/p&gt;
 &lt;p&gt;官方专门针对staging和running的流程撰写了文档： &lt;a href="http://docs.cloudfoundry.com/docs/running/architecture/how-applications-are-staged.html"&gt;文章链接&lt;/a&gt;&lt;/p&gt;
-&lt;h2&gt;应用对外提供服务的过程。&lt;/h2&gt;
+&lt;p&gt;如何在众多dea中选择合适的dea来完成任务，是通过消息机制来实现的，参见在&lt;a href="/cloudfoundry/nats.html"&gt;NATS细节&lt;/a&gt;中的例子“cloud controller指挥dea进行打包和运行”&lt;/p&gt;
+&lt;h3&gt;向router注册使应用实例可以对外提供服务&lt;/h3&gt;
 &lt;p&gt;dea上的应用流量无论有多大，对dea的影响都微乎其微。
 因为dea不对外提供服务，dea控制的container才对外提供服务。
-router和dea会定时通过NATS通信，dea将dea下的container的ip，host，port等消息报告给router，这一部分在&lt;a href="./nats.html"&gt;NATS细节&lt;/a&gt;中已经说明过。&lt;/p&gt;
-&lt;h2&gt;dea directory server和file api server&lt;/h2&gt;
+router和dea会定时通过NATS通信，dea将dea下的container的ip，host，port等消息报告给router，参见在&lt;a href="/cloudfoundry/nats.html"&gt;NATS细节&lt;/a&gt;中的例子“向router注册”&lt;/p&gt;
+&lt;h3&gt;查看应用文件&lt;/h3&gt;
 &lt;p&gt;dea启动时会附带启动一个file api server，而dea directory server的启动则是单独进行的，代码在dea/go目录下。
-这两个server的区别在于&lt;/p&gt;
-&lt;p&gt;dea directory server 会向router注册，外部可以访问到dea directory server。从而所有跟dea相关的上传（上传droplet）和下载（获取各种文件内容，如log文件）都是直接通过dea directory server来进行的。
-file api server起一个验证并返回请求真实路径的作用
-比如执行cf logs XXX -t命令，表面上看起来是客户端cf向cloud controller发起请求，但实际上是cloud controller 重定向到dea directory server来提供服务的&lt;/p&gt;
+这两个server的区别在于：&lt;/p&gt;
+&lt;p&gt;dea directory server 启动后会向router注册，即外部可以访问到dea directory server。
+所有跟dea相关的上传（上传droplet）和下载（获取各种文件内容，如log文件）都是直接通过dea directory server来进行的。
+file api server起一个验证并返回请求真实路径的作用&lt;/p&gt;
+&lt;p&gt;比如执行cf logs XXX -t命令，表面上看起来是客户端cf向cloud controller发起请求，但实际上是cloud controller 重定向到dea directory server来提供服务的&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;Getting&lt;/span&gt; &lt;span class="n"&gt;logs&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="mi"&gt;23423&lt;/span&gt; &lt;span class="err"&gt;#&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt;
 &lt;span class="nl"&gt;REQUEST:&lt;/span&gt; &lt;span class="n"&gt;GET&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//api.cf2.youdao.com/v2/apps/de48824b-8243-4218-8b52-d92c974453f8/instances/0/files/logs&lt;/span&gt;
 &lt;span class="nl"&gt;REQUEST_HEADERS:&lt;/span&gt;
@@ -184,12 +144,13 @@ file api server起一个验证并返回请求真实路径的作用
 &lt;h2&gt;自定义buildpack支持&lt;/h2&gt;
 &lt;p&gt;如果想要cloudfoundry支持一门新的语言或框架，自定义一个buildpack就可以了，
 比如我们就将官方的java buildpack修改为支持ant+ivy编译，且从tomcat改为使用resin。
-（可真别以为J2EE架构下一个war包能在resin下跑就一定能在tomcat下跑）
+（J2EE架构下一个war包能在resin下跑不一定能在tomcat下跑）
 这样就可以直接上传源代码而不用上传war包，且与公司的习惯保持一致。。&lt;/p&gt;
-&lt;p&gt;每一种语言只有一种buildpack，不同类别的应用打包是在buildpack代码里面进行区分的。在buildpacks/vendor目录下，官方提供了三种语言（java，nodejs，ruby）的若干种应用类型的支持，同时也提供了一种方便添加自定义buildpack支持的机制。&lt;/p&gt;
+&lt;p&gt;每一种语言只有一个buildpack，不同类别的应用打包在buildpack代码里面单独进行区分。
+在buildpacks/vendor目录下，官方提供了三种语言（java，nodejs，ruby）的若干种应用类型的支持，同时也提供了一种方便添加自定义buildpack支持的机制。&lt;/p&gt;
 &lt;p&gt;新增添一个语言的buildpack需要实现以下三个脚本：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;./bin/detect 检查应用的类型，例如是一个sinatra应用还是一个rails应用，以供compile脚本使用&lt;/li&gt;
+&lt;li&gt;./bin/detect 检查同一种语言下应用的类型，例如是一个sinatra应用还是一个rails应用，以供compile脚本使用&lt;/li&gt;
 &lt;li&gt;./bin/compile  打包的主脚本，根据detect的结果选择打包的方式。&lt;/li&gt;
 &lt;li&gt;./bin/release  输出自定义的启动命令等相关信息，以便写入到最终的启动脚本。&lt;/li&gt;
 &lt;/ul&gt;
@@ -200,13 +161,14 @@ file api server起一个验证并返回请求真实路径的作用
 &lt;p&gt;官方或开源第三方的buildpack在staging的时候基本都通过http下载一些东西，比如apache等等，关键在于这些地址都是在amazon s3上。
 在天朝的网络下，采用这种方式就要看GFW的心情了，要正常使用最好把那些下载地址全部换成内网地址。&lt;/p&gt;
 &lt;h4&gt;注意2：&lt;/h4&gt;
-&lt;p&gt;同样，有些buildpack 会将/home/vcap/app  软连接到/app/app   然后再在/app/app中进行操作。
-但在centos 6上使用默认文件系统实现的warden container 不具备完整的软连接功能（无法cd进入软连接后的目录，详情见warden的cent OS tip），
+&lt;p&gt;有些buildpack 会将/home/vcap/app  软连接到/app/app   然后再在/app/app中进行操作。
+但之前在warden中提到过，在centos 6上使用默认文件系统实现的warden container 不具备完整的软连接功能（无法cd进入软连接后的目录，详情见warden的cent OS tip），
 所以想要在centos上正常使用仍然需要修改这部分代码。&lt;/p&gt;
 &lt;h4&gt;提示：&lt;/h4&gt;
-&lt;p&gt;http://www.appfog.com 是一个基于cloudfoundry的paas，他自定义了许多语言的支持并在github上开源出来（github： https://github.com/appfog/ ）。 &lt;/p&gt;</summary><category term="cloudfoundry"></category></entry><entry><title>warden及平台安全</title><link href="http://limengyun.com/cloudfoundry/warden.html" rel="alternate"></link><updated>2013-06-13T00:00:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-06-13:cloudfoundry/warden.html</id><summary type="html">&lt;p&gt;warden 是整个cloudfoundry平台的基石。他负责最关键的平台安全问题。即如何让多个应用之间直接互不干扰，组织恶意代码的执行？
+&lt;p&gt;http://www.appfog.com 是一个基于cloudfoundry的paas，他自定义了许多语言的buildpack支持并在github上开源出来（github： https://github.com/appfog/ ）。&lt;/p&gt;</summary><category term="cloudfoundry"></category></entry><entry><title>warden及平台安全</title><link href="http://limengyun.com/cloudfoundry/warden.html" rel="alternate"></link><updated>2013-06-13T00:00:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-06-13:cloudfoundry/warden.html</id><summary type="html">&lt;p&gt;warden 是整个cloudfoundry平台的基石。它负责最关键的资源控制——包括cpu，mem，disk等。
+资源控制直接关系到如何让多个应用之间直接互不干扰，以及阻止恶意代码的执行，从而保证平台的安全性。
 虚拟机可以很好的隔离，但这个解决方案对于隔离一个应用就显得太重量级了。&lt;/p&gt;
-&lt;p&gt;有一种在操作系统之上的基于系统内核的资源隔离技术&lt;/p&gt;
+&lt;p&gt;有一种基于linux系统内核的资源隔离技术&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Resource control is done by using &lt;a href="http://kernel.org/doc/Documentation/cgroups/cgroups.txt"&gt;Control Groups&lt;/a&gt;. Every container is placed in its own control group, 
 where it is configured to use an equal slice of CPU compared to other containers, and the maximum amount of memory it may use.&lt;/p&gt;
@@ -217,8 +179,42 @@ Linux Container容器是一种内核虚拟化技术，可以提供轻量级的�
 简单的讲就是创建一个容器之后可以让一个进程运行在一个容器中，使用单独的文件系统，限制的网络和内存资源。
 而不是像虚拟机那样相当于在一个容器中运行了一整套操作系统。&lt;/p&gt;
 &lt;p&gt;早期的warden就是使用的LXC，但后来发现不太能提供外层完整的控制接口，而且LXC的很多功能也并不需要，warden的开发人员就自己实现了一个更满足需求的“container”，仅用了1千行C代码。&lt;/p&gt;
-&lt;h2&gt;功能&lt;/h2&gt;
-&lt;p&gt;安装完成后，在warden/bin 目录下有一个脚本。它可以用来测试warden所提供的所有功能。&lt;/p&gt;
+&lt;p&gt;我并没有深入研究warden的源代码逻辑，只是局限在它提供给上层的功能上。一般说warden实际上指的是warden server，上层DEA通过warden client来调用warden server提供的api创建并控制container
+container可以添加诸多限制，且container之间互相隔离。应用的实例最终在container中运行。&lt;/p&gt;
+&lt;h2&gt;安装&lt;/h2&gt;
+&lt;p&gt;&lt;a href="https://github.com/youdao-cf/docs/blob/master/install/warden.html.md"&gt;链接&lt;/a&gt;&lt;/p&gt;
+&lt;h2&gt;配置&lt;/h2&gt;
+&lt;p&gt;默认的配置大部分都不用修改，除了一个隐藏的配置可能会有问题：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;port&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+  &lt;span class="n"&gt;pool_start_port&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;10000&lt;/span&gt;
+  &lt;span class="n"&gt;pool_size&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;10000&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;在warden/lib/warden/config.rb中对这个配置是这么处理的&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nc"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;ip_local_port_range&lt;/span&gt;
+  &lt;span class="no"&gt;File&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;read&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/proc/sys/net/ipv4/ip_local_port_range&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;split&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;map&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="ss"&gt;:to_i&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nc"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;port_defaults&lt;/span&gt;
+  &lt;span class="n"&gt;_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ephemeral_stop&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ip_local_port_range&lt;/span&gt;
+  &lt;span class="n"&gt;start&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;ephemeral_stop&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+  &lt;span class="n"&gt;stop&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;65000&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+  &lt;span class="n"&gt;count&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;stop&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;start&lt;/span&gt;
+
+  &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="s2"&gt;&amp;quot;pool_start_port&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;start&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;&amp;quot;pool_size&amp;quot;&lt;/span&gt;       &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;count&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;如果没有在配置文件中定义，则使用/proc/sys/net/ipv4/ip_local_port_range文件中的数值，但是这文件的值是受linux
+系统设置影响的，在我的centos VPS上被设置成了65000，那么pool_size就会为0，会报错。&lt;/p&gt;
+&lt;p&gt;为了保险起见，最好还是在配置文件里面按照上面的示范加上关于port的配置。&lt;/p&gt;
+&lt;h2&gt;功能示例&lt;/h2&gt;
+&lt;p&gt;安装完成后，在warden/bin 目录下有一个脚本。它可以用来测试warden所提供的所有功能，也可以用来调试已有的warden container。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;vcap&lt;/span&gt;&lt;span class="err"&gt;@&lt;/span&gt;&lt;span class="n"&gt;yae&lt;/span&gt; &lt;span class="n"&gt;warden&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="err"&gt;$&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;bin&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;warden&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
@@ -282,7 +278,6 @@ Linux Container容器是一种内核虚拟化技术，可以提供轻量级的�
 
 
 &lt;p&gt;详细的功能列表参见warden server源代码下的README文件：&lt;a href="https://github.com/cloudfoundry/warden/tree/master/warden"&gt;地址&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;在warden server 提供的功能基础上，DEA可以通过warden client 创建出供应用运行的容器，只需要给这些容器加上限制，就保证了平台的安全性。&lt;/p&gt;
 &lt;h2&gt;centos TIPS&lt;/h2&gt;
 &lt;p&gt;warden源代码的readme里阐述了container的文件系统的实现方式&lt;/p&gt;
 &lt;blockquote&gt;
@@ -313,7 +308,7 @@ This is implemented by using aufs on Ubuntu versions from 10.04 up to 11.10, and
 
 &lt;p&gt;正常情况下在这几个目录读写文件不会有问题，但是DEA在container中操作的时候会在根目录创建一个目录/app,放置内容
 问题就在这: /目录是readonly的  不可能创建得了文件夹。&lt;/p&gt;
-&lt;p&gt;有人会觉得直接吧/设置为rw不就可以了么。warden在centos上是根据一个文件夹（默认为/tmp/warden/rootfs/）作为文件系统模板来创建文件系统的，
+&lt;p&gt;有人会觉得直接把/设置为rw不就可以了么。warden在centos上是根据一个文件夹（默认为/tmp/warden/rootfs/）作为文件系统模板来创建文件系统的，
 设置/为rw会导致文件系统模板收到污染，即任何在container中进行的操作 会直接反映到这个文件夹上。&lt;/p&gt;
 &lt;p&gt;最后才用了一个笨办法：加上一行代码&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;overlay_directory_in_rootfs&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;app&lt;/span&gt; &lt;span class="n"&gt;rw&lt;/span&gt;
@@ -322,42 +317,11 @@ This is implemented by using aufs on Ubuntu versions from 10.04 up to 11.10, and
 
 &lt;p&gt;即创建container时新添加一个/app目录为rw。&lt;/p&gt;
 &lt;p&gt;后来又发现centos 上的container里无法创建软连接。但上层组件dea和buildpack部分代码使用了软链接，导致必须修改这些使用到了软链接的与warden相关的代码。
-那既然这样，上面的做法就没有必要了，因为如果使用centos上的warden，看样子不论如何都要修改上层dea代码，
+那既然这样，上面的做法就没有必要了，因为如果使用centos上的warden，不论如何都要修改上层dea代码，
 还不如彻底一点，把dea所有在warden container中的操作都在/home/vcap/app目录下进行，不再创建根目录下的/app，
 同时也不要使用任何软链接。这样warden就可以完全不用修改，保持跟官方的一致。
 但目前为止，我们仍然采用的是修改后的warden代码以保证上层代码不出错。&lt;/p&gt;
-&lt;h2&gt;安装&lt;/h2&gt;
-&lt;p&gt;&lt;a href="https://github.com/youdao-cf/docs/blob/master/install/warden.html.md"&gt;链接&lt;/a&gt;&lt;/p&gt;
-&lt;h2&gt;配置&lt;/h2&gt;
-&lt;p&gt;默认的配置大部分都不用修改，除了一个隐藏的配置可能会有问题：&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;port&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
-  &lt;span class="n"&gt;pool_start_port&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;10000&lt;/span&gt;
-  &lt;span class="n"&gt;pool_size&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;10000&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;在warden/lib/warden/config.rb中对这个配置是这么处理的&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nc"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;ip_local_port_range&lt;/span&gt;
-  &lt;span class="no"&gt;File&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;read&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/proc/sys/net/ipv4/ip_local_port_range&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;split&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;map&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="ss"&gt;:to_i&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="k"&gt;end&lt;/span&gt;
-
-&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nc"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;port_defaults&lt;/span&gt;
-  &lt;span class="n"&gt;_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ephemeral_stop&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ip_local_port_range&lt;/span&gt;
-  &lt;span class="n"&gt;start&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;ephemeral_stop&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
-  &lt;span class="n"&gt;stop&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;65000&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
-  &lt;span class="n"&gt;count&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;stop&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;start&lt;/span&gt;
-
-  &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="s2"&gt;&amp;quot;pool_start_port&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;start&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-    &lt;span class="s2"&gt;&amp;quot;pool_size&amp;quot;&lt;/span&gt;       &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;count&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-  &lt;span class="p"&gt;}&lt;/span&gt;
-&lt;span class="k"&gt;end&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;如果没有在配置文件中定义，则使用/proc/sys/net/ipv4/ip_local_port_range文件中的数值，但是这文件的值是受linux
-系统设置影响的，在我的centos VPS上被设置成了65000，那么pool_size就会为0，会报错。&lt;/p&gt;
-&lt;p&gt;为了保险起见，最好还是在配置文件里面按照上面的示范加上关于port的配置。&lt;/p&gt;</summary><category term="cloudfoundry"></category></entry><entry><title>解决ssh broken pipe的问题</title><link href="http://limengyun.com/backend/ssh-broken-pipe.html" rel="alternate"></link><updated>2013-05-30T10:20:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-05-30:backend/ssh-broken-pipe.html</id><summary type="html">&lt;p&gt;ssh连接在长时间不输入命令之后会出现连接中断的情况，即broken pipe的错误。&lt;/p&gt;
+&lt;p&gt;dea强依赖warden，但在非ubuntu系统上warden和dea无法正常协同运行，这应该是阻碍大部分人在其他平台上成功运行cloudfoundry的原因。&lt;/p&gt;</summary><category term="cloudfoundry"></category></entry><entry><title>解决ssh broken pipe的问题</title><link href="http://limengyun.com/backend/ssh-broken-pipe.html" rel="alternate"></link><updated>2013-05-30T10:20:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-05-30:backend/ssh-broken-pipe.html</id><summary type="html">&lt;p&gt;ssh连接在长时间不输入命令之后会出现连接中断的情况，即broken pipe的错误。&lt;/p&gt;
 &lt;p&gt;解决办法有两个&lt;/p&gt;
 &lt;h2&gt;在服务器端修改ssh server的配置&lt;/h2&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;vi&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;etc&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;ssh&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;sshd_config&lt;/span&gt;
@@ -447,16 +411,55 @@ This is implemented by using aufs on Ubuntu versions from 10.04 up to 11.10, and
          &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;protocol&lt;/span&gt; &lt;span class="n"&gt;version&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt; &lt;span class="n"&gt;only&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;  &lt;span class="n"&gt;ProtocolKeepAlives&lt;/span&gt; &lt;span class="n"&gt;and&lt;/span&gt; &lt;span class="n"&gt;SetupTimeOut&lt;/span&gt; &lt;span class="n"&gt;are&lt;/span&gt; &lt;span class="n"&gt;Debian&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;specific&lt;/span&gt;
          &lt;span class="n"&gt;compatibility&lt;/span&gt; &lt;span class="n"&gt;aliases&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;this&lt;/span&gt; &lt;span class="n"&gt;option&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;</summary><category term="linux"></category></entry><entry><title>Cloud Controller</title><link href="http://limengyun.com/backend/cloudfoundry-cloud_controller.html" rel="alternate"></link><updated>2013-05-29T10:20:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-05-29:backend/cloudfoundry-cloud_controller.html</id><summary type="html">&lt;p&gt;Cloud Controller 是整个cloudfoundry平台的控制中心。它对外提供api，所有的操作都是依赖这些api来进行的。
-这里是详细的api列表：http://docs.cloudfoundry.com/docs/reference/cc-api.html
+这里是详细的&lt;a href="http://docs.cloudfoundry.com/docs/reference/cc-api.html"&gt;api列表&lt;/a&gt;
 同时在项目的根目录的docs目录下有详细的设计文档。&lt;/p&gt;
 &lt;p&gt;Cloud Controller 2.0引入了多个新概念，如Organizations，Spaces，Domains，Routes
-这篇官方文档http://docs.cloudfoundry.com/docs/using/managing-apps/orgs-and-spaces.html可以很好的帮助你理解这些概念。&lt;/p&gt;
-&lt;p&gt;直接使用这些API还是比较费劲的，官方和第三方都有不同语言的基于这些api的lib，比如官方的ruby lib为CFoundry（https://github.com/cloudfoundry/cfoundry）。
-进行更上层开发的时候可以基于这些lib而不是直接操作api，会省下不少时间。官方的客户端cf也是基于cfoundry进行的开发。&lt;/p&gt;
+这篇&lt;a href="http://docs.cloudfoundry.com/docs/using/managing-apps/orgs-and-spaces.html"&gt;官方文档&lt;/a&gt;可以很好的帮助你理解这些概念。&lt;/p&gt;
+&lt;p&gt;Cloud Controller没有太多可讲，就是哪个API收到请求了就干哪些事情，或通过直接请求CCDB数据库，或通过向NATS发送对应的消息，来实现API所应当提供的功能，包括但不限于&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;对apps的增删改读；&lt;/li&gt;
+&lt;li&gt;启动、停止应用程序；&lt;/li&gt;
+&lt;li&gt;Staging apps（把apps打包成一个droplet）；&lt;/li&gt;
+&lt;li&gt;修改应用程序运行环境，包括instance、mem等等；&lt;/li&gt;
+&lt;li&gt;管理service，包括service与app的绑定等；&lt;/li&gt;
+&lt;li&gt;Cloud环境的管理；&lt;/li&gt;
+&lt;li&gt;修改Cloud的用户信息；&lt;/li&gt;
+&lt;li&gt;查看Cloud Foundry，以及每一个app的log信息。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2&gt;Cloud Controller 的用户认证&lt;/h2&gt;
+&lt;p&gt;Cloud Controller 2.0 去除了原有的用户认证相关代码，改为使用与uaa配合验证的方式，即uaa负责认证用户之后生成token，然后用户请求Cloud Controller时，
+需要将这个token以request header的形式伴随HTTP请求发送。Cloud Controller对称解密token得到用户信息。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;REQUEST&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;GET&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="o"&gt;://&lt;/span&gt;&lt;span class="n"&gt;api&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;cf2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;youdao&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;com&lt;/span&gt;&lt;span class="sr"&gt;/v2/spaces/1136694c-1bc2-495e-9aac-1b89894a6dcc/s&lt;/span&gt;&lt;span class="n"&gt;ummary&lt;/span&gt;
+&lt;span class="n"&gt;REQUEST_HEADERS&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+  &lt;span class="n"&gt;Accept&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;application&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;json&lt;/span&gt;
+  &lt;span class="n"&gt;Authorization&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;bearer&lt;/span&gt; &lt;span class="n"&gt;eyJhbGciOiJIUzI1NiJ9&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;eyJqdGkiOiIzZjMyMTNmZS1jODMzLTQ4YmMtYTYwZi00ZmM0NTAzODk0ZjAiLCJzdWIiOiJkNmE2M2Q1OC04ZmQ4LTRhNzUtOGZhOC1mNWI2ZDJjOGQwMDAiLCJzY29wZSI6WyJwYXNzd29yZC53cml0ZSIsImNsb3VkX2NvbnRyb2xsZXIud3JpdGUiLCJvcGVuaWQiLCJjbG91ZF9jb250cm9sbGVyLnJlYWQiXSwiY2xpZW50X2lkIjoiY2YiLCJjaWQiOiJjZiIsInVzZXJfaWQiOiJkNmE2M2Q1OC04ZmQ4LTRhNzUtOGZhOC1mNWI2ZDJjOGQwMDAiLCJ1c2VyX25hbWUiOiJsaW15IiwiZW1haWwiOiJsaW15QHJkLm5ldGVhc2UuY29tIiwiaWF0IjoxMzcxMzcyNjQyLCJleHAiOjEzNzE5Nzc0NDIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODA4MC91YWEvb2F1dGgvdG9rZW4iLCJhdWQiOlsib3BlbmlkIiwiY2xvdWRfY29udHJvbGxlciIsInBhc3N3b3JkIl19&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;cd11MxTrbCCpG_5fU9_DV1_bE9Nz_2lQ_c1kari1WXI&lt;/span&gt;
+  &lt;span class="n"&gt;Content&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;Length&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;
+&lt;span class="n"&gt;RESPONSE&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;200&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;RESPONSE_HEADERS&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+  &lt;span class="n"&gt;connection&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;keep&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;alive&lt;/span&gt;
+  &lt;span class="n"&gt;content&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;length&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;88&lt;/span&gt;
+  &lt;span class="n"&gt;content&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;type&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;application&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;json&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;&lt;span class="n"&gt;charset&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;utf&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt;
+  &lt;span class="n"&gt;date&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Mon&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;17&lt;/span&gt; &lt;span class="n"&gt;Jun&lt;/span&gt; &lt;span class="mi"&gt;2013&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;38&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;41&lt;/span&gt; &lt;span class="n"&gt;GMT&lt;/span&gt;
+  &lt;span class="n"&gt;server&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;nginx&lt;/span&gt;
+  &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;frame&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;options&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;sameorigin&lt;/span&gt;
+  &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;vcap&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;a9f046ec&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;9&lt;/span&gt;&lt;span class="n"&gt;e1d&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;423&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;ae8e&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;985495504&lt;/span&gt;&lt;span class="n"&gt;d08&lt;/span&gt;
+  &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;xss&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;protection&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="n"&gt;mode&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;block&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;因此，Cloud Controller 配置项中的uaa -&amp;gt; symmetric_secret 要和uaa中的密钥保持一致。&lt;/p&gt;
+&lt;p&gt;真正直接使用这些API还是比较费劲的，官方和第三方都有不同语言的基于这些api的lib，
+比如官方的ruby lib为CFoundry（https://github.com/cloudfoundry/cfoundry）。
+基于Cloud Controller api进行更上层开发的时候可以基于这些lib而不是直接操作api，会省下不少时间。官方的客户端cf也是基于cfoundry进行的开发。&lt;/p&gt;
 &lt;h2&gt;安装&lt;/h2&gt;
 &lt;p&gt;TBD&lt;/p&gt;
 &lt;h2&gt;配置&lt;/h2&gt;
-&lt;p&gt;TBD&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;external_domain&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;api2&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;vcap&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;me&lt;/span&gt;
+&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="n"&gt;external_domain&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;api&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cf2&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;youdao&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;gorouter在接收注册的时候是数组格式。将默认配置改为数组，不然router会报错。&lt;/p&gt;
 &lt;h2&gt;TIPS&lt;/h2&gt;
 &lt;p&gt;Cloud Controller 需要一个数据库（即CCDB），如果你选择mysql，请使用Innodb或其他支持事务处理的引擎，千万记得不要使用默认的MYisAM引擎，因为它不支持事务。&lt;/p&gt;
 &lt;p&gt;请看lib/cloud_controller/rest_controller/model_controller.rb&lt;/p&gt;

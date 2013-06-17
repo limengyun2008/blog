@@ -5,28 +5,28 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>http://limengyun.com/index.html</loc>
-<lastmod>2013-06-17T16:05:52-00:00</lastmod>
+<lastmod>2013-06-17T18:51:59-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://limengyun.com/archives.html</loc>
-<lastmod>2013-06-17T16:05:52-00:00</lastmod>
+<lastmod>2013-06-17T18:51:59-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://limengyun.com/tags.html</loc>
-<lastmod>2013-06-17T16:05:52-00:00</lastmod>
+<lastmod>2013-06-17T18:51:59-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://limengyun.com/categories.html</loc>
-<lastmod>2013-06-17T16:05:52-00:00</lastmod>
+<lastmod>2013-06-17T18:51:59-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -34,13 +34,6 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
 <loc>http://limengyun.com/cloudfoundry/index.html</loc>
 <lastmod>2013-06-17T10:00:00-00:00</lastmod>
-<changefreq>monthly</changefreq>
-<priority>0.5</priority>
-</url>
-
-<url>
-<loc>http://limengyun.com/cloudfoundry/review.html</loc>
-<lastmod>2013-06-13T11:00:00-00:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
@@ -103,42 +96,42 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>http://limengyun.com/category/backend.html</loc>
-<lastmod>2013-06-17T16:05:52-00:00</lastmod>
+<lastmod>2013-06-17T18:51:59-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://limengyun.com/category/misc.html</loc>
-<lastmod>2013-06-17T16:05:52-00:00</lastmod>
+<lastmod>2013-06-17T18:51:59-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://limengyun.com/tag/pelican.html</loc>
-<lastmod>2013-06-17T16:05:52-00:00</lastmod>
+<lastmod>2013-06-17T18:51:59-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://limengyun.com/tag/cloudfoundry.html</loc>
-<lastmod>2013-06-17T16:05:52-00:00</lastmod>
+<lastmod>2013-06-17T18:51:59-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://limengyun.com/tag/linux.html</loc>
-<lastmod>2013-06-17T16:05:52-00:00</lastmod>
+<lastmod>2013-06-17T18:51:59-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://limengyun.com/author/limengyun.html</loc>
-<lastmod>2013-06-17T16:05:52-00:00</lastmod>
+<lastmod>2013-06-17T18:51:59-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>

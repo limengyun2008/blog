@@ -54,19 +54,23 @@
 <li>针对不同类型应用专门编写staging程序叫 buildpack</li>
 <li>解压运行droplet的组件叫dea。</li>
 </ul>
-<h2>staging和running droplet的过程</h2>
+<h2>dea职责</h2>
+<h3>staging和running droplet</h3>
 <p>在1.0中，staging 是由专门的组件stager来完成的，在2.0中去掉了stager改为直接在dea中进行staging。</p>
+<p>这是dea最重要的两个职责。</p>
 <p>官方专门针对staging和running的流程撰写了文档： <a href="http://docs.cloudfoundry.com/docs/running/architecture/how-applications-are-staged.html">文章链接</a></p>
-<h2>应用对外提供服务的过程。</h2>
+<p>如何在众多dea中选择合适的dea来完成任务，是通过消息机制来实现的，参见在<a href="/cloudfoundry/nats.html">NATS细节</a>中的例子“cloud controller指挥dea进行打包和运行”</p>
+<h3>向router注册使应用实例可以对外提供服务</h3>
 <p>dea上的应用流量无论有多大，对dea的影响都微乎其微。
 因为dea不对外提供服务，dea控制的container才对外提供服务。
-router和dea会定时通过NATS通信，dea将dea下的container的ip，host，port等消息报告给router，这一部分在<a href="./nats.html">NATS细节</a>中已经说明过。</p>
-<h2>dea directory server和file api server</h2>
+router和dea会定时通过NATS通信，dea将dea下的container的ip，host，port等消息报告给router，参见在<a href="/cloudfoundry/nats.html">NATS细节</a>中的例子“向router注册”</p>
+<h3>查看应用文件</h3>
 <p>dea启动时会附带启动一个file api server，而dea directory server的启动则是单独进行的，代码在dea/go目录下。
-这两个server的区别在于</p>
-<p>dea directory server 会向router注册，外部可以访问到dea directory server。从而所有跟dea相关的上传（上传droplet）和下载（获取各种文件内容，如log文件）都是直接通过dea directory server来进行的。
-file api server起一个验证并返回请求真实路径的作用
-比如执行cf logs XXX -t命令，表面上看起来是客户端cf向cloud controller发起请求，但实际上是cloud controller 重定向到dea directory server来提供服务的</p>
+这两个server的区别在于：</p>
+<p>dea directory server 启动后会向router注册，即外部可以访问到dea directory server。
+所有跟dea相关的上传（上传droplet）和下载（获取各种文件内容，如log文件）都是直接通过dea directory server来进行的。
+file api server起一个验证并返回请求真实路径的作用</p>
+<p>比如执行cf logs XXX -t命令，表面上看起来是客户端cf向cloud controller发起请求，但实际上是cloud controller 重定向到dea directory server来提供服务的</p>
 <div class="highlight"><pre><span class="n">Getting</span> <span class="n">logs</span> <span class="k">for</span> <span class="mi">23423</span> <span class="err">#</span><span class="mi">0</span><span class="o">&gt;&gt;&gt;</span>
 <span class="nl">REQUEST:</span> <span class="n">GET</span> <span class="n">http</span><span class="o">:</span><span class="c1">//api.cf2.youdao.com/v2/apps/de48824b-8243-4218-8b52-d92c974453f8/instances/0/files/logs</span>
 <span class="nl">REQUEST_HEADERS:</span>
@@ -105,12 +109,13 @@ file api server起一个验证并返回请求真实路径的作用
 <h2>自定义buildpack支持</h2>
 <p>如果想要cloudfoundry支持一门新的语言或框架，自定义一个buildpack就可以了，
 比如我们就将官方的java buildpack修改为支持ant+ivy编译，且从tomcat改为使用resin。
-（可真别以为J2EE架构下一个war包能在resin下跑就一定能在tomcat下跑）
+（J2EE架构下一个war包能在resin下跑不一定能在tomcat下跑）
 这样就可以直接上传源代码而不用上传war包，且与公司的习惯保持一致。。</p>
-<p>每一种语言只有一种buildpack，不同类别的应用打包是在buildpack代码里面进行区分的。在buildpacks/vendor目录下，官方提供了三种语言（java，nodejs，ruby）的若干种应用类型的支持，同时也提供了一种方便添加自定义buildpack支持的机制。</p>
+<p>每一种语言只有一个buildpack，不同类别的应用打包在buildpack代码里面单独进行区分。
+在buildpacks/vendor目录下，官方提供了三种语言（java，nodejs，ruby）的若干种应用类型的支持，同时也提供了一种方便添加自定义buildpack支持的机制。</p>
 <p>新增添一个语言的buildpack需要实现以下三个脚本：</p>
 <ul>
-<li>./bin/detect 检查应用的类型，例如是一个sinatra应用还是一个rails应用，以供compile脚本使用</li>
+<li>./bin/detect 检查同一种语言下应用的类型，例如是一个sinatra应用还是一个rails应用，以供compile脚本使用</li>
 <li>./bin/compile  打包的主脚本，根据detect的结果选择打包的方式。</li>
 <li>./bin/release  输出自定义的启动命令等相关信息，以便写入到最终的启动脚本。</li>
 </ul>
@@ -121,11 +126,11 @@ file api server起一个验证并返回请求真实路径的作用
 <p>官方或开源第三方的buildpack在staging的时候基本都通过http下载一些东西，比如apache等等，关键在于这些地址都是在amazon s3上。
 在天朝的网络下，采用这种方式就要看GFW的心情了，要正常使用最好把那些下载地址全部换成内网地址。</p>
 <h4>注意2：</h4>
-<p>同样，有些buildpack 会将/home/vcap/app  软连接到/app/app   然后再在/app/app中进行操作。
-但在centos 6上使用默认文件系统实现的warden container 不具备完整的软连接功能（无法cd进入软连接后的目录，详情见warden的cent OS tip），
+<p>有些buildpack 会将/home/vcap/app  软连接到/app/app   然后再在/app/app中进行操作。
+但之前在warden中提到过，在centos 6上使用默认文件系统实现的warden container 不具备完整的软连接功能（无法cd进入软连接后的目录，详情见warden的cent OS tip），
 所以想要在centos上正常使用仍然需要修改这部分代码。</p>
 <h4>提示：</h4>
-<p>http://www.appfog.com 是一个基于cloudfoundry的paas，他自定义了许多语言的支持并在github上开源出来（github： https://github.com/appfog/ ）。 </p>
+<p>http://www.appfog.com 是一个基于cloudfoundry的paas，他自定义了许多语言的buildpack支持并在github上开源出来（github： https://github.com/appfog/ ）。</p>
     </div><!-- /.entry-content -->
         <div class="comments">
       <h2>Comments !</h2>

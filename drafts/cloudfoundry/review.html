@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+        <meta charset="utf-8">
+        <title>cloudfoundry的一些想法</title>
+        <link rel="stylesheet" href="../../theme/css/main.css">
+                <link href="http://limengyun.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="limengyun's blog Atom Feed" />
+                
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="../../">limengyun's blog </a></h1>
+                <nav><ul>
+                                                                                    <li class="active"><a href="../../category/backend.html">backend</a></li>
+                                    <li ><a href="../../category/misc.html">misc</a></li>
+                                                </ul></nav>
+        </header><!-- /#banner -->
+        <section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="../../cloudfoundry/review.html" rel="bookmark"
+           title="Permalink to cloudfoundry的一些想法">cloudfoundry的一些想法</a></h1>
+          </header>
+
+    <div class="entry-content">
+      <footer class="post-info">
+        <abbr class="published" title="2013-06-13T11:00:00">
+                Thu 13 June 2013
+        </abbr>
+
+                <address class="vcard author">
+                By <a class="url fn" href="../../author/limengyun.html">limengyun</a>
+        </address>
+        <p>In <a href="../../category/backend.html">backend</a>. </p>
+<p>tags: <a href="../../tag/cloudfoundry.html">cloudfoundry</a></p>
+</footer><!-- /.post-info -->      <h2>PAAS 拯救世界？</h2>
+<p>就在前几天，云计算大会上代表cloudfoundry官方做展示的是VMware和EMC两家将云计算业务分拆出来组成的新公司Pivotal（<a href="http://www.csdn.net/article/2013-04-25/2815037-GE_invest_CloudFoundry_and_Greenplum">文章链接</a>），说明官方非常重视这个东西，他们已经开始着手cloudfoundry的商业进程了。</p>
+<p>同时还有京东和Pivotal进行协作研发cloudfoundry的消息（<a href="http://tech.sina.com.cn/it/2013-06-07/09078422241.shtml">文章链接</a>），京东这似乎是要借外部力量学amazon卖云资源了么？</p>
+<p>但关于PAAS这个东西，有人说是未来，我个人持保留态度。 PaaS的确能够非常迅速的扩容，应对快速的流量增长；合理使用也能很大程度上节省硬件的之处<br />
+但它很难解决所有的需求，更多的只适合处理逻辑简单但同时有着大流量，高并发的应用，举两例：</p>
+<ol>
+<li>
+<p>真正的大公司产品，有着你想不到的各种杂七杂八的需求。但PAAS上有着诸多限制的，比如不能本地写文件，不能访问内网等等，请看<a href="http://docs.cloudfoundry.com/docs/using/app-arch/index.html">文章链接</a>
+虽然这些技术限制都可以通过某些手段避开，但无疑增大了开发难度。如果碰到下面的需求：</p>
+<ul>
+<li>定时执行某个任务，普通机器上crontab，paas上怎么办？把这个任务做成一个http请求，然后定时访问这个http接口来执行</li>
+<li>随时查看log，普通机器上tail -f， paas上怎么办？先用各种工具把log导出来，然后再看</li>
+</ul>
+<p>所以，要是需求很杂，需要有应用的完整控制权，就不要用PAAS来恶心自己了。</p>
+</li>
+<li>
+<p>流量超大的应用大部分是分布式的，在cloudfoundry上部署一个分布式应用就超级麻烦。
+因为PAAS先天的动态分配资源的特性，应用不会在特定的某台机器上运行，
+如果应用自身都不知道自己在哪台机器上，怎么在config文件里面去填其他组件的host？</p>
+</li>
+</ol>
+<p>所以要想在paas上开发，先得对PAAS有个基本的了解，需要自己判断自己的应用是不是需要挪到PaaS上，可不是云平台包治百病。
+而且用上PaaS再想迁移下来就不是那么容易了，cloudfoundry还好，GAE这种用SDK的应用就等于要重写一遍。</p>
+<h2>思考: 应不应该选择cloudfoundry</h2>
+<p>一个人+一个实习生做了半年，到现在我还在思考选择cloudfoundry是对还是错。</p>
+<p>如果把这个作为一个PAAS技术储备的工作来做，cloudfoundry是毫无疑问的首选。
+因为考虑到cloudfoundry一直到现在才开发进入稳定期，
+开始的时候基本没有文档可言，类似“stager模块在2.0中不再使用，改为在dea中使用buildpack替代”这种关键信息都只能靠着每天去看帖子来获取，
+特别是辛辛苦苦把1.0安装成功没过多久在一个回帖中看到1.0不再开发导致之前的努力大部分浪费，加上还要自己做centos上的适配。我们耗费半年的时间也很正常。</p>
+<p>但如果不是技术储备，仅仅为了改进一个内部使用的东西让它支持一门新语言，耗费半年是否值得？
+而且原来YAE是个单机应用，利用PHP可以一台服务器服务多个应用的特性仅占用了一台机器，
+基于cloudfoundry的新YAE一台机器肯定不可能，所以估计都不一定能应用的起来，先看看空余机器再说。</p>
+<p>综合考虑，这个项目是不是就不应该选择开始……或者应该选择晚一点再开始，等它稳定了再进行研究？
+可是不深入研究cloudfoundry，仅从官方吹得天花乱坠的介绍中，这些问题都是无法被发现的</p>
+<p>得到一个教训：开源软件不都是甜的，对于一个不成熟的开源软件，用之前要三思，即便用也要考虑好时机。</p>
+    </div><!-- /.entry-content -->
+    
+  </article>
+</section>
+        <section id="extras" class="body">
+                        <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                                                    <li><a href="http://getpelican.com/">Pelican</a></li>
+                                                    <li><a href="http://python.org/">Python.org</a></li>
+                                                    <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                                                    <li><a href="/pages/markdown-syntax.html">Markdown Syntax</a></li>
+                                                </ul>
+                </div><!-- /.blogroll -->
+                                <div class="social">
+                        <h2>友情链接</h2>
+                        <ul>
+                            <li><a href="http://limengyun.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            
+                                                    <li><a href="http://huihui.cn/?keyfrom=limengyun.com">网易惠惠</a></li>
+                                                    <li><a href="http://www.xiaoshuov.com">xiaoshuov</a></li>
+                                                </ul>
+                </div><!-- /.social -->
+                </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>&copy; copyright 2013. <a href="http://limengyun.com">limengyun.com</a>, thanks for visiting!</p>
+        </footer><!-- /#contentinfo -->
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-37781337-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+<script type="text/javascript">
+    var disqus_shortname = 'limengyun';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>
