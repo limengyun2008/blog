@@ -2,8 +2,8 @@
 <html lang="cn">
 <head>
         <meta charset="utf-8">
-        <title>limengyun's blog</title>
-        <link rel="stylesheet" href="./theme/css/main.css">
+        <title>Console</title>
+        <link rel="stylesheet" href="../theme/css/main.css">
                 <link href="http://limengyun.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="limengyun's blog Atom Feed" />
                 
         <!--[if IE]>
@@ -13,35 +13,62 @@
 
 <body id="index" class="home">
         <header id="banner" class="body">
-                <h1><a href="./">limengyun's blog </a></h1>
+                <h1><a href="../">limengyun's blog </a></h1>
                 <nav><ul>
-                                                                                    <li ><a href="./category/backend.html">backend</a></li>
-                                    <li ><a href="./category/misc.html">misc</a></li>
+                                                                                    <li class="active"><a href="../category/backend.html">backend</a></li>
+                                    <li ><a href="../category/misc.html">misc</a></li>
                                                 </ul></nav>
         </header><!-- /#banner -->
         <section id="content" class="body">
-<h1>Archives for limengyun's blog</h1>
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="../cloudfoundry/console.html" rel="bookmark"
+           title="Permalink to Console">Console</a></h1>
+          </header>
 
-<dl>
-    <dt>Mon 17 June 2013</dt>
-    <dd><a href="./cloudfoundry/index.html">cloudfoundry 2.0小结</a></dd>
-    <dt>Thu 13 June 2013</dt>
-    <dd><a href="./cloudfoundry/dea.html">DEA 和 buildpack</a></dd>
-    <dt>Thu 13 June 2013</dt>
-    <dd><a href="./cloudfoundry/warden.html">warden及平台安全</a></dd>
-    <dt>Thu 30 May 2013</dt>
-    <dd><a href="./backend/ssh-broken-pipe.html">解决ssh broken pipe的问题</a></dd>
-    <dt>Wed 29 May 2013</dt>
-    <dd><a href="./backend/cloudfoundry-cloud_controller.html">Cloud Controller</a></dd>
-    <dt>Wed 29 May 2013</dt>
-    <dd><a href="./cloudfoundry/console.html">Console</a></dd>
-    <dt>Wed 29 May 2013</dt>
-    <dd><a href="./cloudfoundry/nats.html">NATS</a></dd>
-    <dt>Wed 29 May 2013</dt>
-    <dd><a href="./backend/blogging-with-pelican.html">用pelican搭建自己的博客</a></dd>
-    <dt>Tue 01 January 2013</dt>
-    <dd><a href="./helloworld.html">Hello, World!</a></dd>
-</dl>
+    <div class="entry-content">
+      <footer class="post-info">
+        <abbr class="published" title="2013-05-29T10:20:00">
+                Wed 29 May 2013
+        </abbr>
+
+                <address class="vcard author">
+                By <a class="url fn" href="../author/limengyun.html">limengyun</a>
+        </address>
+        <p>In <a href="../category/backend.html">backend</a>. </p>
+<p>tags: <a href="../tag/cloudfoundry.html">cloudfoundry</a></p>
+</footer><!-- /.post-info -->      <p>在写这篇文章的前两天，cloudfoundry 2.0 的官方云出品了。伴随着一个web console：<a href="http://run.pivotal.io/">地址</a></p>
+<p>我们自己也开发了一个console……</p>
+<h2>咱的console有哪些不同？</h2>
+<p>可以先用用官方的，然后再看视频……</p>
+<p>在cloudfoundry api的框架范围内，我们赋予了更多的功能适应内部使用的需要。</p>
+<p>首先，登录使用LDAP，不提供注册功能。当然这是属于login-server的修改范畴。</p>
+<p>第二，屏蔽了space的概念，首次登录默认创建与LDAP账号相同的organization，在这个organization下创建一个名为default的space，
+space对用户不可见，但用户所有的app都被放置在default space中，所以感觉上是应用都是直接归属于organization。 这样设计是感觉两层的权限对内部使用还是太繁琐了</p>
+<p>第三，用户可以在web上直接一键创建应用，而不用跟官方console一样，还需要使用cf命令行。
+且应用一旦创建便绑定一个svn代码地址，修改svn之后，在web上输入版本号便可以更新应用。</p>
+<p>第四，个人觉得长得漂亮，更直观……</p>
+<p>当然，时间原因，先做demo，代码基本没进行边界和错误处理，请勿吐槽。</p>
+    </div><!-- /.entry-content -->
+        <div class="comments">
+      <h2>Comments !</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+       /* var disqus_identifier = "cloudfoundry/console.html";
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//limengyun.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();*/
+      </script>
+<!-- UY BEGIN -->
+<div id="uyan_frame"></div>
+<script type="text/javascript" id="UYScript" src="http://v1.uyan.cc/js/iframe.js?UYUserId=1531463" async=""></script>
+<!-- UY END -->
+    </div>
+    
+  </article>
 </section>
         <section id="extras" class="body">
                         <div class="blogroll">

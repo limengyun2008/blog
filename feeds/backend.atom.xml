@@ -54,6 +54,7 @@
 &lt;p&gt;&lt;a href="/cloudfoundry/warden.html"&gt;warden及平台安全&lt;/a&gt;&lt;/p&gt;
 &lt;h4&gt;Cloud Controller&lt;/h4&gt;
 &lt;p&gt;Cloud Controller是CloudFoundry的管理模块。对外提供平台全部的api&lt;/p&gt;
+&lt;p&gt;&lt;a href="/cloudfoundry/warden.html"&gt;Cloud Controller&lt;/a&gt;&lt;/p&gt;
 &lt;h4&gt;DEA&lt;/h4&gt;
 &lt;p&gt;接收来自cloud controller的指令，根据指令使用warden提供的虚拟容器对应用进行打包，运行等关键操作。&lt;/p&gt;
 &lt;p&gt;&lt;a href="/cloudfoundry/dea.html"&gt;dea和buildpack&lt;/a&gt;&lt;/p&gt;
@@ -69,11 +70,8 @@
 &lt;/ul&gt;
 &lt;h4&gt;自行开发的组件&lt;/h4&gt;
 &lt;ul&gt;
-&lt;li&gt;console： cloudfoundry的web界面。官方一直到6月10号才有web界面。&lt;/li&gt;
-&lt;li&gt;mysql&lt;/li&gt;
-&lt;li&gt;monitor&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&lt;a href="/cloudfoundry/review.html"&gt;总结&lt;/a&gt;&lt;/p&gt;</summary><category term="cloudfoundry"></category></entry><entry><title>DEA 和 buildpack</title><link href="http://limengyun.com/cloudfoundry/dea.html" rel="alternate"></link><updated>2013-06-13T10:00:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-06-13:cloudfoundry/dea.html</id><summary type="html">&lt;h2&gt;术语&lt;/h2&gt;
+&lt;li&gt;console： cloudfoundry的web界面，自行开发的，详情：&lt;a href="/cloudfoundry/console.html"&gt;console&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</summary><category term="cloudfoundry"></category></entry><entry><title>DEA 和 buildpack</title><link href="http://limengyun.com/cloudfoundry/dea.html" rel="alternate"></link><updated>2013-06-13T10:00:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-06-13:cloudfoundry/dea.html</id><summary type="html">&lt;h2&gt;术语&lt;/h2&gt;
 &lt;p&gt;dea组件的全称是 droplet execution agency， droplet是cloudfoundry自创的一个概念，它是一个app的可运行实例配合实例启停脚本的压缩包。&lt;/p&gt;
 &lt;p&gt;举例来说，如果我们要让一个php app程序运行，我们将代码下载之后需要做什么呢？&lt;/p&gt;
 &lt;ul&gt;
@@ -450,7 +448,7 @@ This is implemented by using aufs on Ubuntu versions from 10.04 up to 11.10, and
 &lt;p&gt;因此，Cloud Controller 配置项中的uaa -&amp;gt; symmetric_secret 要和uaa中的密钥保持一致。&lt;/p&gt;
 &lt;p&gt;真正直接使用这些API还是比较费劲的，官方和第三方都有不同语言的基于这些api的lib，
 比如官方的ruby lib为CFoundry（https://github.com/cloudfoundry/cfoundry）。
-基于Cloud Controller api进行更上层开发的时候可以基于这些lib而不是直接操作api，会省下不少时间。官方的客户端cf也是基于cfoundry进行的开发。&lt;/p&gt;
+基于Cloud Controller api进行更上层开发（比如自己实现一个web界面），可以基于这些lib而不是直接操作api，会省下不少时间。官方的客户端cf也是基于cfoundry进行的开发。&lt;/p&gt;
 &lt;h2&gt;安装&lt;/h2&gt;
 &lt;p&gt;TBD&lt;/p&gt;
 &lt;h2&gt;配置&lt;/h2&gt;
@@ -488,16 +486,18 @@ This is implemented by using aufs on Ubuntu versions from 10.04 up to 11.10, and
 
 
 &lt;p&gt;可以看到Cloud Controller 的创建或更新都依赖数据库的事务功能：先创建或更新，再判断是不是有权限执行操作。&lt;/p&gt;
-&lt;p&gt;如果使用了一个不支持事务的数据库，虽然不会报错，但任何无权限的创建或更新都会被执行，留下隐患。&lt;/p&gt;</summary><category term="cloudfoundry"></category></entry><entry><title>Console</title><link href="http://limengyun.com/backend/cloudfoundry-console.html" rel="alternate"></link><updated>2013-05-29T10:20:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-05-29:backend/cloudfoundry-console.html</id><summary type="html">&lt;p&gt;在写这篇文章的前两天，cloudfoundry 2.0 的官方云出品了。伴随着一个web界面：http://run.pivotal.io/  &lt;/p&gt;
-&lt;h2&gt;console有哪些不同？&lt;/h2&gt;
+&lt;p&gt;如果使用了一个不支持事务的数据库，虽然不会报错，但任何无权限的创建或更新都会被执行，留下隐患。&lt;/p&gt;</summary><category term="cloudfoundry"></category></entry><entry><title>Console</title><link href="http://limengyun.com/cloudfoundry/console.html" rel="alternate"></link><updated>2013-05-29T10:20:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-05-29:cloudfoundry/console.html</id><summary type="html">&lt;p&gt;在写这篇文章的前两天，cloudfoundry 2.0 的官方云出品了。伴随着一个web console：&lt;a href="http://run.pivotal.io/"&gt;地址&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;我们自己也开发了一个console……&lt;/p&gt;
+&lt;h2&gt;咱的console有哪些不同？&lt;/h2&gt;
 &lt;p&gt;可以先用用官方的，然后再看视频……&lt;/p&gt;
-&lt;p&gt;为了最大化的实现原有YAE的功能，我们为console赋予了更多的功能，同时为了适应内部使用的需要，修改或添加了一些东西：&lt;/p&gt;
-&lt;p&gt;首先，登录使用LDAP，不提供注册功能。&lt;/p&gt;
+&lt;p&gt;在cloudfoundry api的框架范围内，我们赋予了更多的功能适应内部使用的需要。&lt;/p&gt;
+&lt;p&gt;首先，登录使用LDAP，不提供注册功能。当然这是属于login-server的修改范畴。&lt;/p&gt;
 &lt;p&gt;第二，屏蔽了space的概念，首次登录默认创建与LDAP账号相同的organization，在这个organization下创建一个名为default的space，
 space对用户不可见，但用户所有的app都被放置在default space中，所以感觉上是应用都是直接归属于organization。 这样设计是感觉两层的权限对内部使用还是太繁琐了&lt;/p&gt;
 &lt;p&gt;第三，用户可以在web上直接一键创建应用，而不用跟官方console一样，还需要使用cf命令行。
 且应用一旦创建便绑定一个svn代码地址，修改svn之后，在web上输入版本号便可以更新应用。&lt;/p&gt;
-&lt;p&gt;当然，时间原因，先做demo，代码基本没进行边界和错误处理……&lt;/p&gt;</summary><category term="cloudfoundry"></category></entry><entry><title>NATS</title><link href="http://limengyun.com/cloudfoundry/nats.html" rel="alternate"></link><updated>2013-05-29T10:20:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-05-29:cloudfoundry/nats.html</id><summary type="html">&lt;p&gt;NATS是一个轻量级的基于pub-sub机制的分布式消息队列系统，它负责衔接各组件。官方文档在这里：(http://docs.cloudfoundry.com/docs/running/architecture/messaging-nats.html)。&lt;/p&gt;
+&lt;p&gt;第四，个人觉得长得漂亮，更直观……&lt;/p&gt;
+&lt;p&gt;当然，时间原因，先做demo，代码基本没进行边界和错误处理，请勿吐槽。&lt;/p&gt;</summary><category term="cloudfoundry"></category></entry><entry><title>NATS</title><link href="http://limengyun.com/cloudfoundry/nats.html" rel="alternate"></link><updated>2013-05-29T10:20:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-05-29:cloudfoundry/nats.html</id><summary type="html">&lt;p&gt;NATS是一个轻量级的基于pub-sub机制的分布式消息队列系统，它负责衔接各组件。官方文档在这里：(http://docs.cloudfoundry.com/docs/running/architecture/messaging-nats.html)。&lt;/p&gt;
 &lt;p&gt;但看完官方文档仍然有点不太直观，举几个典型的例子来说明：&lt;/p&gt;
 &lt;h2&gt;向router注册&lt;/h2&gt;
 &lt;p&gt;不管是外部用户对平台上的应用发起的请求，还是内部组件提供对外的api（uaa和cloud controller），都是通过router转发的request，要能让router转发则首先需要向router注册。
