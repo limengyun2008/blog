@@ -54,7 +54,7 @@
 &lt;p&gt;&lt;a href="/cloudfoundry/warden.html"&gt;warden及平台安全&lt;/a&gt;&lt;/p&gt;
 &lt;h4&gt;Cloud Controller&lt;/h4&gt;
 &lt;p&gt;Cloud Controller是CloudFoundry的管理模块。对外提供平台全部的api&lt;/p&gt;
-&lt;p&gt;&lt;a href="/cloudfoundry/warden.html"&gt;Cloud Controller&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/cloudfoundry/cloudcontroller.html"&gt;Cloud Controller&lt;/a&gt;&lt;/p&gt;
 &lt;h4&gt;DEA&lt;/h4&gt;
 &lt;p&gt;接收来自cloud controller的指令，根据指令使用warden提供的虚拟容器对应用进行打包，运行等关键操作。&lt;/p&gt;
 &lt;p&gt;&lt;a href="/cloudfoundry/dea.html"&gt;dea和buildpack&lt;/a&gt;&lt;/p&gt;
@@ -408,7 +408,7 @@ This is implemented by using aufs on Ubuntu versions from 10.04 up to 11.10, and
          &lt;span class="n"&gt;be&lt;/span&gt; &lt;span class="n"&gt;sent&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;server&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;or&lt;/span&gt; &lt;span class="mi"&gt;300&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;BatchMode&lt;/span&gt; &lt;span class="n"&gt;option&lt;/span&gt; &lt;span class="n"&gt;is&lt;/span&gt; &lt;span class="n"&gt;set&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;  &lt;span class="n"&gt;This&lt;/span&gt; &lt;span class="n"&gt;option&lt;/span&gt; &lt;span class="n"&gt;applies&lt;/span&gt;
          &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;protocol&lt;/span&gt; &lt;span class="n"&gt;version&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt; &lt;span class="n"&gt;only&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;  &lt;span class="n"&gt;ProtocolKeepAlives&lt;/span&gt; &lt;span class="n"&gt;and&lt;/span&gt; &lt;span class="n"&gt;SetupTimeOut&lt;/span&gt; &lt;span class="n"&gt;are&lt;/span&gt; &lt;span class="n"&gt;Debian&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;specific&lt;/span&gt;
          &lt;span class="n"&gt;compatibility&lt;/span&gt; &lt;span class="n"&gt;aliases&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;this&lt;/span&gt; &lt;span class="n"&gt;option&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;</summary><category term="linux"></category></entry><entry><title>Cloud Controller</title><link href="http://limengyun.com/backend/cloudfoundry-cloud_controller.html" rel="alternate"></link><updated>2013-05-29T10:20:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-05-29:backend/cloudfoundry-cloud_controller.html</id><summary type="html">&lt;p&gt;Cloud Controller 是整个cloudfoundry平台的控制中心。它对外提供api，所有的操作都是依赖这些api来进行的。
+&lt;/pre&gt;&lt;/div&gt;</summary><category term="linux"></category></entry><entry><title>Cloud Controller</title><link href="http://limengyun.com/cloudfoundry/cloudcontroller.html" rel="alternate"></link><updated>2013-05-29T10:20:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-05-29:cloudfoundry/cloudcontroller.html</id><summary type="html">&lt;p&gt;Cloud Controller 是整个cloudfoundry平台的控制中心。它对外提供api，所有的操作都是依赖这些api来进行的。
 这里是详细的&lt;a href="http://docs.cloudfoundry.com/docs/reference/cc-api.html"&gt;api列表&lt;/a&gt;
 同时在项目的根目录的docs目录下有详细的设计文档。&lt;/p&gt;
 &lt;p&gt;Cloud Controller 2.0引入了多个新概念，如Organizations，Spaces，Domains，Routes
