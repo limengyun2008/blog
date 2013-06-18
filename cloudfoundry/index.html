@@ -38,7 +38,8 @@
         </address>
         <p>In <a href="../category/backend.html">backend</a>. </p>
 <p>tags: <a href="../tag/cloudfoundry.html">cloudfoundry</a></p>
-</footer><!-- /.post-info -->      <p>不知不觉进入鼓捣cloudfoundry已经几个月了，项目的起因是youdao之前已经有一个youdao App Engine，主要供内部使用，仅支持php语言，
+</footer><!-- /.post-info -->      <p><strong>这个系列博文基收录了不少对cloudfoundry 2.0有价值的相关信息和文档，对cloudfoundry的人读完应该能入门，但不要按照它指望能无BUG搭出cloudfoundry，不了解代码是不可能用得了的。</strong></p>
+<p>不知不觉进入鼓捣cloudfoundry已经几个月了，项目的起因是youdao之前已经有一个youdao App Engine，主要供内部使用，仅支持php语言，
 用来快速实现一些简单需求。但处于无人维护的状态，加入newtech组后，david问我能不能接过来然后改进一下，让它能支持更多语言。</p>
 <p>但原有YAE强依赖了PHP的语言特性,所有的YAE的app都是一个apache在serve, 前端nginx将*.domain.com的二级域名前缀转换成path然后由apache来提供服务。
 但很多语言的应用部署都是基于独立占用一个端口的方式，新增加语言支持实际上就是要重新设计一套机制，等于做一个PaaS。</p>
