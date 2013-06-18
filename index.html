@@ -85,15 +85,17 @@
 <p><a href="/cloudfoundry/nats.html">nats链接组件的两个例子</a></p>
 <h4>Router</h4>
 <p>负责处理分发所有的请求到相对应的模块，包括来自外部用户对app的请求和平台内部控制请求。</p>
+<p>已经在NATS中讲过了，不再赘述。</p>
+<p>值得一提的是2.0用了go重写了1.0用nginx+lua嵌入脚本的router 号称比1.0有4X的性能提升，貌似go确实挺牛逼的。</p>
 <h4>Warden</h4>
 <p>warden 在操作系统上层提供轻量级的运行应用的虚拟容器，为平台提供安全支持。</p>
 <p><a href="/cloudfoundry/warden.html">warden及平台安全</a></p>
-<h4>Cloud Controller</h4>
-<p>Cloud Controller是CloudFoundry的管理模块。对外提供平台全部的api</p>
-<p><a href="/cloudfoundry/cloudcontroller.html">Cloud Controller</a></p>
 <h4>DEA</h4>
 <p>接收来自cloud controller的指令，根据指令使用warden提供的虚拟容器对应用进行打包，运行等关键操作。</p>
 <p><a href="/cloudfoundry/dea.html">dea和buildpack</a></p>
+<h4>Cloud Controller</h4>
+<p>Cloud Controller是CloudFoundry的管理模块。对外提供平台全部的api</p>
+<p><a href="/cloudfoundry/cloudcontroller.html">Cloud Controller</a></p>
 <h4>UAA</h4>
 <p>全称是User Account and Authentication，负责用户账户和验证</p>
 <p><a href="/cloudfoundry/uaa.html">UAA</a></p>
