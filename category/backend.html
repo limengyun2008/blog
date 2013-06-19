@@ -36,19 +36,19 @@
         <p>In <a href="../category/backend.html">backend</a>. </p>
 <p>tags: <a href="../tag/cloudfoundry.html">cloudfoundry</a></p>
 </footer><!-- /.post-info --><h2>安装</h2>
-<p>这不是官方安装说明的中文版：这里讲的是使用<strong>各个组件的源代码</strong>在<strong>centOS 6</strong>上搭建cloudfoundry 2.0，网上没发现有人这么干的。之所以这么做，原因见下：</p>
-<p>cloudfoundry 的许多源代码都基于于ubuntu 发行版带有的文件系统和命令之上，
-且对于最新的2.0，官方仅给出了一种基于Iaas的部署方式，大批量的创建ubuntu 虚拟机，然后使用cloudfoundry的发行包批量部署cloudfoundry。</p>
+<p>这不是官方安装说明的中文版：这里讲的是使用<strong>各个组件的源代码</strong>在<strong>centOS 6</strong>上搭建cloudfoundry 2.0并进行适当的自定义开发。之所以这么做，原因见下：</p>
+<p>且对于最新的2.0，官方仅给出了一种基于Iaas的部署方式，大批量的创建ubuntu 虚拟机，然后使用cloudfoundry的发行包批量部署cloudfoundry。</p>
 <p>这个需要有openstack，Vsphere 等底层IaaS作为支持，如果没有但又想继续使用cloudfoundry，只有三种方案：</p>
 <ol>
 <li>使用cloudfoundry 1.0 <a href="https://github.com/cloudfoundry/vcap">vcap</a>, 1.0提供了一个脚本来将所有组件安装到一台机器上，笔者曾经成功将1.0适配到centOS上。</li>
 <li>先搭一个openstack，用熟了再基于官方提供的部署方式进行安装</li>
 <li>自己鼓捣源码，在centOS上自己装</li>
 </ol>
-<p>方案1意味着以后都得不到官方的任何改进，方案2不属于自己的工作范围，等于是一个研发去弄运维的事情。权衡利弊之后选择了方案3，但是在这个过程中同样遇到了很多centOS上特有的问题。</p>
+<p>方案1意味着以后都得不到官方的任何改进，方案2不属于自己的工作范围，等于是一个研发去弄运维的事情。权衡利弊之后选择了方案3，</p>
+<p>但是cloudfoundry 的有相当一部分源代码基于ubuntu 发行版带有的文件系统和命令之上，在这个过程中遇到了很多centOS上特有的问题。</p>
 <p>在解决问题的过程中，我们记录了一些文档，放在github上： <a href="https://github.com/youdao-cf/docs/tree/master/install">链接</a> 上，简单描述如何在centos上安装cloudfoundry并进行配置。
 有些做法的理由会在组件细节中说明</p>
-<p>总体来说，如果是ubuntu系统（最好是10.04）基本所有组件安装后经过合理的配置，都可以正常运行。</p>
+<p>总体来说，如果是ubuntu系统（官方声明最好是10.04）基本所有组件安装后经过合理的配置，都可以正常运行。</p>
 <p>但如果是其他linux发行版，除了配置问题，还会碰到各种因为操作系统引起的bug，有一些需要修改源代码，所有修改的源码地址都在安装文档中给出，在组件细节中也会提出修改的思路。</p>
 <h2>cloudfoundry 组件简介</h2>
 <p>Cloudfoudnry 1.0已于在2013年1月底停止开发与维护。现在网上许多cloudfoundry的文章将的都是跟1.0有关的内容，在此指出一些主要的区别。</p>
@@ -68,7 +68,7 @@
 <h4>Router</h4>
 <p>负责处理分发所有的请求到相对应的模块，包括来自外部用户对app的请求和平台内部控制请求。</p>
 <p>已经在NATS中讲过了，不再赘述。</p>
-<p>值得一提的是2.0用了go重写了1.0用nginx+lua嵌入脚本的router 号称比1.0有4X的性能提升，貌似go确实挺牛逼的。</p>
+<p>值得一提的是2.0用了go重写了1.0用nginx+lua嵌入脚本的router 号称比1.0有4X的性能提升，如果属实，那go前途无量。</p>
 <h4>Warden</h4>
 <p>warden 在操作系统上层提供轻量级的运行应用的虚拟容器，为平台提供安全支持。</p>
 <p><a href="/cloudfoundry/warden.html">warden及平台安全</a></p>
@@ -92,8 +92,12 @@
 </ul>
 <h4>自行开发的组件</h4>
 <ul>
-<li>console： cloudfoundry的web界面，自行开发的，详情：<a href="/cloudfoundry/console.html">console</a></li>
-</ul>                </article>
+<li>console： 自行开发的cloudfoundry的web界面，详情：<a href="/cloudfoundry/console.html">console</a></li>
+</ul>
+<p>总结：给cloudfoundry做centos的适配是个吃力不讨好的事情，费劲千辛万苦DEBUG却并没有添加什么新功能，
+但作为一个研究性质的项目，我们深入了解了cloudfoundry的架构和细节，也算是不小的收获。
+纵使以后用BOSH+IAAS安装cloudfoundry遇到bug也会轻松一点，不至于惊慌失措。</p>
+<p>另外，我的实习生赵大超主要负责研究UAA和login-server与ldap的集成以及研究HM的机制，相关章节由他贡献。</p>                </article>
                             </aside><!-- /#featured -->
                             <section id="content" class="body">
                     <h1>Other articles</h1>

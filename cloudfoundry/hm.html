@@ -43,14 +43,18 @@
 当不匹配的情况出现的时候，就要把app的状态调整到期望状态，比如通过start/stop命令来控制missing/extra的instance。</p>
 <p>按照官方说明，HM也收集和提供app的统计信息，这些统计信息由CC获取和使用。</p>
 <h2>HM对instance的调整策略</h2>
-<p>调整主要出现在两种情况下：
-<em> 对Nats信息的反应，比如droplet.exited
-</em> 周期性的获取app的状态，寻找异常</p>
+<p>调整主要出现在两种情况下：</p>
+<ul>
+<li>对Nats信息的反应，比如droplet.exited</li>
+<li>周期性的获取app的状态，寻找异常</li>
+</ul>
 <h2>droplet.exited 信号</h2>
-<p>有三种场景下 droplet.exited会接收到：
-<em> app被显式地stop了，这种情况不需要对app进行调整
-</em> DEA撤离。当有DEA撤离的时候，属于该DEA的instance应该在其他地方重启，HM应该初始化这个重启。
-* app崩溃。崩溃的instance应该被重启，除非这个instance短时间内崩溃多次，就会被标识为flapping。</p>
+<p>有三种场景下 droplet.exited会接收到：</p>
+<ul>
+<li>app被显式地stop了，这种情况不需要对app进行调整</li>
+<li>DEA撤离。当有DEA撤离的时候，属于该DEA的instance应该在其他地方重启，HM应该初始化这个重启。</li>
+<li>app崩溃。崩溃的instance应该被重启，除非这个instance短时间内崩溃多次，就会被标识为flapping。</li>
+</ul>
 <h2>flapping instance</h2>
 <p>app的一个instance当在flapping_timeout的秒数内崩溃了flapping_death次就会被标记为flapping。可能的原因有：</p>
 <ul>
