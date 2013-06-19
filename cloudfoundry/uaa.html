@@ -2,7 +2,7 @@
 <html lang="cn">
 <head>
         <meta charset="utf-8">
-        <title>UAA</title>
+        <title>UAA 和login-server</title>
         <link rel="stylesheet" href="../theme/css/main.css">
                 <link href="http://limengyun.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="limengyun's blog Atom Feed" />
                 
@@ -24,7 +24,7 @@
     <header>
       <h1 class="entry-title">
         <a href="../cloudfoundry/uaa.html" rel="bookmark"
-           title="Permalink to UAA">UAA</a></h1>
+           title="Permalink to UAA 和login-server">UAA 和login-server</a></h1>
           </header>
 
     <div class="entry-content">
@@ -38,8 +38,10 @@
         </address>
         <p>In <a href="../category/backend.html">backend</a>. </p>
 <p>tags: <a href="../tag/cloudfoundry.html">cloudfoundry</a></p>
-</footer><!-- /.post-info -->      <p>a cf component for authorize and authentication</p>
-<p>TBD</p>
+</footer><!-- /.post-info -->      <h2>概述</h2>
+<p>UAA的设计理念是要实现一个统一的用户认证和权限管理中心，官方的<a href="https://github.com/cloudfoundry/uaa/tree/master/docs">UAA文档</a></p>
+<p>它提供了几十个API来实现应对不同场景下的用户管理，token分发，client管理。</p>
+<p>UAA的设计太复杂了，简单解释不清楚，但可以解释下我们是如何给cloudfoundry加上ldap验证的。</p>
     </div><!-- /.entry-content -->
     
   </article>
