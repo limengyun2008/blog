@@ -37,3 +37,4 @@ nosetests.xml
 output
 pelican.pid
 srv.pid
+.md~
