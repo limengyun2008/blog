@@ -28,11 +28,12 @@ SOCIAL = (('网易惠惠', 'http://huihui.cn/?keyfrom=limengyun.com'),
 DEFAULT_PAGINATION = 10
 
 # Uncomment following line if you want document-relative URLs when developing
-RELATIVE_URLS = True
+RELATIVE_URLS = False
 
 THEME = "themes/notmyidea"
 
 GOOGLE_ANALYTICS = "UA-37781337-1"
+#DISQUS_SITENAME = "limengyun"
 
 PLUGIN_PATH = './pelican-plugins'
 PLUGINS = ['sitemap',]

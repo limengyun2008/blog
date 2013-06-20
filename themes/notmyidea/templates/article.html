@@ -19,14 +19,17 @@
       <h2>Comments !</h2>
       <div id="disqus_thread"></div>
       <script type="text/javascript">
-        var disqus_identifier = "{{ article.url }}";
-        var disqus_url = "{{ SITEURL }}/{{ article.url }}";
+       /* var disqus_identifier = "{{ article.url }}";
         (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = 'http://{{ DISQUS_SITENAME }}.disqus.com/embed.js';
+        dsq.src = '//{{ DISQUS_SITENAME }}.disqus.com/embed.js';
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-        })();
+        })();*/
       </script>
+<!-- UY BEGIN -->
+<div id="uyan_frame"></div>
+<script type="text/javascript" id="UYScript" src="http://v1.uyan.cc/js/iframe.js?UYUserId=1531463" async=""></script>
+<!-- UY END -->
     </div>
     {% endif %}
 

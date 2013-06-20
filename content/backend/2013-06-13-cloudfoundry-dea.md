@@ -23,27 +23,34 @@ dea组件的全称是 droplet execution agency， droplet是cloudfoundry自创�
 * 针对不同类型应用专门编写staging程序叫 buildpack
 * 解压运行droplet的组件叫dea。
 
+## dea职责
 
-## staging和running droplet的过程
+### staging和running droplet
 
 在1.0中，staging 是由专门的组件stager来完成的，在2.0中去掉了stager改为直接在dea中进行staging。
 
+这是dea最重要的两个职责。
+
 官方专门针对staging和running的流程撰写了文档： <a href="http://docs.cloudfoundry.com/docs/running/architecture/how-applications-are-staged.html">文章链接</a>
 
+如何在众多dea中选择合适的dea来完成任务，是通过消息机制来实现的，参见在[NATS细节](/cloudfoundry/nats.html)中的例子“cloud controller指挥dea进行打包和运行”
 
-## 应用对外提供服务的过程。
+### 向router注册使应用实例可以对外提供服务
 
 dea上的应用流量无论有多大，对dea的影响都微乎其微。
 因为dea不对外提供服务，dea控制的container才对外提供服务。
-router和dea会定时通过NATS通信，dea将dea下的container的ip，host，port等消息报告给router，这一部分在[NATS细节](./nats.html)中已经说明过。
+router和dea会定时通过NATS通信，dea将dea下的container的ip，host，port等消息报告给router，参见在[NATS细节](/cloudfoundry/nats.html)中的例子“向router注册”
 
 
-## dea directory server和file api server
+### 查看应用文件
+
 dea启动时会附带启动一个file api server，而dea directory server的启动则是单独进行的，代码在dea/go目录下。
-这两个server的区别在于
+这两个server的区别在于：
 
-dea directory server 会向router注册，外部可以访问到dea directory server。从而所有跟dea相关的上传（上传droplet）和下载（获取各种文件内容，如log文件）都是直接通过dea directory server来进行的。
+dea directory server 启动后会向router注册，即外部可以访问到dea directory server。
+所有跟dea相关的上传（上传droplet）和下载（获取各种文件内容，如log文件）都是直接通过dea directory server来进行的。
 file api server起一个验证并返回请求真实路径的作用
+
 比如执行cf logs XXX -t命令，表面上看起来是客户端cf向cloud controller发起请求，但实际上是cloud controller 重定向到dea directory server来提供服务的
 
     Getting logs for 23423 #0>>>
@@ -80,19 +87,20 @@ dea directory server 收到类似http://882aa9de3cfa35c4e06a6f5613f0df2d.cf2.you
     end
     
 此外，还需要特别注意你的ruby安装路径，配置项中与ruby相关的路径要填对。
-
+ 
 ## 自定义buildpack支持
 
 如果想要cloudfoundry支持一门新的语言或框架，自定义一个buildpack就可以了，
 比如我们就将官方的java buildpack修改为支持ant+ivy编译，且从tomcat改为使用resin。
-（可真别以为J2EE架构下一个war包能在resin下跑就一定能在tomcat下跑）
+（J2EE架构下一个war包能在resin下跑不一定能在tomcat下跑）
 这样就可以直接上传源代码而不用上传war包，且与公司的习惯保持一致。。
 
-每一种语言只有一种buildpack，不同类别的应用打包是在buildpack代码里面进行区分的。在buildpacks/vendor目录下，官方提供了三种语言（java，nodejs，ruby）的若干种应用类型的支持，同时也提供了一种方便添加自定义buildpack支持的机制。
+每一种语言只有一个buildpack，不同类别的应用打包在buildpack代码里面单独进行区分。
+在buildpacks/vendor目录下，官方提供了三种语言（java，nodejs，ruby）的若干种应用类型的支持，同时也提供了一种方便添加自定义buildpack支持的机制。
 
 新增添一个语言的buildpack需要实现以下三个脚本：
 
-* ./bin/detect 检查应用的类型，例如是一个sinatra应用还是一个rails应用，以供compile脚本使用
+* ./bin/detect 检查同一种语言下应用的类型，例如是一个sinatra应用还是一个rails应用，以供compile脚本使用
 * ./bin/compile  打包的主脚本，根据detect的结果选择打包的方式。
 * ./bin/release  输出自定义的启动命令等相关信息，以便写入到最终的启动脚本。
 
@@ -109,10 +117,10 @@ dea会遍历所有的detect脚本，如果你编写的detect脚本满足条件�
 
 #### 注意2：
 
-同样，有些buildpack 会将/home/vcap/app  软连接到/app/app   然后再在/app/app中进行操作。
-但在centos 6上使用默认文件系统实现的warden container 不具备完整的软连接功能（无法cd进入软连接后的目录，详情见warden的cent OS tip），
+有些buildpack 会将/home/vcap/app  软连接到/app/app   然后再在/app/app中进行操作。
+但之前在warden中提到过，在centos 6上使用默认文件系统实现的warden container 不具备完整的软连接功能（无法cd进入软连接后的目录，详情见warden的cent OS tip），
 所以想要在centos上正常使用仍然需要修改这部分代码。
 
 #### 提示：
 
-http://www.appfog.com 是一个基于cloudfoundry的paas，他自定义了许多语言的支持并在github上开源出来（github： https://github.com/appfog/ ）。 
+http://www.appfog.com 是一个基于cloudfoundry的paas，他自定义了许多语言的buildpack支持并在github上开源出来（github： https://github.com/appfog/ ）。

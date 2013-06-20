@@ -15,3 +15,7 @@ from pelicanconf import *
 
 #DISQUS_SITENAME = ""
 #GOOGLE_ANALYTICS = ""
+
+
+
+RELATIVE_URLS = True
