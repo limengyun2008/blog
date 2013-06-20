@@ -23,6 +23,11 @@ dea组件的全称是 droplet execution agency， droplet是cloudfoundry自创�
 * 针对不同类型应用专门编写staging程序叫 buildpack
 * 解压运行droplet的组件叫dea。
 
+TODO: 这是整个CLOUDFUNDRY 设计最出彩的地方，想想别的PAas 开发新加一门语言是多么费劲？ 而且类似GAE这种开发者还需要去熟悉GAE的SDK，而cloudfoudry就不用。
+
+这也是cloudfoundry比SAE GAE先进的地方。有着极强的扩展性。预留了接口给第三方做扩展。
+
+
 ## dea职责
 
 ### staging和running droplet
