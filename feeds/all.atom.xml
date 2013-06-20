@@ -205,12 +205,21 @@ HM在源文件constants.rb里提供了一套缺省的配置，值得注意的是
 所以需要用这个东西告诉HM将这两个不同的版本区分开&lt;/p&gt;
 &lt;p&gt;新增一行 cc_partition=ng (或者您为cc启动时配置的值)&lt;/p&gt;
 &lt;p&gt;bulk_api下host 要填写CC的域名或者IP&lt;/p&gt;</summary><category term="cloudfoundry"></category></entry><entry><title>UAA 和login-server</title><link href="http://limengyun.com/cloudfoundry/uaa.html" rel="alternate"></link><updated>2013-06-13T10:00:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-06-13:cloudfoundry/uaa.html</id><summary type="html">&lt;h2&gt;概述&lt;/h2&gt;
-&lt;p&gt;UAA的设计理念是要实现一个统一的用户认证和权限管理中心，官方的&lt;a href="https://github.com/cloudfoundry/uaa/tree/master/docs"&gt;UAA文档&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;UAA的设计理念是要实现一个统一的用户认证和权限管理中心，设计思想和全部API见官方的&lt;a href="https://github.com/cloudfoundry/uaa/tree/master/docs"&gt;UAA文档&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;它提供了几十个API来实现应对不同场景下的用户管理，token分发，client管理。&lt;/p&gt;
-&lt;p&gt;下图比较清晰地表达几种标准在UAA中的配合关系&lt;/p&gt;
+&lt;p&gt;下图说明了各种组件在UAA中的配合关系&lt;/p&gt;
 &lt;p&gt;&lt;img src="http://blog.cloudfoundry.com/wp-content/uploads/2013/02/uaa-environ.png"  alt="" width="600" height="350"/&gt;&lt;/p&gt;
-&lt;p&gt;UAA也提供了非常丰富的API来帮助用户集成 &lt;a href="https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst"&gt;UAA Github 项目文档&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;UAA的设计太复杂了，简单解释不清楚，但可以解释下我们是如何给cloudfoundry加上ldap验证的。&lt;/p&gt;</summary><category term="cloudfoundry"></category></entry><entry><title>warden及平台安全</title><link href="http://limengyun.com/cloudfoundry/warden.html" rel="alternate"></link><updated>2013-06-13T00:00:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-06-13:cloudfoundry/warden.html</id><summary type="html">&lt;p&gt;warden 是整个cloudfoundry平台的基石。它负责最关键的资源控制——包括cpu，mem，disk等。
+&lt;ul&gt;
+&lt;li&gt;UAA可以配置若干Client，每个Client可以有一个权限范围&lt;/li&gt;
+&lt;li&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;坦白的说 UAA的所有API我们也没全部弄清楚，而且也完全没有必要修改UAA，所以我们没怎么研究UAA的实现逻辑，只需要知道UAA负责生成token并分发token, CC的验证是通过对称解密token实现的，解密token可以得到用户的信息。我们只需要知道获取token的接口就可以了。&lt;/p&gt;
+&lt;p&gt;UAA本身的UAADB里面可以存储用户的各种信息，如果不需要使用其他的帐号系统，UAA完全可以独立使用。但如果你需要自定义，比如使用LDAP帐号系统作为验证，只需要自己实现一个login-server，在CC的配置里面配置好login为这个login-server的地址，那么在输入cf login的时就是login-server来处理了。&lt;/p&gt;
+&lt;p&gt;login-server要做什么事情呢？&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;实现LDAP的登录逻辑&lt;/li&gt;
+&lt;li&gt;&lt;/li&gt;
+&lt;/ul&gt;</summary><category term="cloudfoundry"></category></entry><entry><title>warden及平台安全</title><link href="http://limengyun.com/cloudfoundry/warden.html" rel="alternate"></link><updated>2013-06-13T00:00:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-06-13:cloudfoundry/warden.html</id><summary type="html">&lt;p&gt;warden 是整个cloudfoundry平台的基石。它负责最关键的资源控制——包括cpu，mem，disk等。
 资源控制直接关系到如何让多个应用之间直接互不干扰，以及阻止恶意代码的执行，从而保证平台的安全性。
 虚拟机可以很好的隔离，但这个解决方案对于隔离一个应用就显得太重量级了。&lt;/p&gt;
 &lt;p&gt;有一种基于linux系统内核的资源隔离技术&lt;/p&gt;
