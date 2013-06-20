@@ -11,7 +11,9 @@ Health Manager (简称HM) 主要负责监控app的状态，确保已经启动的
 这些确保机制主要是通过维护应用状态实现的，每个app有一个Actual State 实际运行状态，用来比较它和app的Desired State 期望状态。
 当不匹配的情况出现的时候，就要把app的状态调整到期望状态，比如通过start/stop命令来控制missing/extra的instance。
 
-按照官方说明，HM也收集和提供app的统计信息，这些统计信息由CC获取和使用。
+HM也收集和提供app的统计信息，这些统计信息由CC获取和使用。
+
+HM并不是必要的，失去HM的影响仅仅是crash的应用无法自动重启。
 
 
 ## HM对instance的调整策略
@@ -54,7 +56,7 @@ heartbeat会被用来管理missing和extra 的instance。Missing instance会被�
 
 ## HM的配置
 
-HM是为数不多的在centos上能修改几个配置就能无脑正常运行的cloudfoundry组件之一（还有一个就是gorouter）, 而且没有HM cloudfoundry也能正常工作，造成的影响就是instance 挂掉之后必须手动重启。
+HM是为数不多的在centos上能修改几个配置就能无脑正常运行的cloudfoundry组件之一（还有一个就是gorouter）
 
 但有几点要注意：
 HM在源文件constants.rb里提供了一套缺省的配置，值得注意的是HM缺省配置中cc_partition是default，

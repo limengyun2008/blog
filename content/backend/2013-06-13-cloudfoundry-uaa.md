@@ -18,23 +18,24 @@ UAA的设计理念是要实现一个统一的用户认证和权限管理中心�
 * UAA可以配置若干Client，每个Client可以有一个权限范围
 * 
 
+## 实践LDAP登录
 
-坦白的说 UAA的所有API我们也没全部弄清楚，而且也完全没有必要修改UAA，所以我们没怎么研究UAA的实现逻辑，只需要知道UAA负责生成token并分发token, CC的验证是通过对称解密token实现的，解密token可以得到用户的信息。我们只需要知道获取token的接口就可以了。
+虽然UAA能够实现用户认证，但如果需要自定义登录比如使用LDAP登录，其实并不需要修改UAA的代码。
 
-UAA本身的UAADB里面可以存储用户的各种信息，如果不需要使用其他的帐号系统，UAA完全可以独立使用。但如果你需要自定义，比如使用LDAP帐号系统作为验证，只需要自己实现一个login-server，在CC的配置里面配置好login为这个login-server的地址，那么在输入cf login的时就是login-server来处理了。
+由于使用了oauth协议，UAA可以仅仅起一个token分发者的作用，然后将用户认证的部分委托出去。cloudfoundry已经替我们考虑到了这一点。
 
-login-server要做什么事情呢？
+我们的做法：fork官方的[login-server](https://github.com/cloudfoundry/login-server/) ，然后:
 
-* 实现LDAP的登录逻辑
-* 
+1. 给login-server加上ldap的登录逻辑
+2. 当用户第一次登录时，login-server使用admin权限调用CC提供的api，给用户创建一个默认的space和org,分配一个domain。然后把用户的权限
 
-
-
-
-
+在CC的配置中配置好login的相关项之后，使用客户端或者cfoundry访问cloudfoundry时都会使用login-server作为验证。
 
 
+## 看看默认的uaa.none能不能创建org??
+## login-server配置的权限？？
 
 
+这一部分实现的并不完美，官方的文档里面有专门给login-server使用的api，而我们也没有用到。
 
 
