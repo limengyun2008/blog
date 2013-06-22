@@ -1,21 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>limengyun's blog</title><link href="http://limengyun.com/" rel="alternate"></link><link href="http://limengyun.com/feeds/all.atom.xml" rel="self"></link><id>http://limengyun.com/</id><updated>2013-06-17T10:00:00+08:00</updated><entry><title>cloudfoundry 2.0 on CentOS 6 小结</title><link href="http://limengyun.com/cloudfoundry/index.html" rel="alternate"></link><updated>2013-06-17T10:00:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-06-17:cloudfoundry/index.html</id><summary type="html">&lt;h2&gt;安装&lt;/h2&gt;
-&lt;p&gt;这不是官方安装说明的中文版：这里讲的是使用&lt;strong&gt;各个组件的源代码&lt;/strong&gt;在&lt;strong&gt;centOS 6&lt;/strong&gt;上搭建cloudfoundry 2.0并进行适当的自定义开发。之所以这么做，原因见下：&lt;/p&gt;
-&lt;p&gt;且对于最新的2.0，官方仅给出了一种基于Iaas的部署方式，大批量的创建ubuntu 虚拟机，然后使用cloudfoundry的发行包批量部署cloudfoundry。&lt;/p&gt;
-&lt;p&gt;这个需要有openstack，Vsphere 等底层IaaS作为支持，如果没有但又想继续使用cloudfoundry，只有三种方案：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;使用cloudfoundry 1.0 &lt;a href="https://github.com/cloudfoundry/vcap"&gt;vcap&lt;/a&gt;, 1.0提供了一个脚本来将所有组件安装到一台机器上，笔者曾经成功将1.0适配到centOS上。&lt;/li&gt;
-&lt;li&gt;先搭一个openstack，用熟了再基于官方提供的部署方式进行安装&lt;/li&gt;
-&lt;li&gt;自己鼓捣源码，在centOS上自己装&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;方案1意味着以后都得不到官方的任何改进，方案2不属于自己的工作范围，等于是一个研发去弄运维的事情。权衡利弊之后选择了方案3，&lt;/p&gt;
-&lt;p&gt;但是cloudfoundry 的有相当一部分源代码基于ubuntu 发行版带有的文件系统和命令之上，在这个过程中遇到了很多centOS上特有的问题。&lt;/p&gt;
-&lt;p&gt;在解决问题的过程中，我们记录了一些文档，放在github上： &lt;a href="https://github.com/youdao-cf/docs/tree/master/install"&gt;链接&lt;/a&gt; 上，简单描述如何在centos上安装cloudfoundry并进行配置。
-有些做法的理由会在组件细节中说明&lt;/p&gt;
-&lt;p&gt;总体来说，如果是ubuntu系统（官方声明最好是10.04）基本所有组件安装后经过合理的配置，都可以正常运行。&lt;/p&gt;
-&lt;p&gt;但如果是其他linux发行版，除了配置问题，还会碰到各种因为操作系统引起的bug，有一些需要修改源代码，所有修改的源码地址都在安装文档中给出，在组件细节中也会提出修改的思路。&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>limengyun's blog</title><link href="http://limengyun.com/" rel="alternate"></link><link href="http://limengyun.com/feeds/all.atom.xml" rel="self"></link><id>http://limengyun.com/</id><updated>2013-06-17T10:00:00+08:00</updated><entry><title>cloudfoundry 2.0 on CentOS 6 小结</title><link href="http://limengyun.com/cloudfoundry/index.html" rel="alternate"></link><updated>2013-06-17T10:00:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-06-17:cloudfoundry/index.html</id><summary type="html">&lt;p&gt;这不是官方安装说明的中文版：这里讲的是使用&lt;strong&gt;各个组件的源代码&lt;/strong&gt;在&lt;strong&gt;centOS 6&lt;/strong&gt;上搭建cloudfoundry 2.0并进行适当的自定义开发。
+不论cloudfoundry 1.0还是2.0都有相当一部分源代码基于ubuntu 发行版开发，其他系统上根本运行不起来，但之所以这么做，原因见下：
+cloudfoundry 2.0 正式发布已经有一周多了，相信想研究它的人也不少。
+但对于最新的2.0，官方仅给出了一种基于Iaas的部署方式，大批量的创建ubuntu 虚拟机，然后使用cloudfoundry的发行包（cf-release）批量部署cloudfoundry。&lt;/p&gt;
+&lt;p&gt;这个需要有openstack，Vsphere 等底层IaaS作为支持，如果没有IaaS, 那就只能自己摸索通过源代码安装
+，但相当一部分源代码基于ubuntu 发行版开发，如果物理机的操作系统不是ubuntu发行版，根本运行不起来。&lt;/p&gt;
+&lt;p&gt;笔者从cloudfoundry 1.0起就一直在研究它，但苦于没有IaaS，曾经将1.0版本适配到2.0上面，这次又对2.0干了同样的事情，但这次难度更大。&lt;/p&gt;
+&lt;p&gt;如果你是ubuntu系统（官方声明最好是10.04）基本所有组件安装后经过合理的配置，都可以正常运行。
+但如果是其他linux发行版，以本文中的centOS为例，除了配置问题，还会碰到各种因为操作系统引起的bug需要修改源代码。&lt;/p&gt;
+&lt;p&gt;这个系列博客给出了一个cloudfoundry正常运行所必须组件的实现原理和安装配置细节，同时也包含一些在centOS等非ubuntu linux 发行版上修复BUG的提示。&lt;/p&gt;
+&lt;p&gt;至于更多的技术细节则需要靠各位自己阅读源代码了。&lt;/p&gt;
 &lt;h2&gt;cloudfoundry 组件简介&lt;/h2&gt;
-&lt;p&gt;Cloudfoudnry 1.0已于在2013年1月底停止开发与维护。现在网上许多cloudfoundry的文章将的都是跟1.0有关的内容，在此指出一些主要的区别。&lt;/p&gt;
+&lt;p&gt;Cloudfoudnry 1.0已于在2013年1月底停止开发与维护。现在网上许多cloudfoundry的文章讲的都是跟1.0有关的内容，在此指出一些主要的区别。&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;1.0中router使用的是nginx+lua+ruby server的方式，2.0使用了go语言gorouter，据称支持了websocket且极大提升了性能。&lt;/li&gt;
 &lt;li&gt;2.0中cloud contoller新增了quota，org，space等新的概念，更方便的进行权限和资源管理。&lt;/li&gt;
@@ -26,13 +22,13 @@
 &lt;p&gt;下面是cloudfoundry 2.0的架构示意图，&lt;/p&gt;
 &lt;p&gt;&lt;img src="http://docs.cloudfoundry.com/images/cf_architecture.png" style="width:785px;" alt="cloudfoundry 架构图" /&gt;&lt;/p&gt;
 &lt;h4&gt;NATS&lt;/h4&gt;
-&lt;p&gt;CloudFoundry是一个多模块的分布式系统，支持模块自发现，错误自检，且模块间低耦合。其核心原理就是基于消息发布订阅机制。&lt;/p&gt;
+&lt;p&gt;CloudFoundry是一个多模块的分布式系统，支持模块自发现，错误自检，且模块间低耦合。其核心原理就是基于消息发布-订阅机制。&lt;/p&gt;
 &lt;p&gt;而NATS则是支持这个机制的最关键的消息系统，它是cloudfoundry中最核心的组件。&lt;/p&gt;
-&lt;p&gt;&lt;a href="/cloudfoundry/nats.html"&gt;nats链接组件的两个例子&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;整个cloudfoundry的消息channel有上百个，无法在此一一列举，请参考&lt;a href="/cloudfoundry/nats.html"&gt;nats链接组件的两个例子&lt;/a&gt;获得对这个组件最直观的印象&lt;/p&gt;
 &lt;h4&gt;Router&lt;/h4&gt;
 &lt;p&gt;负责处理分发所有的请求到相对应的模块，包括来自外部用户对app的请求和平台内部控制请求。&lt;/p&gt;
-&lt;p&gt;已经在NATS中讲过了，不再赘述。&lt;/p&gt;
-&lt;p&gt;值得一提的是2.0用了go重写了1.0用nginx+lua嵌入脚本的router 号称比1.0有4X的性能提升，如果属实，那go前途无量。&lt;/p&gt;
+&lt;p&gt;整个模块的主要逻辑就是处理来自这些请求的处理者的注册请求，注册逻辑已经在NATS中讲过了，不再赘述。router的安装和配置都非常轻松，仅需要修改下NATS的相关配置就可以启动了，参考 &lt;a href="https://github.com/youdao-cf/docs/blob/master/install/gorouter.html.md"&gt;gorouter 的安装和配置&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;值得一提的是2.0用了go重写了1.0用nginx+lua嵌入脚本的router 改称&lt;a href="https://github.com/cloudfoundry/gorouter"&gt;gorouter&lt;/a&gt; 号称比1.0有4X的性能提升，如果属实，go前途无量。&lt;/p&gt;
 &lt;h4&gt;Warden&lt;/h4&gt;
 &lt;p&gt;warden 在操作系统上层提供轻量级的运行应用的虚拟容器，为平台提供安全支持。&lt;/p&gt;
 &lt;p&gt;&lt;a href="/cloudfoundry/warden.html"&gt;warden及平台安全&lt;/a&gt;&lt;/p&gt;
@@ -50,33 +46,30 @@
 &lt;p&gt;&lt;a href="/cloudfoundry/hm.html"&gt;Health Manager&lt;/a&gt;&lt;/p&gt;
 &lt;h4&gt;其他组件&lt;/h4&gt;
 &lt;ul&gt;
-&lt;li&gt;Services: cloudfoundry为应用提供的各类服务，如mysql，memcached，由于时间原因，我暂时没有支持。&lt;/li&gt;
+&lt;li&gt;Services: cloudfoundry为应用提供的各类服务，如mysql，memcached，由于时间原因+非必要，我暂时没有支持。&lt;/li&gt;
 &lt;li&gt;Syslog Aggregator：归集log的组件，非必要，也没有支持&lt;/li&gt;
 &lt;li&gt;Collector： 监听nats中的各类消息来监控各组件的运行状态，非必要，也没有支持。&lt;/li&gt;
+&lt;li&gt;cf： 官方的命令行客户端。gem install cf 即可。 &lt;/li&gt;
+&lt;li&gt;eclipse STS 插件： 官方的eclipse插件。跟cf一样也同样属于客户端性质。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h4&gt;自行开发的组件&lt;/h4&gt;
 &lt;ul&gt;
 &lt;li&gt;console： 自行开发的cloudfoundry的web界面，详情：&lt;a href="/cloudfoundry/console.html"&gt;console&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;总结：给cloudfoundry做centos的适配是个吃力不讨好的事情，费劲千辛万苦DEBUG却并没有添加什么新功能，
-但作为一个研究性质的项目，我们深入了解了cloudfoundry的架构和细节，也算是不小的收获。
-纵使以后用BOSH+IAAS安装cloudfoundry遇到bug也会轻松一点，不至于惊慌失措。&lt;/p&gt;
-&lt;p&gt;另外，我的实习生赵大超主要负责研究UAA和login-server与ldap的集成以及研究HM的机制，相关章节由他贡献。&lt;/p&gt;</summary><category term="cloudfoundry"></category></entry><entry><title>DEA 和 buildpack</title><link href="http://limengyun.com/cloudfoundry/dea.html" rel="alternate"></link><updated>2013-06-13T10:00:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-06-13:cloudfoundry/dea.html</id><summary type="html">&lt;h2&gt;术语&lt;/h2&gt;
-&lt;p&gt;dea组件的全称是 droplet execution agency， droplet是cloudfoundry自创的一个概念，它是一个app的可运行实例配合实例启停脚本的压缩包。&lt;/p&gt;
-&lt;p&gt;举例来说，如果我们要让一个php app程序运行，我们将代码下载之后需要做什么呢？&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;首先需要需要下载一个apache，&lt;/li&gt;
-&lt;li&gt;然后配置apache&lt;/li&gt;
-&lt;li&gt;最后将启动命令写入一个脚本。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;那如果我们将代码+apache+脚本一起打成一个压缩包，在其他服务器上启动这个应用的多个实例的时候只需要下载这个压缩包之后解压，启动脚本即可。
-这个机制也是整个cloudfoundry实现应用分布式的关键。&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;这个压缩包即为 droplet&lt;/li&gt;
-&lt;li&gt;将用户代码和服务器打包压缩生成droplet的过程叫 staging&lt;/li&gt;
-&lt;li&gt;针对不同类型应用专门编写staging程序叫 buildpack&lt;/li&gt;
-&lt;li&gt;解压运行droplet的组件叫dea。&lt;/li&gt;
-&lt;/ul&gt;
+但在这个过程中不可避免的需要深入了解cloudfoundry的架构和细节，也算是不小的收获。
+纵使以后用BOSH+IaaS安装cloudfoundry遇到bug也会轻松一点，不至于惊慌失措。&lt;/p&gt;
+&lt;h2&gt;致谢&lt;/h2&gt;
+&lt;p&gt;合作研究cloudfoundry的实习生：zhaodch&lt;/p&gt;</summary><category term="cloudfoundry"></category></entry><entry><title>DEA 和 buildpack</title><link href="http://limengyun.com/cloudfoundry/dea.html" rel="alternate"></link><updated>2013-06-13T10:00:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-06-13:cloudfoundry/dea.html</id><summary type="html">&lt;p&gt;dea 和 buildpack是整个cloudfoundry 设计最出彩的地方，想想别的PaaS 开发新加一门语言是多么费劲？而cloudfoundry 仅仅需要几天，而且还支持用户自定义语言和应用类型，
+这一切都是基于buildpack打包设计的功劳。&lt;/p&gt;
+&lt;h2&gt;术语&lt;/h2&gt;
+&lt;p&gt;在提到buildpack之前 有必要解释一下DEA，dea全称是 droplet execution agency，即执行droplet的代理。&lt;/p&gt;
+&lt;p&gt;droplet是cloudfoundry自创的一个概念，它是一个app的可运行实例配合实例启停脚本的压缩包。&lt;/p&gt;
+&lt;p&gt;举例来说，如果我把一个php应用放置在某个路径下，然后将apache配置好，最后写一个启动脚本，然后将apache, php应用代码和启动脚本打成一个压缩包。
+在另外一台环境完全相同的机器上，你只需要下载这个压缩包，解压到对应目录下，然后启动脚本，应用就可以完美的复制到这台机器上。
+这就是cloudfoundry进行动态扩容的原理和基础。
+一个打好压缩包就是一个droplet，打压缩包的程序就叫buildpack，打包的过程叫staging。
+不同的应用类型对应的buildpack代码也不同。如果要增加一门cloudfoundry默认不支持的语言或者应用类型，就需要自定义buildpack。&lt;/p&gt;
 &lt;h2&gt;dea职责&lt;/h2&gt;
 &lt;h3&gt;staging和running droplet&lt;/h3&gt;
 &lt;p&gt;在1.0中，staging 是由专门的组件stager来完成的，在2.0中去掉了stager改为直接在dea中进行staging。&lt;/p&gt;
@@ -116,6 +109,7 @@ file api server起一个验证并返回请求真实路径的作用&lt;/p&gt;
 &lt;p&gt;dea directory server 收到类似http://882aa9de3cfa35c4e06a6f5613f0df2d.cf2.youdao.com/instance_paths/b6d11bf2865189aafe0a4be4133688b7?hmac=cc48aa1aa305154ea4e49e8ee33c1ee4a3bbb9ddccd626b73f0a6ed9fe7d6d191a79ecf78b680e5e252ba8948e7ee444029e38ce216a9b828b3898e49dc49a06&amp;amp;path=logs&amp;amp;timestamp=1371372696
 这样的请求后会向file api server 发起请求，file api server根据hmac 判断请求是否合法，如果合法就返回log文件在操作系统上的真实地址，最后由dea directory server 返回log的内容。&lt;/p&gt;
 &lt;h2&gt;配置&lt;/h2&gt;
+&lt;p&gt;改一下nats的配置，然后新加一个配置项domain&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nl"&gt;domain:&lt;/span&gt; &lt;span class="err"&gt;你的平台域名。&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
@@ -142,21 +136,32 @@ file api server起一个验证并返回请求真实路径的作用&lt;/p&gt;
 &lt;li&gt;./bin/compile  打包的主脚本，根据detect的结果选择打包的方式。&lt;/li&gt;
 &lt;li&gt;./bin/release  输出自定义的启动命令等相关信息，以便写入到最终的启动脚本。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;dea会遍历所有的detect脚本，如果你编写的detect脚本满足条件，就会选择对应的compile脚本执行。&lt;/p&gt;
-&lt;p&gt;在执行你编写的compile脚本之前，dea已经给创建好了container，然后下载并解压好了代码，compile的内容就是根据这个代码要怎么打包。
-按照这个方式，怎么编写compile脚本就取决于你的实际情况，可以使用shell 也可以使用ruby脚本。写之前参考一下已有的buildpack就能了解思路。&lt;/p&gt;
+&lt;p&gt;dea会遍历所有的detect脚本，如果你编写的detect脚本满足条件，echo “应用类型的名字” exit 0 就可以了，cloudfoundry就会选择对应目录下的compile脚本执行。&lt;/p&gt;
+&lt;p&gt;以我们修改的java的compile脚本为例，compile的内容就是顺序执行&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;安装java&lt;/li&gt;
+&lt;li&gt;安装ant&lt;/li&gt;
+&lt;li&gt;安装resin&lt;/li&gt;
+&lt;li&gt;在应用目录想执行ant all 生成ROOT.war（应用build.xml必须支持ant all命令）&lt;/li&gt;
+&lt;li&gt;cp ROOT.war 到 resin的webapps目录下&lt;/li&gt;
+&lt;li&gt;写一个脚本generate_resin_conf.rb，脚本的内容是根据传入的port参数动态的生成renin的resin.conf&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;最后我们需要完成release脚本，同样以修改的java为例，release文件的内容就是一个.yml文件，里面配置了一些启动命令和环境变量。
+只需要吧启动命令修改为  ruby generate_resin_conf.rb &amp;amp;&amp;amp; ./resin/bin/httpd.sh  -c  ../resin.conf&lt;/p&gt;
+&lt;p&gt;DONE&lt;/p&gt;
 &lt;h4&gt;注意1：&lt;/h4&gt;
 &lt;p&gt;官方或开源第三方的buildpack在staging的时候基本都通过http下载一些东西，比如apache等等，关键在于这些地址都是在amazon s3上。
 在天朝的网络下，采用这种方式就要看GFW的心情了，要正常使用最好把那些下载地址全部换成内网地址。&lt;/p&gt;
 &lt;h4&gt;注意2：&lt;/h4&gt;
 &lt;p&gt;有些buildpack 会将/home/vcap/app  软连接到/app/app   然后再在/app/app中进行操作。
 但之前在warden中提到过，在centos 6上使用默认文件系统实现的warden container 不具备完整的软连接功能（无法cd进入软连接后的目录，详情见warden的cent OS tip），
-所以想要在centos上正常使用仍然需要修改这部分代码。&lt;/p&gt;
+所以想要在centos上正常使用仍然需要修改这部分代码。如果自己实现，就千万不要使用软连接。&lt;/p&gt;
 &lt;h4&gt;提示：&lt;/h4&gt;
 &lt;p&gt;http://www.appfog.com 是一个基于cloudfoundry的paas，他自定义了许多语言的buildpack支持并在github上开源出来（github： https://github.com/appfog/ ）。&lt;/p&gt;</summary><category term="cloudfoundry"></category></entry><entry><title>Health Manager</title><link href="http://limengyun.com/cloudfoundry/hm.html" rel="alternate"></link><updated>2013-06-13T10:00:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-06-13:cloudfoundry/hm.html</id><summary type="html">&lt;p&gt;Health Manager (简称HM) 主要负责监控app的状态，确保已经启动的app处于running状态，以及这些app的版本和instance数量是正确的。
 这些确保机制主要是通过维护应用状态实现的，每个app有一个Actual State 实际运行状态，用来比较它和app的Desired State 期望状态。
 当不匹配的情况出现的时候，就要把app的状态调整到期望状态，比如通过start/stop命令来控制missing/extra的instance。&lt;/p&gt;
-&lt;p&gt;按照官方说明，HM也收集和提供app的统计信息，这些统计信息由CC获取和使用。&lt;/p&gt;
+&lt;p&gt;HM也收集和提供app的统计信息，这些统计信息由CC获取和使用。&lt;/p&gt;
+&lt;p&gt;HM并不是必要的，失去HM的影响仅仅是crash的应用无法自动重启。&lt;/p&gt;
 &lt;h2&gt;HM对instance的调整策略&lt;/h2&gt;
 &lt;p&gt;调整主要出现在两种情况下：&lt;/p&gt;
 &lt;ul&gt;
@@ -197,7 +202,7 @@ heartbeat会被用来管理missing和extra 的instance。Missing instance会被�
 
 
 &lt;h2&gt;HM的配置&lt;/h2&gt;
-&lt;p&gt;HM是为数不多的在centos上能修改几个配置就能无脑正常运行的cloudfoundry组件之一（还有一个就是gorouter）, 而且没有HM cloudfoundry也能正常工作，造成的影响就是instance 挂掉之后必须手动重启。&lt;/p&gt;
+&lt;p&gt;HM是为数不多的在centos上能修改几个配置就能无脑正常运行的cloudfoundry组件之一（还有一个就是gorouter）&lt;/p&gt;
 &lt;p&gt;但有几点要注意：
 HM在源文件constants.rb里提供了一套缺省的配置，值得注意的是HM缺省配置中cc_partition是default，
 而CF 2.0组件cloud_controller 启动时缺省的配置是cc_partition=ng，这种情况下HM不会跟CC有任何交互，
@@ -206,20 +211,26 @@ HM在源文件constants.rb里提供了一套缺省的配置，值得注意的是
 &lt;p&gt;新增一行 cc_partition=ng (或者您为cc启动时配置的值)&lt;/p&gt;
 &lt;p&gt;bulk_api下host 要填写CC的域名或者IP&lt;/p&gt;</summary><category term="cloudfoundry"></category></entry><entry><title>UAA 和login-server</title><link href="http://limengyun.com/cloudfoundry/uaa.html" rel="alternate"></link><updated>2013-06-13T10:00:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-06-13:cloudfoundry/uaa.html</id><summary type="html">&lt;h2&gt;概述&lt;/h2&gt;
 &lt;p&gt;UAA的设计理念是要实现一个统一的用户认证和权限管理中心，设计思想和全部API见官方的&lt;a href="https://github.com/cloudfoundry/uaa/tree/master/docs"&gt;UAA文档&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;它提供了几十个API来实现应对不同场景下的用户管理，token分发，client管理。&lt;/p&gt;
 &lt;p&gt;下图说明了各种组件在UAA中的配合关系&lt;/p&gt;
 &lt;p&gt;&lt;img src="http://blog.cloudfoundry.com/wp-content/uploads/2013/02/uaa-environ.png"  alt="" width="600" height="350"/&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;UAA可以配置若干Client，每个Client可以有一个权限范围&lt;/li&gt;
-&lt;li&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;坦白的说 UAA的所有API我们也没全部弄清楚，而且也完全没有必要修改UAA，所以我们没怎么研究UAA的实现逻辑，只需要知道UAA负责生成token并分发token, CC的验证是通过对称解密token实现的，解密token可以得到用户的信息。我们只需要知道获取token的接口就可以了。&lt;/p&gt;
-&lt;p&gt;UAA本身的UAADB里面可以存储用户的各种信息，如果不需要使用其他的帐号系统，UAA完全可以独立使用。但如果你需要自定义，比如使用LDAP帐号系统作为验证，只需要自己实现一个login-server，在CC的配置里面配置好login为这个login-server的地址，那么在输入cf login的时就是login-server来处理了。&lt;/p&gt;
-&lt;p&gt;login-server要做什么事情呢？&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;实现LDAP的登录逻辑&lt;/li&gt;
-&lt;li&gt;&lt;/li&gt;
-&lt;/ul&gt;</summary><category term="cloudfoundry"></category></entry><entry><title>warden及平台安全</title><link href="http://limengyun.com/cloudfoundry/warden.html" rel="alternate"></link><updated>2013-06-13T00:00:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-06-13:cloudfoundry/warden.html</id><summary type="html">&lt;p&gt;warden 是整个cloudfoundry平台的基石。它负责最关键的资源控制——包括cpu，mem，disk等。
+&lt;p&gt;详细的去看文档。在这里仅仅提一下怎么给cloudfoundry加上自定义的权限验证，比如ldap&lt;/p&gt;
+&lt;h2&gt;安装和配置&lt;/h2&gt;
+&lt;p&gt;天生的跨平台JAV，安装上应该不会有问题。&lt;/p&gt;
+&lt;p&gt;至于UAA的配置 参见&lt;a href="https://github.com/youdao-cf/docs/blob/master/install/uaa.html.md"&gt;这里&lt;/a&gt;&lt;/p&gt;
+&lt;h2&gt;实践LDAP登录&lt;/h2&gt;
+&lt;p&gt;UAA有实现用户认证的逻辑，但如果需要自定义登录比如使用LDAP登录，并不需要修改UAA的代码。&lt;/p&gt;
+&lt;p&gt;之前在cloud controller中提到，cloud controller对请求的验证是通过解密在Authorization header中的token来实现的。
+UAA可以仅仅起一个token分发者的作用，然后将用户认证的部分委托出去。cloudfoundry已经替我们考虑到了这一点。
+只需要在cloud controller的配置项里配置到login这个配置为自己的登录服务器（假设叫login-server）
+再使用cf或者cfoundry api 进行登录都会使用login-server来进行登录验证。&lt;/p&gt;
+&lt;p&gt;官方的有个&lt;a href="https://github.com/cloudfoundry/login-server/"&gt;login-server&lt;/a&gt; ，我们fork下来然后:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;给login-server加上ldap的登录逻辑&lt;/li&gt;
+&lt;li&gt;当用户第一次登录时，login-server使用admin权限调用CC提供的api，给用户创建一个默认的space和org,分配一个domain。
+相当于login-server替代了上图中的 Monitoring web app&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;这一部分实现的并不完美，其实登录请求分两种，一种是implicit登陆，即使用命令行客户端登陆的方式，另一种是专门给浏览器使用的登陆逻辑。
+为了图省事我们浏览器和客户端都是用了同样的implicit登陆接口，直接把token存在cookie里，仅仅为了测试而已，实际使用这样肯定是不安全的。&lt;/p&gt;</summary><category term="cloudfoundry"></category></entry><entry><title>warden及平台安全</title><link href="http://limengyun.com/cloudfoundry/warden.html" rel="alternate"></link><updated>2013-06-13T00:00:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-06-13:cloudfoundry/warden.html</id><summary type="html">&lt;p&gt;warden 是整个cloudfoundry平台的基石。它负责最关键的资源控制——包括cpu，mem，disk等。
 资源控制直接关系到如何让多个应用之间直接互不干扰，以及阻止恶意代码的执行，从而保证平台的安全性。
 虚拟机可以很好的隔离，但这个解决方案对于隔离一个应用就显得太重量级了。&lt;/p&gt;
 &lt;p&gt;有一种基于linux系统内核的资源隔离技术&lt;/p&gt;
@@ -482,7 +493,7 @@ This is implemented by using aufs on Ubuntu versions from 10.04 up to 11.10, and
 &lt;/ol&gt;
 &lt;h2&gt;Cloud Controller 的用户认证&lt;/h2&gt;
 &lt;p&gt;Cloud Controller 2.0 去除了原有的用户认证相关代码，改为使用与uaa配合验证的方式，即uaa负责认证用户之后生成token，然后用户请求Cloud Controller时，
-需要将这个token以request header的形式伴随HTTP请求发送。Cloud Controller对称解密token得到用户信息。&lt;/p&gt;
+需要将这个token以request 的 Authorization header的形式伴随HTTP请求发送。Cloud Controller对称解密token得到用户信息。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;REQUEST&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;GET&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="o"&gt;://&lt;/span&gt;&lt;span class="n"&gt;api&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;cf2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;youdao&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;com&lt;/span&gt;&lt;span class="sr"&gt;/v2/spaces/1136694c-1bc2-495e-9aac-1b89894a6dcc/s&lt;/span&gt;&lt;span class="n"&gt;ummary&lt;/span&gt;
 &lt;span class="n"&gt;REQUEST_HEADERS&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
   &lt;span class="n"&gt;Accept&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;application&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;json&lt;/span&gt;
@@ -506,14 +517,15 @@ This is implemented by using aufs on Ubuntu versions from 10.04 up to 11.10, and
 比如官方的ruby lib为CFoundry（https://github.com/cloudfoundry/cfoundry）。
 基于Cloud Controller api进行更上层开发（比如自己实现一个web界面），可以基于这些lib而不是直接操作api，会省下不少时间。官方的客户端cf也是基于cfoundry进行的开发。&lt;/p&gt;
 &lt;h2&gt;安装&lt;/h2&gt;
-&lt;p&gt;TBD&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://github.com/youdao-cf/docs/blob/master/install/cloud_controller.html.md"&gt;安装&lt;/a&gt;&lt;/p&gt;
 &lt;h2&gt;配置&lt;/h2&gt;
+&lt;p&gt;除了上面安装中提到的。还有这一项&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;external_domain&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;api2&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;vcap&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;me&lt;/span&gt;
 &lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="n"&gt;external_domain&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;api&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cf2&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;youdao&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;gorouter在接收注册的时候是数组格式。将默认配置改为数组，不然router会报错。&lt;/p&gt;
+&lt;p&gt;gorouter在接收注册的时候是数组格式。将默认配置改为数组，不然router会报错。这个默认配置项是个BUG。&lt;/p&gt;
 &lt;h2&gt;TIPS&lt;/h2&gt;
 &lt;p&gt;Cloud Controller 需要一个数据库（即CCDB），如果你选择mysql，请使用Innodb或其他支持事务处理的引擎，千万记得不要使用默认的MYisAM引擎，因为它不支持事务。&lt;/p&gt;
 &lt;p&gt;请看lib/cloud_controller/rest_controller/model_controller.rb&lt;/p&gt;
@@ -542,18 +554,17 @@ This is implemented by using aufs on Ubuntu versions from 10.04 up to 11.10, and
 
 
 &lt;p&gt;可以看到Cloud Controller 的创建或更新都依赖数据库的事务功能：先创建或更新，再判断是不是有权限执行操作。&lt;/p&gt;
-&lt;p&gt;如果使用了一个不支持事务的数据库，虽然不会报错，但任何无权限的创建或更新都会被执行，留下隐患。&lt;/p&gt;</summary><category term="cloudfoundry"></category></entry><entry><title>Console</title><link href="http://limengyun.com/cloudfoundry/console.html" rel="alternate"></link><updated>2013-05-29T10:20:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-05-29:cloudfoundry/console.html</id><summary type="html">&lt;p&gt;在写这篇文章的前两天，cloudfoundry 2.0 的官方云出品了。伴随着一个web console：&lt;a href="http://run.pivotal.io/"&gt;地址&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;我们自己也开发了一个console……&lt;/p&gt;
-&lt;h2&gt;咱的console有哪些不同？&lt;/h2&gt;
-&lt;p&gt;可以先用用官方的，然后再看视频……&lt;/p&gt;
+&lt;p&gt;如果使用了一个不支持事务的数据库，虽然不会报错，但任何无权限的创建或更新都会被执行，留下隐患。&lt;/p&gt;</summary><category term="cloudfoundry"></category></entry><entry><title>Console</title><link href="http://limengyun.com/cloudfoundry/console.html" rel="alternate"></link><updated>2013-05-29T10:20:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-05-29:cloudfoundry/console.html</id><summary type="html">&lt;p&gt;6月10号。cloudfoundry 2.0 的官方云出品了。伴随着一个web console：&lt;a href="http://run.pivotal.io/"&gt;地址&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;但我似乎没找到这个console的repo，估计要商业化，不会开源了吧。于是自己实现了一个console……&lt;/p&gt;
+&lt;h2&gt;有哪些不同？&lt;/h2&gt;
 &lt;p&gt;在cloudfoundry api的框架范围内，我们赋予了更多的功能适应内部使用的需要。&lt;/p&gt;
 &lt;p&gt;首先，登录使用LDAP，不提供注册功能。当然这是属于login-server的修改范畴。&lt;/p&gt;
-&lt;p&gt;第二，屏蔽了space的概念，首次登录默认创建与LDAP账号相同的organization，在这个organization下创建一个名为default的space，
-space对用户不可见，但用户所有的app都被放置在default space中，所以感觉上是应用都是直接归属于organization。 这样设计是感觉两层的权限对内部使用还是太繁琐了&lt;/p&gt;
+&lt;p&gt;第二，内部使用没有必要有org和space的层级。于是屏蔽了space的概念，首次登录默认创建与LDAP账号相同的organization，在这个organization下创建一个名为default的space，
+space对用户不可见，但用户所有的app都被放置在default space中，所以感觉上是应用都是直接归属于organization。 这也是在login-server中实现的&lt;/p&gt;
 &lt;p&gt;第三，用户可以在web上直接一键创建应用，而不用跟官方console一样，还需要使用cf命令行。
 且应用一旦创建便绑定一个svn代码地址，修改svn之后，在web上输入版本号便可以更新应用。&lt;/p&gt;
-&lt;p&gt;第四，个人觉得长得漂亮，更直观……&lt;/p&gt;
-&lt;p&gt;当然，时间原因，先做demo，代码基本没进行边界和错误处理，请勿吐槽。&lt;/p&gt;</summary><category term="cloudfoundry"></category></entry><entry><title>NATS</title><link href="http://limengyun.com/cloudfoundry/nats.html" rel="alternate"></link><updated>2013-05-29T10:20:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-05-29:cloudfoundry/nats.html</id><summary type="html">&lt;p&gt;NATS是一个轻量级的基于pub-sub机制的分布式消息队列系统，它负责衔接各组件。官方文档在这里：(http://docs.cloudfoundry.com/docs/running/architecture/messaging-nats.html)。&lt;/p&gt;
+&lt;p&gt;第四，作为一个前端出身的技术，自己做了个windows UI的界面。当然也不见得比官方的好看。&lt;/p&gt;
+&lt;p&gt;当然，时间原因，先做demo，代码基本没进行边界和错误处理，写得也很烂，羞于开源，就不说明地址了，你要找还是能找到的……&lt;/p&gt;</summary><category term="cloudfoundry"></category></entry><entry><title>NATS</title><link href="http://limengyun.com/cloudfoundry/nats.html" rel="alternate"></link><updated>2013-05-29T10:20:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-05-29:cloudfoundry/nats.html</id><summary type="html">&lt;p&gt;NATS是一个轻量级的基于pub-sub机制的分布式消息队列系统，它负责衔接各组件。官方文档在这里：(http://docs.cloudfoundry.com/docs/running/architecture/messaging-nats.html)。&lt;/p&gt;
 &lt;p&gt;但看完官方文档仍然有点不太直观，举几个典型的例子来说明：&lt;/p&gt;
 &lt;h2&gt;向router注册&lt;/h2&gt;
 &lt;p&gt;不管是外部用户对平台上的应用发起的请求，还是内部组件提供对外的api（uaa和cloud controller），都是通过router转发的request，要能让router转发则首先需要向router注册。

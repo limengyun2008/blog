@@ -40,21 +40,38 @@
 <p>tags: <a href="../tag/cloudfoundry.html">cloudfoundry</a></p>
 </footer><!-- /.post-info -->      <h2>概述</h2>
 <p>UAA的设计理念是要实现一个统一的用户认证和权限管理中心，设计思想和全部API见官方的<a href="https://github.com/cloudfoundry/uaa/tree/master/docs">UAA文档</a></p>
-<p>它提供了几十个API来实现应对不同场景下的用户管理，token分发，client管理。</p>
 <p>下图说明了各种组件在UAA中的配合关系</p>
 <p><img src="http://blog.cloudfoundry.com/wp-content/uploads/2013/02/uaa-environ.png"  alt="" width="600" height="350"/></p>
-<ul>
-<li>UAA可以配置若干Client，每个Client可以有一个权限范围</li>
-<li></li>
-</ul>
-<p>坦白的说 UAA的所有API我们也没全部弄清楚，而且也完全没有必要修改UAA，所以我们没怎么研究UAA的实现逻辑，只需要知道UAA负责生成token并分发token, CC的验证是通过对称解密token实现的，解密token可以得到用户的信息。我们只需要知道获取token的接口就可以了。</p>
-<p>UAA本身的UAADB里面可以存储用户的各种信息，如果不需要使用其他的帐号系统，UAA完全可以独立使用。但如果你需要自定义，比如使用LDAP帐号系统作为验证，只需要自己实现一个login-server，在CC的配置里面配置好login为这个login-server的地址，那么在输入cf login的时就是login-server来处理了。</p>
-<p>login-server要做什么事情呢？</p>
-<ul>
-<li>实现LDAP的登录逻辑</li>
-<li></li>
-</ul>
+<p>详细的去看文档。在这里仅仅提一下怎么给cloudfoundry加上自定义的权限验证，比如ldap</p>
+<h2>安装和配置</h2>
+<p>天生的跨平台JAV，安装上应该不会有问题。</p>
+<p>至于UAA的配置 参见<a href="https://github.com/youdao-cf/docs/blob/master/install/uaa.html.md">这里</a></p>
+<h2>实践LDAP登录</h2>
+<p>UAA有实现用户认证的逻辑，但如果需要自定义登录比如使用LDAP登录，并不需要修改UAA的代码。</p>
+<p>之前在cloud controller中提到，cloud controller对请求的验证是通过解密在Authorization header中的token来实现的。
+UAA可以仅仅起一个token分发者的作用，然后将用户认证的部分委托出去。cloudfoundry已经替我们考虑到了这一点。
+只需要在cloud controller的配置项里配置到login这个配置为自己的登录服务器（假设叫login-server）
+再使用cf或者cfoundry api 进行登录都会使用login-server来进行登录验证。</p>
+<p>官方的有个<a href="https://github.com/cloudfoundry/login-server/">login-server</a> ，我们fork下来然后:</p>
+<ol>
+<li>给login-server加上ldap的登录逻辑</li>
+<li>当用户第一次登录时，login-server使用admin权限调用CC提供的api，给用户创建一个默认的space和org,分配一个domain。
+相当于login-server替代了上图中的 Monitoring web app</li>
+</ol>
+<p>这一部分实现的并不完美，其实登录请求分两种，一种是implicit登陆，即使用命令行客户端登陆的方式，另一种是专门给浏览器使用的登陆逻辑。
+为了图省事我们浏览器和客户端都是用了同样的implicit登陆接口，直接把token存在cookie里，仅仅为了测试而已，实际使用这样肯定是不安全的。</p>
     </div><!-- /.entry-content -->
+ 
+   
+    <div class="comments">
+      <h2>Comments !</h2>
+<!-- UY BEGIN -->
+<div id="uyan_frame"></div>
+<script type="text/javascript" id="UYScript" src="http://v1.uyan.cc/js/iframe.js?UYUserId=1531463" async=""></script>
+<!-- UY END -->
+    </div>
+
+
     
   </article>
 </section>

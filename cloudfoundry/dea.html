@@ -38,22 +38,16 @@
         </address>
         <p>In <a href="../category/backend.html">backend</a>. </p>
 <p>tags: <a href="../tag/cloudfoundry.html">cloudfoundry</a></p>
-</footer><!-- /.post-info -->      <h2>术语</h2>
-<p>dea组件的全称是 droplet execution agency， droplet是cloudfoundry自创的一个概念，它是一个app的可运行实例配合实例启停脚本的压缩包。</p>
-<p>举例来说，如果我们要让一个php app程序运行，我们将代码下载之后需要做什么呢？</p>
-<ul>
-<li>首先需要需要下载一个apache，</li>
-<li>然后配置apache</li>
-<li>最后将启动命令写入一个脚本。</li>
-</ul>
-<p>那如果我们将代码+apache+脚本一起打成一个压缩包，在其他服务器上启动这个应用的多个实例的时候只需要下载这个压缩包之后解压，启动脚本即可。
-这个机制也是整个cloudfoundry实现应用分布式的关键。</p>
-<ul>
-<li>这个压缩包即为 droplet</li>
-<li>将用户代码和服务器打包压缩生成droplet的过程叫 staging</li>
-<li>针对不同类型应用专门编写staging程序叫 buildpack</li>
-<li>解压运行droplet的组件叫dea。</li>
-</ul>
+</footer><!-- /.post-info -->      <p>dea 和 buildpack是整个cloudfoundry 设计最出彩的地方，想想别的PaaS 开发新加一门语言是多么费劲？而cloudfoundry 仅仅需要几天，而且还支持用户自定义语言和应用类型，
+这一切都是基于buildpack打包设计的功劳。</p>
+<h2>术语</h2>
+<p>在提到buildpack之前 有必要解释一下DEA，dea全称是 droplet execution agency，即执行droplet的代理。</p>
+<p>droplet是cloudfoundry自创的一个概念，它是一个app的可运行实例配合实例启停脚本的压缩包。</p>
+<p>举例来说，如果我把一个php应用放置在某个路径下，然后将apache配置好，最后写一个启动脚本，然后将apache, php应用代码和启动脚本打成一个压缩包。
+在另外一台环境完全相同的机器上，你只需要下载这个压缩包，解压到对应目录下，然后启动脚本，应用就可以完美的复制到这台机器上。
+这就是cloudfoundry进行动态扩容的原理和基础。
+一个打好压缩包就是一个droplet，打压缩包的程序就叫buildpack，打包的过程叫staging。
+不同的应用类型对应的buildpack代码也不同。如果要增加一门cloudfoundry默认不支持的语言或者应用类型，就需要自定义buildpack。</p>
 <h2>dea职责</h2>
 <h3>staging和running droplet</h3>
 <p>在1.0中，staging 是由专门的组件stager来完成的，在2.0中去掉了stager改为直接在dea中进行staging。</p>
@@ -93,6 +87,7 @@ file api server起一个验证并返回请求真实路径的作用</p>
 <p>dea directory server 收到类似http://882aa9de3cfa35c4e06a6f5613f0df2d.cf2.youdao.com/instance_paths/b6d11bf2865189aafe0a4be4133688b7?hmac=cc48aa1aa305154ea4e49e8ee33c1ee4a3bbb9ddccd626b73f0a6ed9fe7d6d191a79ecf78b680e5e252ba8948e7ee444029e38ce216a9b828b3898e49dc49a06&amp;path=logs&amp;timestamp=1371372696
 这样的请求后会向file api server 发起请求，file api server根据hmac 判断请求是否合法，如果合法就返回log文件在操作系统上的真实地址，最后由dea directory server 返回log的内容。</p>
 <h2>配置</h2>
+<p>改一下nats的配置，然后新加一个配置项domain</p>
 <div class="highlight"><pre><span class="nl">domain:</span> <span class="err">你的平台域名。</span>
 </pre></div>
 
@@ -119,19 +114,40 @@ file api server起一个验证并返回请求真实路径的作用</p>
 <li>./bin/compile  打包的主脚本，根据detect的结果选择打包的方式。</li>
 <li>./bin/release  输出自定义的启动命令等相关信息，以便写入到最终的启动脚本。</li>
 </ul>
-<p>dea会遍历所有的detect脚本，如果你编写的detect脚本满足条件，就会选择对应的compile脚本执行。</p>
-<p>在执行你编写的compile脚本之前，dea已经给创建好了container，然后下载并解压好了代码，compile的内容就是根据这个代码要怎么打包。
-按照这个方式，怎么编写compile脚本就取决于你的实际情况，可以使用shell 也可以使用ruby脚本。写之前参考一下已有的buildpack就能了解思路。</p>
+<p>dea会遍历所有的detect脚本，如果你编写的detect脚本满足条件，echo “应用类型的名字” exit 0 就可以了，cloudfoundry就会选择对应目录下的compile脚本执行。</p>
+<p>以我们修改的java的compile脚本为例，compile的内容就是顺序执行</p>
+<ul>
+<li>安装java</li>
+<li>安装ant</li>
+<li>安装resin</li>
+<li>在应用目录想执行ant all 生成ROOT.war（应用build.xml必须支持ant all命令）</li>
+<li>cp ROOT.war 到 resin的webapps目录下</li>
+<li>写一个脚本generate_resin_conf.rb，脚本的内容是根据传入的port参数动态的生成renin的resin.conf</li>
+</ul>
+<p>最后我们需要完成release脚本，同样以修改的java为例，release文件的内容就是一个.yml文件，里面配置了一些启动命令和环境变量。
+只需要吧启动命令修改为  ruby generate_resin_conf.rb &amp;&amp; ./resin/bin/httpd.sh  -c  ../resin.conf</p>
+<p>DONE</p>
 <h4>注意1：</h4>
 <p>官方或开源第三方的buildpack在staging的时候基本都通过http下载一些东西，比如apache等等，关键在于这些地址都是在amazon s3上。
 在天朝的网络下，采用这种方式就要看GFW的心情了，要正常使用最好把那些下载地址全部换成内网地址。</p>
 <h4>注意2：</h4>
 <p>有些buildpack 会将/home/vcap/app  软连接到/app/app   然后再在/app/app中进行操作。
 但之前在warden中提到过，在centos 6上使用默认文件系统实现的warden container 不具备完整的软连接功能（无法cd进入软连接后的目录，详情见warden的cent OS tip），
-所以想要在centos上正常使用仍然需要修改这部分代码。</p>
+所以想要在centos上正常使用仍然需要修改这部分代码。如果自己实现，就千万不要使用软连接。</p>
 <h4>提示：</h4>
 <p>http://www.appfog.com 是一个基于cloudfoundry的paas，他自定义了许多语言的buildpack支持并在github上开源出来（github： https://github.com/appfog/ ）。</p>
     </div><!-- /.entry-content -->
+ 
+   
+    <div class="comments">
+      <h2>Comments !</h2>
+<!-- UY BEGIN -->
+<div id="uyan_frame"></div>
+<script type="text/javascript" id="UYScript" src="http://v1.uyan.cc/js/iframe.js?UYUserId=1531463" async=""></script>
+<!-- UY END -->
+    </div>
+
+
     
   </article>
 </section>

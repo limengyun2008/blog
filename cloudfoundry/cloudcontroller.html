@@ -56,7 +56,7 @@
 </ol>
 <h2>Cloud Controller 的用户认证</h2>
 <p>Cloud Controller 2.0 去除了原有的用户认证相关代码，改为使用与uaa配合验证的方式，即uaa负责认证用户之后生成token，然后用户请求Cloud Controller时，
-需要将这个token以request header的形式伴随HTTP请求发送。Cloud Controller对称解密token得到用户信息。</p>
+需要将这个token以request 的 Authorization header的形式伴随HTTP请求发送。Cloud Controller对称解密token得到用户信息。</p>
 <div class="highlight"><pre><span class="n">REQUEST</span><span class="o">:</span> <span class="n">GET</span> <span class="n">http</span><span class="o">://</span><span class="n">api</span><span class="o">.</span><span class="na">cf2</span><span class="o">.</span><span class="na">youdao</span><span class="o">.</span><span class="na">com</span><span class="sr">/v2/spaces/1136694c-1bc2-495e-9aac-1b89894a6dcc/s</span><span class="n">ummary</span>
 <span class="n">REQUEST_HEADERS</span><span class="o">:</span>
   <span class="n">Accept</span> <span class="o">:</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span>
@@ -80,14 +80,15 @@
 比如官方的ruby lib为CFoundry（https://github.com/cloudfoundry/cfoundry）。
 基于Cloud Controller api进行更上层开发（比如自己实现一个web界面），可以基于这些lib而不是直接操作api，会省下不少时间。官方的客户端cf也是基于cfoundry进行的开发。</p>
 <h2>安装</h2>
-<p>TBD</p>
+<p><a href="https://github.com/youdao-cf/docs/blob/master/install/cloud_controller.html.md">安装</a></p>
 <h2>配置</h2>
+<p>除了上面安装中提到的。还有这一项</p>
 <div class="highlight"><pre><span class="o">-</span><span class="n">external_domain</span><span class="o">:</span> <span class="n">api2</span><span class="p">.</span><span class="n">vcap</span><span class="p">.</span><span class="n">me</span>
 <span class="o">+</span><span class="n">external_domain</span><span class="o">:</span> <span class="p">[</span><span class="n">api</span><span class="p">.</span><span class="n">cf2</span><span class="p">.</span><span class="n">youdao</span><span class="p">.</span><span class="n">com</span><span class="p">]</span>
 </pre></div>
 
 
-<p>gorouter在接收注册的时候是数组格式。将默认配置改为数组，不然router会报错。</p>
+<p>gorouter在接收注册的时候是数组格式。将默认配置改为数组，不然router会报错。这个默认配置项是个BUG。</p>
 <h2>TIPS</h2>
 <p>Cloud Controller 需要一个数据库（即CCDB），如果你选择mysql，请使用Innodb或其他支持事务处理的引擎，千万记得不要使用默认的MYisAM引擎，因为它不支持事务。</p>
 <p>请看lib/cloud_controller/rest_controller/model_controller.rb</p>
@@ -118,6 +119,17 @@
 <p>可以看到Cloud Controller 的创建或更新都依赖数据库的事务功能：先创建或更新，再判断是不是有权限执行操作。</p>
 <p>如果使用了一个不支持事务的数据库，虽然不会报错，但任何无权限的创建或更新都会被执行，留下隐患。</p>
     </div><!-- /.entry-content -->
+ 
+   
+    <div class="comments">
+      <h2>Comments !</h2>
+<!-- UY BEGIN -->
+<div id="uyan_frame"></div>
+<script type="text/javascript" id="UYScript" src="http://v1.uyan.cc/js/iframe.js?UYUserId=1531463" async=""></script>
+<!-- UY END -->
+    </div>
+
+
     
   </article>
 </section>
