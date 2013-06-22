@@ -555,7 +555,7 @@ This is implemented by using aufs on Ubuntu versions from 10.04 up to 11.10, and
 
 &lt;p&gt;可以看到Cloud Controller 的创建或更新都依赖数据库的事务功能：先创建或更新，再判断是不是有权限执行操作。&lt;/p&gt;
 &lt;p&gt;如果使用了一个不支持事务的数据库，虽然不会报错，但任何无权限的创建或更新都会被执行，留下隐患。&lt;/p&gt;</summary><category term="cloudfoundry"></category></entry><entry><title>Console</title><link href="http://limengyun.com/cloudfoundry/console.html" rel="alternate"></link><updated>2013-05-29T10:20:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-05-29:cloudfoundry/console.html</id><summary type="html">&lt;p&gt;6月10号。cloudfoundry 2.0 的官方云出品了。伴随着一个web console：&lt;a href="http://run.pivotal.io/"&gt;地址&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;但我似乎没找到这个console的repo，估计要商业化，不会开源了吧。于是自己实现了一个console……&lt;/p&gt;
+&lt;p&gt;但我似乎没找到这个console的repo，估计要商业化，这个组件不对外开源了吧。于是自己实现了一个console……&lt;/p&gt;
 &lt;h2&gt;有哪些不同？&lt;/h2&gt;
 &lt;p&gt;在cloudfoundry api的框架范围内，我们赋予了更多的功能适应内部使用的需要。&lt;/p&gt;
 &lt;p&gt;首先，登录使用LDAP，不提供注册功能。当然这是属于login-server的修改范畴。&lt;/p&gt;
