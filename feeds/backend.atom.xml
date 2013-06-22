@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>limengyun's blog</title><link href="http://limengyun.com/" rel="alternate"></link><link href="http://limengyun.com/feeds/backend.atom.xml" rel="self"></link><id>http://limengyun.com/</id><updated>2013-06-17T10:00:00+08:00</updated><entry><title>cloudfoundry 2.0 on CentOS 6 小结</title><link href="http://limengyun.com/cloudfoundry/index.html" rel="alternate"></link><updated>2013-06-17T10:00:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-06-17:cloudfoundry/index.html</id><summary type="html">&lt;p&gt;这不是官方安装说明的中文版：这里讲的是使用&lt;strong&gt;各个组件的源代码&lt;/strong&gt;在&lt;strong&gt;centOS 6&lt;/strong&gt;上搭建cloudfoundry 2.0并进行适当的自定义开发。
-不论cloudfoundry 1.0还是2.0都有相当一部分源代码基于ubuntu 发行版开发，其他系统上根本运行不起来，但之所以这么做，原因见下：
-cloudfoundry 2.0 正式发布已经有一周多了，相信想研究它的人也不少。
-但对于最新的2.0，官方仅给出了一种基于Iaas的部署方式，大批量的创建ubuntu 虚拟机，然后使用cloudfoundry的发行包（cf-release）批量部署cloudfoundry。&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>limengyun's blog</title><link href="http://limengyun.com/" rel="alternate"></link><link href="http://limengyun.com/feeds/backend.atom.xml" rel="self"></link><id>http://limengyun.com/</id><updated>2013-06-17T10:00:00+08:00</updated><entry><title>cloudfoundry 2.0 on CentOS 6 小结</title><link href="http://limengyun.com/cloudfoundry/index.html" rel="alternate"></link><updated>2013-06-17T10:00:00+08:00</updated><author><name>limengyun</name></author><id>tag:limengyun.com,2013-06-17:cloudfoundry/index.html</id><summary type="html">&lt;p&gt;cloudfoundry 2.0 正式发布已经有一周多了，相信想研究它的人也不少。&lt;/p&gt;
+&lt;p&gt;但对于最新的2.0，官方仅给出了一种基于Iaas的部署方式，大批量的创建ubuntu 虚拟机，然后使用cloudfoundry的发行包（cf-release）批量部署cloudfoundry。&lt;/p&gt;
 &lt;p&gt;这个需要有openstack，Vsphere 等底层IaaS作为支持，如果没有IaaS, 那就只能自己摸索通过源代码安装
 ，但相当一部分源代码基于ubuntu 发行版开发，如果物理机的操作系统不是ubuntu发行版，根本运行不起来。&lt;/p&gt;
-&lt;p&gt;笔者从cloudfoundry 1.0起就一直在研究它，但苦于没有IaaS，曾经将1.0版本适配到2.0上面，这次又对2.0干了同样的事情，但这次难度更大。&lt;/p&gt;
+&lt;p&gt;笔者从cloudfoundry 1.0起就一直在研究它，但苦于没有IaaS，曾经将1.0版本适配到2.0上面( &lt;a href="https://github.com/limengyun2008/vcap/tree/yae"&gt;vcap&lt;/a&gt; )，
+于是这次又对2.0干了同样的事情，但这次难度更大。&lt;/p&gt;
 &lt;p&gt;如果你是ubuntu系统（官方声明最好是10.04）基本所有组件安装后经过合理的配置，都可以正常运行。
 但如果是其他linux发行版，以本文中的centOS为例，除了配置问题，还会碰到各种因为操作系统引起的bug需要修改源代码。&lt;/p&gt;
 &lt;p&gt;这个系列博客给出了一个cloudfoundry正常运行所必须组件的实现原理和安装配置细节，同时也包含一些在centOS等非ubuntu linux 发行版上修复BUG的提示。&lt;/p&gt;
-&lt;p&gt;至于更多的技术细节则需要靠各位自己阅读源代码了。&lt;/p&gt;
+&lt;p&gt;粗略的技术细节都可以在各组件源代码代码的readme里面找到，我这里只会提一点readme里面没讲到的。至于更多的技术细节则需要靠各位自己阅读源代码了。&lt;/p&gt;
 &lt;h2&gt;cloudfoundry 组件简介&lt;/h2&gt;
 &lt;p&gt;Cloudfoudnry 1.0已于在2013年1月底停止开发与维护。现在网上许多cloudfoundry的文章讲的都是跟1.0有关的内容，在此指出一些主要的区别。&lt;/p&gt;
 &lt;ul&gt;
