@@ -38,8 +38,8 @@
         </address>
         <p>In <a href="../category/backend.html">backend</a>. </p>
 <p>tags: <a href="../tag/cloudfoundry.html">cloudfoundry</a></p>
-</footer><!-- /.post-info -->      <p>NATS是一个轻量级的基于pub-sub机制的分布式消息队列系统，它负责衔接各组件。官方文档在这里：(http://docs.cloudfoundry.com/docs/running/architecture/messaging-nats.html)。</p>
-<p>但看完官方文档仍然有点不太直观，举几个典型的例子来说明：</p>
+</footer><!-- /.post-info -->      <p>NATS是一个轻量级的基于pub-sub机制的分布式消息队列系统，它负责衔接各组件。所有组件的配置项里都有nats的配置。官方安装文档在<a href="http://docs.cloudfoundry.com/docs/running/architecture/messaging-nats.html">这里</a>。</p>
+<p>但看完官方文档仍然有点不太直观，举几个典型的例子来说明一下：</p>
 <h2>向router注册</h2>
 <p>不管是外部用户对平台上的应用发起的请求，还是内部组件提供对外的api（uaa和cloud controller），都是通过router转发的request，要能让router转发则首先需要向router注册。
 以下是实现逻辑：</p>

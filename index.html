@@ -35,16 +35,20 @@
         </address>
         <p>In <a href="./category/backend.html">backend</a>. </p>
 <p>tags: <a href="./tag/cloudfoundry.html">cloudfoundry</a></p>
-</footer><!-- /.post-info --><p>cloudfoundry 2.0 正式发布已经有一周多了，相信想研究它的人也不少。</p>
-<p>但对于最新的2.0，官方仅给出了一种基于Iaas的部署方式，大批量的创建ubuntu 虚拟机，然后使用cloudfoundry的发行包（cf-release）批量部署cloudfoundry。</p>
+</footer><!-- /.post-info --><h2>概况</h2>
+<p>cloudfoundry 2.0 正式发布已经有一周多了，相信想研究它的人也不少。
+但对于最新的2.0，官方仅给出了一种基于Iaas的部署方式，大批量的创建ubuntu 虚拟机，然后使用cloudfoundry的发行包（cf-release）批量部署cloudfoundry。</p>
 <p>这个需要有openstack，Vsphere 等底层IaaS作为支持，如果没有IaaS, 那就只能自己摸索通过源代码安装
 ，但相当一部分源代码基于ubuntu 发行版开发，如果物理机的操作系统不是ubuntu发行版，根本运行不起来。</p>
 <p>笔者从cloudfoundry 1.0起就一直在研究它，但苦于没有IaaS，曾经将1.0版本适配到centos上( <a href="https://github.com/limengyun2008/vcap/tree/yae">vcap</a> )，
 于是这次又对2.0干了同样的事情，但这次难度更大。</p>
 <p>如果你是ubuntu系统（官方声明最好是10.04）基本所有组件安装后经过合理的配置，都可以正常运行。
 但如果是其他linux发行版，以本文中的centOS为例，除了配置问题，还会碰到各种因为操作系统引起的bug需要修改源代码。</p>
-<p>这个系列博客给出了一个cloudfoundry正常运行所必须组件的实现原理和安装配置细节，同时也包含一些在centOS等非ubuntu linux 发行版上修复BUG的提示。</p>
-<p>粗略的技术细节都可以在各组件源代码代码的readme里面找到，我这里只会提一点readme里面没讲到的。至于更多的技术细节则需要靠各位自己阅读源代码了。</p>
+<p>在安装成功后，我们还自行开发了一个cloudfoundry的web界面，详情：<a href="/cloudfoundry/console.html">console</a></p>
+<iframe height=498 width=510 src="http://player.youku.com/embed/XNTc1MjM4Mzk2" frameborder=0 allowfullscreen></iframe>
+
+<p>以下是一个维持cloudfoundry基本正常运行所必须组件的实现原理和安装配置细节，同时也包含一些在centOS等非ubuntu linux 发行版上修复BUG的提示。
+粗略的技术细节都可以在各组件源代码代码的readme里面找到，各组件说明里面只会提一点readme里面没讲到的。至于更多的技术细节则需要靠各位自己阅读源代码了。</p>
 <h2>cloudfoundry 组件简介</h2>
 <p>Cloudfoudnry 1.0已于在2013年1月底停止开发与维护。现在网上许多cloudfoundry的文章讲的都是跟1.0有关的内容，在此指出一些主要的区别。</p>
 <ul>
@@ -86,10 +90,6 @@
 <li>Collector： 监听nats中的各类消息来监控各组件的运行状态，非必要，也没有支持。</li>
 <li>cf： 官方的命令行客户端。gem install cf 即可。 </li>
 <li>eclipse STS 插件： 官方的eclipse插件。跟cf一样也同样属于客户端性质。</li>
-</ul>
-<h4>自行开发的组件</h4>
-<ul>
-<li>console： 自行开发的cloudfoundry的web界面，详情：<a href="/cloudfoundry/console.html">console</a></li>
 </ul>
 <p>总结：给cloudfoundry做centos的适配是个吃力不讨好的事情，费劲千辛万苦DEBUG却并没有添加什么新功能，
 但在这个过程中不可避免的需要深入了解cloudfoundry的架构和细节，也算是不小的收获。
