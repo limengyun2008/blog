@@ -35,3 +35,8 @@ DEFAULT_PAGINATION = 10
 #RELATIVE_URLS = True
 
 THEME = "theme"
+
+STATIC_PATHS = ['images', 'extra']
+EXTRA_PATH_METADATA = {
+    'extra/CNAME': {'path': 'CNAME'}    
+}
