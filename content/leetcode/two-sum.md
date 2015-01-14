@@ -13,6 +13,13 @@ Date: 2015-01-01 10:00
 >
 >Output: index1=1, index2=2
 
+### solution
+本来是想了一个O(nlgn)的算法，即先排序，然后分别从头尾取一个数sum, sum大于target则尾向前，小于target则头向后。
+
+accept之后发现官方有个更流氓的用hashmap直接查找的解法。复杂度为O(n)。 
+
+但是试了几次，O(n)的算法都没有O(nlgn)的快……
+
 ### source code
     :::java
     import java.util.HashMap;

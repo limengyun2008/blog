@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 AUTHOR = u'Li Mengyun'
 SITENAME = u'limengyun.com'
-SITEURL = 'http://blog.limengyun.com'
+SITEURL = ''
 
 PATH = 'content'
 
@@ -32,7 +32,7 @@ SOCIAL = (('You can add links in your config file', '#'),
 DEFAULT_PAGINATION = 10
 
 # Uncomment following line if you want document-relative URLs when developing
-#RELATIVE_URLS = True
+RELATIVE_URLS = True
 
 THEME = "theme"
 
@@ -40,3 +40,7 @@ STATIC_PATHS = ['images', 'extra']
 EXTRA_PATH_METADATA = {
     'extra/CNAME': {'path': 'CNAME'}    
 }
+
+
+ARTICLE_URL = '{category}/{slug}.html'
+ARTICLE_SAVE_AS = '{category}/{slug}.html'
