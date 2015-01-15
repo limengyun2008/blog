@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>limengyun.com</title><link href="http://blog.limengyun.com/" rel="alternate"></link><link href="http://blog.limengyun.com/feeds/leetcode.atom.xml" rel="self"></link><id>http://blog.limengyun.com/</id><updated>2015-01-03T10:00:00+08:00</updated><entry><title>Longest Substring Without Repeating Characters</title><link href="http://blog.limengyun.com/leetcode/longest-substring-without-repeating-characters.html" rel="alternate"></link><updated>2015-01-03T10:00:00+08:00</updated><author><name>Li Mengyun</name></author><id>tag:blog.limengyun.com,2015-01-03:leetcode/longest-substring-without-repeating-characters.html</id><summary type="html">&lt;h3&gt;problem&lt;/h3&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>limengyun.com</title><link href="http://www.limengyun.com/" rel="alternate"></link><link href="http://www.limengyun.com/feeds/leetcode.atom.xml" rel="self"></link><id>http://www.limengyun.com/</id><updated>2015-01-03T10:00:00+08:00</updated><entry><title>Longest Substring Without Repeating Characters</title><link href="http://www.limengyun.com/leetcode/longest-substring-without-repeating-characters.html" rel="alternate"></link><updated>2015-01-03T10:00:00+08:00</updated><author><name>Li Mengyun</name></author><id>tag:www.limengyun.com,2015-01-03:leetcode/longest-substring-without-repeating-characters.html</id><summary type="html">&lt;h3&gt;problem&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Given a string, find the length of the longest substring without repeating characters. For example, the longest substring without repeating letters for "abcabcbb" is "abc", which the length is 3. For "bbbbb" the longest substring is "b", with the length of 1.&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -25,7 +25,7 @@
         &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;max&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
     &lt;span class="o"&gt;}&lt;/span&gt;
 &lt;span class="o"&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;</summary></entry><entry><title>Add Two Numbers</title><link href="http://blog.limengyun.com/leetcode/add-two-numbers.html" rel="alternate"></link><updated>2015-01-02T10:00:00+08:00</updated><author><name>Li Mengyun</name></author><id>tag:blog.limengyun.com,2015-01-02:leetcode/add-two-numbers.html</id><summary type="html">&lt;h3&gt;problem&lt;/h3&gt;
+&lt;/pre&gt;&lt;/div&gt;</summary></entry><entry><title>Add Two Numbers</title><link href="http://www.limengyun.com/leetcode/add-two-numbers.html" rel="alternate"></link><updated>2015-01-02T10:00:00+08:00</updated><author><name>Li Mengyun</name></author><id>tag:www.limengyun.com,2015-01-02:leetcode/add-two-numbers.html</id><summary type="html">&lt;h3&gt;problem&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;You are given two linked lists representing two non-negative numbers. The digits are stored in reverse order and each of their nodes contain a single digit. Add the two numbers and return it as a linked list.&lt;/p&gt;
 &lt;p&gt;Input: (2 -&amp;gt; 4 -&amp;gt; 3) + (5 -&amp;gt; 6 -&amp;gt; 4)&lt;/p&gt;
@@ -73,7 +73,7 @@
         &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;head&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
     &lt;span class="o"&gt;}&lt;/span&gt;
 &lt;span class="o"&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;</summary></entry><entry><title>Two sum</title><link href="http://blog.limengyun.com/leetcode/two-sum.html" rel="alternate"></link><updated>2015-01-01T10:00:00+08:00</updated><author><name>Li Mengyun</name></author><id>tag:blog.limengyun.com,2015-01-01:leetcode/two-sum.html</id><summary type="html">&lt;h3&gt;problem&lt;/h3&gt;
+&lt;/pre&gt;&lt;/div&gt;</summary></entry><entry><title>Two sum</title><link href="http://www.limengyun.com/leetcode/two-sum.html" rel="alternate"></link><updated>2015-01-01T10:00:00+08:00</updated><author><name>Li Mengyun</name></author><id>tag:www.limengyun.com,2015-01-01:leetcode/two-sum.html</id><summary type="html">&lt;h3&gt;problem&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Given an array of integers, find two numbers such that they add up to a specific target number.&lt;/p&gt;
 &lt;p&gt;The function twoSum should return indices of the two numbers such that they add up to the target, where index1 must be less than index2. Please note that your returned answers (both index1 and index2) are not zero-based.&lt;/p&gt;
