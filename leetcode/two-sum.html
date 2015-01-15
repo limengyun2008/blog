@@ -4,7 +4,7 @@
         <title>Two sum - limengyun.com</title>
         <meta charset="utf-8" />
         <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" />
-        <link href="http://blog.limengyun.com/theme/static/css/style.css" rel="stylesheet" />
+        <link href="../theme/static/css/style.css" rel="stylesheet" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     </head>
 
@@ -12,16 +12,16 @@
         <div class="container">
             <div class="header">
                 <ul class="nav nav-pills pull-right">
-                    <li class=""><a href="http://blog.limengyun.com">Home</a></li>
-                    <li><a href="http://blog.limengyun.com/archives.html">Archives</a></li>
+                    <li class=""><a href="..">Home</a></li>
+                    <li><a href="../archives.html">Archives</a></li>
                 </ul>
-                <h3 class="text-muted"><a href="http://blog.limengyun.com">limengyun.com</a></h3>
+                <h3 class="text-muted"><a href="..">limengyun.com</a></h3>
 				<h2 class="text-muted"></h2>
              </div>
 <section id="content" class="article content">
   <header>
     <h2 class="entry-title">
-      <a href="http://blog.limengyun.com/two-sum.html" rel="bookmark"
+      <a href="../leetcode/two-sum.html" rel="bookmark"
          title="Permalink to Two sum">Two sum</a></h2>
  
   </header>
@@ -36,6 +36,10 @@
 <p>Input: numbers={2, 7, 11, 15}, target=9</p>
 <p>Output: index1=1, index2=2</p>
 </blockquote>
+<h3>solution</h3>
+<p>本来是想了一个O(nlgn)的算法，即先排序，然后分别从头尾取一个数sum, sum大于target则尾向前，小于target则头向后。</p>
+<p>accept之后发现官方有个更流氓的用hashmap直接查找的解法。复杂度为O(n)。 </p>
+<p>但是试了几次，O(n)的算法都没有O(nlgn)的快……</p>
 <h3>source code</h3>
 <div class="highlight"><pre><span class="kn">import</span> <span class="nn">java.util.HashMap</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.util.Map</span><span class="o">;</span>
@@ -68,15 +72,15 @@
       Thu 01 January 2015
     </abbr>
     <address class="vcard author">
-      by <a class="url fn" href="http://blog.limengyun.com/author/li-mengyun.html">Li Mengyun</a>
-    </address> in <a href="http://blog.limengyun.com/category/leetcode.html">leetcode</a> Tagged   </footer><!-- /.post-info -->
+      by <a class="url fn" href="../author/li-mengyun.html">Li Mengyun</a>
+    </address> in <a href="../category/leetcode.html">leetcode</a> Tagged   </footer><!-- /.post-info -->
 </section>
             <footer id="contentinfo" class="footer">
                     <nav class="pull-right bottom-nav">
-                        <a href="http://blog.limengyun.com/None">RSS</a>
+                        <a href="/None">RSS</a>
                     </nav>
                     <address id="about" class="vcard body">
-                    &copy; <a href="http://blog.limengyun.com">limengyun.com</a> Proudly powered by <a href="http://getpelican.com/">Pelican</a>
+                    &copy; <a href="..">limengyun.com</a> Proudly powered by <a href="http://getpelican.com/">Pelican</a>
                     </address><!-- /#about -->
             </footer><!-- /#contentinfo -->
         </div><!-- container -->
