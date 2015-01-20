@@ -2,7 +2,7 @@ Title: Add Two Numbers
 Date: 2015-01-02 10:00
 
 ### problem
-
+高精度加法
 >You are given two linked lists representing two non-negative numbers. The digits are stored in reverse order and each of their nodes contain a single digit. Add the two numbers and return it as a linked list.
 >
 >Input: (2 -> 4 -> 3) + (5 -> 6 -> 4)
@@ -10,7 +10,7 @@ Date: 2015-01-02 10:00
 >Output: 7 -> 0 -> 8
 
 ### solution
-高精度加法，考细致程度，提交了好几次才Accept……
+考细致程度，提交了好几次才Accept……
 
 ### source code
     :::java

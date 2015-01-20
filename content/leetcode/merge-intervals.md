@@ -3,6 +3,7 @@ Date: 2015-01-05 10:00
 
 ### problem
 
+给定一个区间集合，将这些区间合并。
 >Given a collection of intervals, merge all overlapping intervals.
 >
 > <br/>
@@ -11,6 +12,7 @@ Date: 2015-01-05 10:00
 >Given <b>[1,3],[2,6],[8,10],[15,18],</b>
 >
 >return <b>[1,6],[8,10],[15,18].</b>
+                   
 
 ### solution
 见注释

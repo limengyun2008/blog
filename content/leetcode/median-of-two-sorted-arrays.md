@@ -2,11 +2,11 @@ Title: Median of Two Sorted Arrays
 Date: 2015-01-04 10:00
 
 ### problem
-
+两个已排序的数组取中位数
 >There are two sorted arrays A and B of size m and n respectively. Find the median of the two sorted arrays. The overall run time complexity should be O(log (m+n)).
 
 ### solution
-两个已排序的数组取中位数，只需要取到 total / 2 + 1 个数就可以了。貌似完全不是标注的Hard级别。
+一直只取两个数组中最小的，只需要取到 total / 2 + 1 个数就可以了。貌似完全不是标注的Hard级别。
 
 ### source code
     :::java
