@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Best Time to Buy and Sell Stock III - limengyun.com</title>
+        <meta charset="utf-8" />
+        <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="http://www.limengyun.com/theme/static/css/style.css" rel="stylesheet" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <link href="http://www.limengyun.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="limengyun.com Full Atom Feed" />
+        <link href="http://www.limengyun.com/feeds/leetcode.atom.xml" type="application/atom+xml" rel="alternate" title="limengyun.com Categories Atom Feed" />
+    </head>
+
+    <body id="index" class="archive">
+        <div class="container">
+            <div class="header">
+                <ul class="nav nav-pills pull-right">
+                    <li class=""><a href="http://www.limengyun.com">Home</a></li>
+                    <li><a href="http://www.limengyun.com/archives.html">Archives</a></li>
+                </ul>
+                <h3 class="text-muted"><a href="http://www.limengyun.com">limengyun.com</a></h3>
+				<h2 class="text-muted"></h2>
+             </div>
+<section id="content" class="article content">
+  <header>
+    <h2 class="entry-title">
+      <a href="http://www.limengyun.com/leetcode/best-time-to-buy-and-sell-stock-iii.html" rel="bookmark"
+         title="Permalink to Best Time to Buy and Sell Stock III">Best Time to Buy and Sell Stock III</a></h2>
+ 
+  </header>
+  
+     
+  <div class="entry-content">
+    <h3>problem</h3>
+<blockquote>
+<p>Say you have an array for which the ith element is the price of a given stock on day i.</p>
+<p>Design an algorithm to find the maximum profit. You may complete at most two transactions.</p>
+<p>Note:
+You may not engage in multiple transactions at the same time (ie, you must sell the stock before you buy again).</p>
+</blockquote>
+<h3>solution</h3>
+<p>跟<a href="/leetcode/best-time-to-buy-and-sell-stock.html">一次交易</a>的版本类似，但是动态规划的过程要繁琐一点，这道题我自己思路错了，去查了discuss，贴出一个个人认为最好的解法。</p>
+<p>大体思路就是保证不论第一次还是第二次，也不论买入时和卖出时，都保证当前的净收益是最大的，则最后的收益也是最大的。这种解法可以很方便的扩展到N次交易的情况。</p>
+<h3>source code</h3>
+<div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Solution</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">maxProfit</span><span class="o">(</span><span class="kt">int</span><span class="o">[]</span> <span class="n">prices</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">buy1</span> <span class="o">=</span> <span class="n">Integer</span><span class="o">.</span><span class="na">MIN_VALUE</span><span class="o">;</span>
+        <span class="kt">int</span> <span class="n">sell1</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+        <span class="kt">int</span> <span class="n">buy2</span> <span class="o">=</span> <span class="n">Integer</span><span class="o">.</span><span class="na">MIN_VALUE</span><span class="o">;</span>
+        <span class="kt">int</span> <span class="n">sell2</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">price</span> <span class="o">:</span> <span class="n">prices</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">sell2</span> <span class="o">=</span> <span class="n">Math</span><span class="o">.</span><span class="na">max</span><span class="o">(</span><span class="n">sell2</span><span class="o">,</span> <span class="n">price</span> <span class="o">+</span> <span class="n">buy2</span><span class="o">);</span>
+            <span class="n">buy2</span> <span class="o">=</span> <span class="n">Math</span><span class="o">.</span><span class="na">max</span><span class="o">(</span><span class="n">buy2</span><span class="o">,</span> <span class="n">sell1</span> <span class="o">-</span> <span class="n">price</span><span class="o">);</span>
+            <span class="n">sell1</span> <span class="o">=</span> <span class="n">Math</span><span class="o">.</span><span class="na">max</span><span class="o">(</span><span class="n">sell1</span><span class="o">,</span> <span class="n">price</span> <span class="o">+</span> <span class="n">buy1</span><span class="o">);</span>
+            <span class="n">buy1</span> <span class="o">=</span> <span class="n">Math</span><span class="o">.</span><span class="na">max</span><span class="o">(</span><span class="n">buy1</span><span class="o">,</span> <span class="o">-</span><span class="n">price</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">sell2</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+  </div><!-- /.entry-content -->
+   <footer class="post-info text-muted">
+    Posted on <abbr class="published" title="2015-01-12T10:00:00+08:00">
+      Mon 12 January 2015
+    </abbr>
+    <address class="vcard author">
+      by <a class="url fn" href="http://www.limengyun.com/author/li-mengyun.html">Li Mengyun</a>
+    </address> in <a href="http://www.limengyun.com/category/leetcode.html">leetcode</a> Tagged   </footer><!-- /.post-info -->
+</section>
+            <footer id="contentinfo" class="footer">
+                    <nav class="pull-right bottom-nav">
+                        <a href="http://www.limengyun.com/feeds/all.atom.xml">RSS</a>
+                    </nav>
+                    <address id="about" class="vcard body">
+                    &copy; <a href="http://www.limengyun.com">limengyun.com</a> Proudly powered by <a href="http://getpelican.com/">Pelican</a>
+                    </address><!-- /#about -->
+            </footer><!-- /#contentinfo -->
+        </div><!-- container -->
+    </body>
+</html>
