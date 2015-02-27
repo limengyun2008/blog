@@ -38,7 +38,7 @@ THEME = "theme"
 
 STATIC_PATHS = ['images', 'extra']
 EXTRA_PATH_METADATA = {
-    'extra/CNAME': {'path': 'CNAME'}    
+    'extra\CNAME': {'path': 'CNAME'}
 }
 
 
